@@ -7,4 +7,7 @@ route.post("/", userController.create);
 route.get("/", userController.findAll);
 
 route.get("/:id", userController.findById);
+
+route.put("/:id", userController.update);
+
 module.exports = route;
