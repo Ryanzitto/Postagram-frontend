@@ -1,7 +1,7 @@
-const express = require("express");
-const cors = require("cors");
-const userRoute = require("./src/routes/user.route");
-const connectDB = require("./src/database/db");
+import express from "express";
+import cors from "cors";
+import userRoute from "./src/routes/user.route.js";
+import { connectDB } from "./src/database/db.js";
 
 connectDB();
 

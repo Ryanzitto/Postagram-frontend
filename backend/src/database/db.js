@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const connectDB = () => {
+export const connectDB = () => {
   mongoose
     .connect(
       "mongodb+srv://ryanhardflip:3RuDrjP94ropX9MC@cluster0.qk1sejc.mongodb.net/?retryWrites=true&w=majority",
@@ -9,5 +9,3 @@ const connectDB = () => {
     .then(() => console.log("MongoDB Atlas connected"))
     .catch((error) => console.log(error));
 };
-
-module.exports = connectDB;
