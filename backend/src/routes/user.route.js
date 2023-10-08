@@ -1,5 +1,5 @@
-import route from "express";
-const router = route.Router();
+import { Router } from "express";
+const router = Router();
 
 import userController from "../controllers/user.controller.js";
 
