@@ -4,6 +4,12 @@ import {
   countNews,
   topNewsService,
   getByIdService,
+  searchByTitleService,
+  searchByUserService,
+  updateService,
+  deleteNewsService,
+  likeService,
+  likeDeleteService,
 } from "../services/news.service.js";
 
 const create = async (req, res) => {
@@ -77,7 +83,8 @@ const getAll = async (req, res) => {
         banner: item.banner,
         likes: item.likes,
         comments: item.comments,
-        userName: item.user.name,
+        name: item.user.name,
+        userName: item.user.userName,
         userAvatar: item.user.avatars,
       })),
     });
@@ -127,13 +134,139 @@ const getById = async (req, res) => {
         banner: news.banner,
         likes: news.likes,
         comments: news.comments,
-        userName: news.user.name,
+        name: news.user.name,
+        userName: news.user.userName,
         userAvatar: news.user.avatars,
       },
     });
   } catch (error) {
-    res.status(500).send({ message: error });
+    res.status(500).send({ message: error.message });
   }
 };
 
-export { create, getAll, topNews, getById };
+const searchByTitle = async (req, res) => {
+  try {
+    const { title } = req.query;
+    const news = await searchByTitleService(title);
+
+    if (news.length === 0) {
+      return res.status(400).send({ message: "no news existing " });
+    }
+
+    console.log(news);
+
+    return res.send({
+      news: news.map((item) => ({
+        id: item._id,
+        title: item.title,
+        text: item.text,
+        banner: item.banner,
+        likes: item.likes,
+        comments: item.comments,
+        name: item.user.name,
+        userName: item.user.userName,
+        userAvatar: item.user.avatars,
+      })),
+    });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+const searchByUser = async (req, res) => {
+  try {
+    const id = req.userId;
+    const news = await searchByUserService(id);
+    console.log(news);
+    return res.send({
+      results: news.map((item) => ({
+        id: item._id,
+        title: item.title,
+        text: item.text,
+        banner: item.banner,
+        likes: item.likes,
+        comments: item.comments,
+        name: item.user.name,
+        userName: item.user.userName,
+        userAvatar: item.user.avatars,
+      })),
+    });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+const update = async (req, res) => {
+  try {
+    const { title, text, banner } = req.body;
+
+    const { id } = req.params;
+
+    if (!title && !text && !banner) {
+      res.status(400).send({
+        message: "Submit at least one field",
+      });
+    }
+
+    const news = await getByIdService(id);
+
+    console.log(news.user.id != req.userId);
+
+    if (news.user.id != req.userId) {
+      return res.status(400).send({ message: "you did not update this post" });
+    }
+
+    await updateService(id, title, text, banner);
+
+    return res.send({ message: "Post successfully updated" });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+const deleteNews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const news = await getByIdService(id);
+
+    if (news.user.id != req.userId) {
+      return res.status(400).send({ message: "you did not delete this post" });
+    }
+
+    await deleteNewsService(id);
+
+    return res.send({ message: "news deleted!" });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+const like = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.userId;
+
+  const newsLiked = await likeService(id, userId);
+  console.log(newsLiked);
+
+  if (!newsLiked) {
+    await likeDeleteService(id, userId);
+    return res.status(200).send({ message: "like removed" });
+  }
+  res.send({ message: "like successfull aplied" });
+};
+try {
+} catch (error) {
+  res.status(500).send({ message: error.message });
+}
+
+export {
+  create,
+  getAll,
+  topNews,
+  getById,
+  searchByTitle,
+  searchByUser,
+  update,
+  deleteNews,
+  like,
+};
