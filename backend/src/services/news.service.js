@@ -25,7 +25,7 @@ const updateService = (id, title, text, banner) =>
   News.findOneAndUpdate(
     { _id: id },
     { title, text, banner },
-    { rawResult: true }
+    { includeResultMetadata: false }
   );
 
 const deleteNewsService = (id) => News.findOneAndDelete({ _id: id });

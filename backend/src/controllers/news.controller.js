@@ -42,7 +42,7 @@ const getAll = async (req, res) => {
     let { limit, offset } = req.query;
 
     if (!limit) {
-      limit = 2;
+      limit = 3;
     }
     if (!offset) {
       offset = 0;
