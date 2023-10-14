@@ -39,13 +39,19 @@ const likeService = (id, userId) =>
 const likeDeleteService = (id, userId) =>
   News.findOneAndUpdate({ _id: id }, { $pull: { likes: { userId } } });
 
-const addCommentService = (id, comment, userId) => {
+const addCommentService = (id, comment, userId, userName) => {
   const idComment = Math.floor(Date.now() * Math.random()).toString(36);
   return News.findOneAndUpdate(
     { _id: id },
     {
       $push: {
-        comments: { idComment, userId, comment, createdAt: new Date() },
+        comments: {
+          idComment,
+          userId,
+          comment,
+          createdAt: new Date(),
+          userName,
+        },
       },
     }
   );

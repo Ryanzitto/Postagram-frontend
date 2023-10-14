@@ -54,7 +54,18 @@ const Post = ({ post }: Post) => {
       </div>
       <div className="w-[90%] flex justify-end gap-2 pr-2 py-2">
         <button>curtir</button>
-        <button>comentar</button>
+      </div>
+      <div className="w-[90%] flex flex-col gap-2">
+        {post.comments.map((item) => {
+          return (
+            <div className="w-full pl-4 bg-zinc-200 p-2 rounded-md flex gap-2">
+              <span className="font-bold cursor-pointer hover:opacity-80">
+                {item.userName}:
+              </span>
+              <p className="font-light">{item.comment}</p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -80,9 +91,7 @@ export default function Home() {
       .get(`${baseUrl}/news`)
       .then((response) => {
         console.log(response);
-        const arr = response.data.results;
-        arr.shift();
-        setNews(arr);
+        setNews(response.data.results);
       })
       .catch((error) => console.log(error));
   }, []);

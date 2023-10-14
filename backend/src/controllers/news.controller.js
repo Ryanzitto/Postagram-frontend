@@ -261,15 +261,20 @@ const comment = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.userId;
-    const { comment } = req.body;
+    const { comment, userName } = req.body;
 
     if (!comment) {
       return res.status(400).send({
         message: "write a comment to continue.",
       });
     }
+    if (!userName) {
+      return res.status(400).send({
+        message: "send a userName to continue.",
+      });
+    }
 
-    await addCommentService(id, comment, userId);
+    await addCommentService(id, comment, userId, userName);
 
     res.send({ message: "comment successfully completed" });
   } catch (error) {
