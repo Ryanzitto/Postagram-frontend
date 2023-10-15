@@ -27,27 +27,52 @@ interface Post {
     title: string;
     userName: string;
     avatar: string;
+    createdAt: string;
   };
+}
+
+interface DateFormatOptions {
+  year?: "numeric" | "2-digit";
+  month?: "numeric" | "2-digit" | "long" | "short" | "narrow";
+  day?: "numeric" | "2-digit";
+  hour?: "numeric" | "2-digit";
+  minute?: "numeric" | "2-digit";
+  second?: "numeric" | "2-digit";
 }
 
 const Post = ({ post }: Post) => {
   console.log(post);
+
+  const dateFormated = (date: string) => {
+    const dataOriginal = date;
+
+    const data = new Date(dataOriginal);
+
+    const options: DateFormatOptions = {
+      month: "long",
+      day: "numeric",
+    };
+    const result = data.toLocaleDateString("pt-BR", options);
+    return result;
+  };
   return (
-    <div className="w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6">
+    <div className="w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800">
       <div className="w-[90%] h-20 flex justify-start items-center">
-        <div
-          className="rounded-full w-16 h-16 "
-          style={{
-            backgroundImage: `url(${post.avatar})`,
-            backgroundSize: "cover",
-          }}
-        ></div>
+        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex justify-center items-center">
+          <div
+            className="rounded-full w-[90%] h-[90%]"
+            style={{
+              backgroundImage: `url(${post.avatar})`,
+              backgroundSize: "cover",
+            }}
+          ></div>
+        </div>
 
         <div className="flex flex-col items-start h-full pt-2 pl-2">
-          <span className="text-lg font-bold">
+          <span className="text-lg font-bold hover:opacity-80">
             <Link href={`/perfil/${post.userName}`}>{post.userName}</Link>
           </span>
-          <span className="text-sm">20 out 2023</span>
+          <span className="text-xs">{dateFormated(post?.createdAt)}</span>
         </div>
       </div>
       <div className="w-[90%] h-fit flex flex-col p-2">

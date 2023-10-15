@@ -41,8 +41,14 @@ export default function Perfil({ params }: { params: { userName: string } }) {
           }}
         >
           <div className="flex">
-            <div className="absolute -mt-16 ml-20 bg-zinc-800 rounded-full border-4 border-zinc-800 flex justify-center items-center">
-              <img className="rounded-full w-32 h-32 flex" src={user?.avatar} />
+            <div className="absolute -mt-16 ml-20 bg-zinc-800 rounded-full border-4 border-zinc-800 justify-center items-center">
+              <div
+                className="w-32 h-32 rounded-full"
+                style={{
+                  backgroundImage: `url(${user?.avatar})`,
+                  backgroundSize: "cover",
+                }}
+              ></div>
             </div>
           </div>
         </div>

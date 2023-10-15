@@ -24,14 +24,14 @@ const create = async (req, res) => {
       });
     }
 
-    await createService({
+    const news = await createService({
       title,
       text,
       banner,
       user: req.userId,
     });
 
-    res.send(201);
+    res.status(201).send({ news });
   } catch (error) {
     res.status(500).send({ message: error });
   }
@@ -90,6 +90,7 @@ const getAll = async (req, res) => {
         name: item.user.name,
         userName: item.user.userName,
         avatar: item.user.avatar,
+        createdAt: item.createdAt,
       })),
     });
   } catch (error) {
