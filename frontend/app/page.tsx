@@ -3,6 +3,7 @@ import "./globals.css";
 import axios from "axios";
 import Link from "next/link";
 import { useState, useEffect, JSX, ReactNode } from "react";
+import { useStore } from "./store";
 
 interface topNews {
   banner: string;
@@ -41,7 +42,7 @@ interface DateFormatOptions {
 }
 
 const Post = ({ post }: Post) => {
-  console.log(post);
+  const { bears, increasePopulation } = useStore();
 
   const dateFormated = (date: string) => {
     const dataOriginal = date;
