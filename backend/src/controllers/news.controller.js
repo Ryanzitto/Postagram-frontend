@@ -42,7 +42,7 @@ const getAll = async (req, res) => {
     let { limit, offset } = req.query;
 
     if (!limit) {
-      limit = 3;
+      limit = 5;
     }
     if (!offset) {
       offset = 0;
@@ -53,6 +53,7 @@ const getAll = async (req, res) => {
 
     const news = await findAllService(limit, offset);
 
+    console.log(news);
     const total = await countNews();
 
     const currentUrl = req.baseUrl;
@@ -72,6 +73,7 @@ const getAll = async (req, res) => {
     if (news.length === 0) {
       return res.status(400).send({ message: "there is no registred news" });
     }
+
     res.send({
       nextUrl,
       previousUrl,
@@ -87,7 +89,7 @@ const getAll = async (req, res) => {
         comments: item.comments,
         name: item.user.name,
         userName: item.user.userName,
-        userAvatar: item.user.avatars,
+        avatar: item.user.avatar,
       })),
     });
   } catch (error) {

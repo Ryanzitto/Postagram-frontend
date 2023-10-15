@@ -9,6 +9,8 @@ router.post("/", userController.create);
 
 router.get("/", userController.findAll);
 
+router.get("/:userName", userController.findByUserName);
+
 router.get("/:id", validId, validUser, userController.findById);
 
 router.put("/:id", validId, validUser, userController.update);

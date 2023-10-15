@@ -1,6 +1,7 @@
 "use client";
 import "./globals.css";
 import axios from "axios";
+import Link from "next/link";
 import { useState, useEffect, JSX, ReactNode } from "react";
 
 interface topNews {
@@ -25,6 +26,7 @@ interface Post {
     text: string;
     title: string;
     userName: string;
+    avatar: string;
   };
 }
 
@@ -33,13 +35,18 @@ const Post = ({ post }: Post) => {
   return (
     <div className="w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6">
       <div className="w-[90%] h-20 flex justify-start items-center">
-        <img
+        <div
           className="rounded-full w-16 h-16 "
-          src="https://jhey.dev/media/image/enhanced/headshot-80x80.avif"
-        />
+          style={{
+            backgroundImage: `url(${post.avatar})`,
+            backgroundSize: "cover",
+          }}
+        ></div>
 
         <div className="flex flex-col items-start h-full pt-2 pl-2">
-          <span className="text-lg font-bold">{post.userName}</span>
+          <span className="text-lg font-bold">
+            <Link href={`/perfil/${post.userName}`}>{post.userName}</Link>
+          </span>
           <span className="text-sm">20 out 2023</span>
         </div>
       </div>
@@ -98,7 +105,6 @@ export default function Home() {
 
   return (
     <main className="flex flex-col min-h-screen h-fit bg-white justify-center items-center">
-      <div className="w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
       <div className="w-[50%] h-full flex flex-col gap-4 p-2 pt-10">
         {news !== null
           ? news.map((post) => {

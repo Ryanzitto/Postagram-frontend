@@ -47,11 +47,33 @@ const findById = async (req, res) => {
   }
 };
 
+const findByUserName = async (req, res) => {
+  try {
+    const { userName } = req.params;
+
+    if (!userName) {
+      return res.status(400).send({ message: "username is missing" });
+    }
+
+    const user = await userService.findByUserNameService(userName);
+
+    console.log(user);
+
+    if (!user) {
+      return res.status(404).send({ message: "userName not found" });
+    }
+
+    res.send(user);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
 const update = async (req, res) => {
   try {
-    const { name, userName, email, password, avatar } = req.body;
+    const { name, userName, email, password, avatar, bio } = req.body;
 
-    if (!name && !userName && !email && !password && !avatar) {
+    if (!name && !userName && !email && !password && !avatar && !bio) {
       res
         .status(400)
         .send({ message: "Submit at least one field for registration" });
@@ -65,7 +87,8 @@ const update = async (req, res) => {
       userName,
       email,
       password,
-      avatar
+      avatar,
+      bio
     );
 
     res.send({ message: "User succesfully updated" });
@@ -74,4 +97,4 @@ const update = async (req, res) => {
   }
 };
 
-export default { create, findAll, findById, update };
+export default { create, findAll, findById, update, findByUserName };
