@@ -1,23 +1,60 @@
 "use client";
 import axios from "axios";
-import { useState } from "react";
+import Lottie from "react-lottie";
+import * as z from "zod";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+
+import { registerSchema } from "../zodSchema/register";
+import { loginSchema } from "../zodSchema/login";
+import animationData from "../../public/Animation-ERRO.json";
 
 interface Props {
   func: (newForm: string) => void;
 }
 
-import { registerSchema } from "../zodSchema/register";
-
-import { loginSchema } from "../zodSchema/login";
-
 type FormData = z.infer<typeof registerSchema>;
+
+const Modal = () => {
+  const [state, setState] = useState({
+    isStopped: false,
+    isPaused: false,
+  });
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  return (
+    <div className="w-full h-full absolute flex justify-center items-center">
+      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center">
+        <Lottie
+          options={defaultOptions}
+          height={100}
+          width={100}
+          isStopped={state.isStopped}
+          isPaused={state.isPaused}
+        />
+        <span className="text-green-500 font-bold text-xs">
+          Processo feito com sucesso!
+        </span>
+      </div>
+    </div>
+  );
+};
 
 const Login = ({ func }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const [status, setStatus] = useState<string | null>(null);
+
   const router = useRouter();
   const {
     handleSubmit,
@@ -42,8 +79,10 @@ const Login = ({ func }: Props) => {
         setErrorMessage(error.response.data.message);
       });
   }
+
   return (
-    <div className="w-full h-[100%] flex shadow-2xl">
+    <div className="w-full h-[100%] flex shadow-2xl relative">
+      <Modal />
       <div className="w-1/2 h-full rounded-l-md bg-white pb-8 flex flex-col items-center">
         <div className="w-full h-16 flex justify-start items-center pl-10">
           <span className="text-3xl font-black text-zinc-800">A</span>
