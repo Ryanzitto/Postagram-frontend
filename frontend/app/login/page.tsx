@@ -4,13 +4,15 @@ import Lottie from "react-lottie";
 import * as z from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import { registerSchema } from "../zodSchema/register";
 import { loginSchema } from "../zodSchema/login";
-import animationData from "../../public/Animation-ERRO.json";
+import animationData from "../../public/Animation-OK.json";
+
+import { useStore } from "app/store";
 
 interface Props {
   func: (newForm: string) => void;
@@ -18,7 +20,8 @@ interface Props {
 
 type FormData = z.infer<typeof registerSchema>;
 
-const Modal = () => {
+const Modal = (props: { text: string; color: string }) => {
+  const { text, color } = props;
   const [state, setState] = useState({
     isStopped: false,
     isPaused: false,
@@ -42,20 +45,21 @@ const Modal = () => {
           isStopped={state.isStopped}
           isPaused={state.isPaused}
         />
-        <span className="text-green-500 font-bold text-xs">
-          Processo feito com sucesso!
-        </span>
+        <span className={`${color} font-bold text-xs`}>{text}</span>
       </div>
     </div>
   );
 };
 
 const Login = ({ func }: Props) => {
+  const { login, user } = useStore();
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [status, setStatus] = useState<string | null>(null);
 
   const router = useRouter();
+
   const {
     handleSubmit,
     register,
@@ -72,7 +76,14 @@ const Login = ({ func }: Props) => {
       .post(`${baseUrl}/auth/`, { email: data.email, password: data.password })
       .then((response) => {
         console.log(response);
-        router.push("/");
+        setStatus("success");
+        login(response.data.token);
+        const timeout = setTimeout(() => {
+          setStatus(null);
+          router.push("/");
+        }, 1200);
+
+        return () => clearTimeout(timeout);
       })
       .catch((error) => {
         console.log(error);
@@ -80,9 +91,14 @@ const Login = ({ func }: Props) => {
       });
   }
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
   return (
     <div className="w-full h-[100%] flex shadow-2xl relative">
-      <Modal />
+      {status === "success" ? (
+        <Modal text="Logged with success " color="text-green-500" />
+      ) : null}
       <div className="w-1/2 h-full rounded-l-md bg-white pb-8 flex flex-col items-center">
         <div className="w-full h-16 flex justify-start items-center pl-10">
           <span className="text-3xl font-black text-zinc-800">A</span>
@@ -181,16 +197,17 @@ const Login = ({ func }: Props) => {
           </div>
         </form>
       </div>
-      <div className="w-1/2 h-full rounded-r-md bg-zinc-800">
-        <h1>e</h1>
-      </div>
+      <div className="w-1/2 h-full rounded-r-md bg-zinc-800"></div>
     </div>
   );
 };
 
 const Cadastro = ({ func }: Props) => {
+  const { setUser, user } = useStore();
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const router = useRouter();
+
+  const [status, setStatus] = useState<string | null>(null);
 
   const {
     handleSubmit,
@@ -215,7 +232,14 @@ const Cadastro = ({ func }: Props) => {
       })
       .then((response) => {
         console.log(response);
-        changeToLogin();
+        setStatus("success");
+        setUser(response.data.user);
+        const timeout = setTimeout(() => {
+          setStatus(null);
+          changeToLogin();
+        }, 1200);
+
+        return () => clearTimeout(timeout);
       })
       .catch((error) => {
         console.log(error);
@@ -227,9 +251,16 @@ const Cadastro = ({ func }: Props) => {
     func("LOGIN");
   };
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   return (
     <>
-      <div className="w-full h-fit rounded-md bg-white shadow-2xl pb-6">
+      <div className="w-full h-fit rounded-md bg-white shadow-2xl pb-6 flex justify-center items-center flex flex-col">
+        {status === "success" ? (
+          <Modal text="Logged with success " color="text-green-500" />
+        ) : null}
         <div className="w-full h-28 flex flex-col justify-center items-center gap-2 bg-zinc-800 rounded-t-md">
           <div className="flex gap-2">
             <span className="text-4xl font-black text-white/80">We are</span>
@@ -328,8 +359,9 @@ const Cadastro = ({ func }: Props) => {
                     <input
                       {...register("password", { required: true })}
                       id="password"
+                      type="password"
                       name="password"
-                      placeholder="********"
+                      placeholder="* * * * * * * *"
                       autoComplete="off"
                       className={`border border-zinc-300 rounded-md h-10 focus:outline-none text-sm pl-2 ${
                         errors.password ? "border border-red-500" : null
@@ -351,8 +383,9 @@ const Cadastro = ({ func }: Props) => {
                     <input
                       {...register("confirmPassword", { required: true })}
                       id="confirmPassword"
+                      type="password"
                       name="confirmPassword"
-                      placeholder="********"
+                      placeholder="* * * * * * * *"
                       autoComplete="off"
                       className={`border border-zinc-300 rounded-md h-10 focus:outline-none text-sm pl-2 ${
                         errors.confirmPassword ? "border border-red-500" : null

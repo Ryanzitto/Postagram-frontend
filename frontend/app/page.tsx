@@ -42,8 +42,6 @@ interface DateFormatOptions {
 }
 
 const Post = ({ post }: Post) => {
-  const { bears, increasePopulation } = useStore();
-
   const dateFormated = (date: string) => {
     const dataOriginal = date;
 
@@ -105,6 +103,7 @@ const Post = ({ post }: Post) => {
 };
 
 export default function Home() {
+  const { user } = useStore();
   const [topNews, setTopNews] = useState<topNews | null>(null);
 
   const [news, setNews] = useState<topNews | null>(null);
@@ -129,9 +128,27 @@ export default function Home() {
       .catch((error) => console.log(error));
   }, []);
 
+  useEffect(() => {
+    console.log(user);
+  }, []);
+
   return (
     <main className="flex flex-col min-h-screen h-fit bg-white justify-center items-center">
       <div className="w-[50%] h-full flex flex-col gap-4 p-2 pt-10">
+        <div className="w-full py-4 h-fit border border-slate-300 rounded-md pl-6 flex">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex justify-center items-center">
+            <div
+              className="rounded-full w-[90%] h-[90%]"
+              style={{
+                backgroundImage: `url(${user?.avatar})`,
+                backgroundSize: "cover",
+              }}
+            ></div>
+          </div>
+          <div className="flex justify-center items-center">
+            <span>Criar</span>
+          </div>
+        </div>
         {news !== null
           ? news.map((post) => {
               return <Post post={post} />;
