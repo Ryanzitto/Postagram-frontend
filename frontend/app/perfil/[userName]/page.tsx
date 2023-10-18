@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Post } from "app/components/Post";
 
 interface User {
   avatar: string;
@@ -12,10 +13,24 @@ interface User {
   bio: string;
 }
 
+interface Post {
+  banner: string;
+  comments: any[];
+  id: string;
+  likes: any[];
+  text: string;
+  title: string;
+  userName: string;
+  avatar: string;
+  createdAt: string;
+}
+
 export default function Perfil({ params }: { params: { userName: string } }) {
   const [userName, setUserName] = useState<string | null>(params.userName);
 
   const [user, setUser] = useState<User | null>(null);
+
+  const [posts, setPosts] = useState<Post[] | null>(null);
 
   useEffect(() => {
     setUserName(params.userName);
@@ -25,6 +40,14 @@ export default function Perfil({ params }: { params: { userName: string } }) {
       .then((response) => {
         console.log(response);
         setUser(response.data);
+      })
+      .catch((error) => console.log(error));
+
+    axios
+      .get(`${baseUrl}/news/${userName}`)
+      .then((response) => {
+        console.log(response);
+        setPosts(response.data);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -63,6 +86,9 @@ export default function Perfil({ params }: { params: { userName: string } }) {
             {user?.bio}
           </div>
         </div>
+        {posts?.map((post) => {
+          return <Post post={post} key={post.id} />;
+        })}
       </div>
     </div>
   );

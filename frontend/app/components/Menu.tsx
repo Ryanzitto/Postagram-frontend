@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
+import { useStore } from "../store";
 
 interface MenuProps {
   menuOpened: boolean;
@@ -9,9 +10,17 @@ interface MenuProps {
 }
 
 export const Menu = (props: MenuProps) => {
+  const { user, logout } = useStore();
+
+  const [load, setLoad] = useState<boolean>(false);
+
   const ref = useRef<HTMLButtonElement | null>(null);
-  const ref2 = useRef<HTMLButtonElement | null>(null);
+
   const { menuOpened, setMenuOpened } = props;
+
+  useEffect(() => {
+    setLoad(true);
+  }, []);
 
   return (
     <>
@@ -40,7 +49,38 @@ export const Menu = (props: MenuProps) => {
         className={`z-10 fixed top-0 right-0 bottom-0 bg-white transition-all overflow-hidden flex flex-col
       ${menuOpened ? "w-80" : "w-0"}`}
       >
-        <div className="flex-1 flex items-start justify-center flex-col gap-6 p-8 bg-zinc-100">
+        <div className="flex-1 flex items-start justify-start flex-col gap-6 p-8 bg-zinc-100 pt-28">
+          {load === true && (
+            <>
+              {user.token !== null && (
+                <div className="w-full h-14 flex items-center">
+                  <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
+                    <div
+                      className="rounded-full w-[90%] h-[90%]"
+                      style={{
+                        backgroundImage: `url(${user?.avatar})`,
+                        backgroundSize: "cover",
+                      }}
+                    ></div>
+                  </div>
+                  <div className="pl-4 flex gap-4">
+                    <Link
+                      href={`/perfil/${user?.userName}`}
+                      className="cursor-pointer font-bold text-sm text-zinc-800 transition-colors hover:opacity-80"
+                    >
+                      ver perfil
+                    </Link>
+                    <span
+                      onClick={() => logout()}
+                      className="cursor-pointer font-bold text-sm text-zinc-800 transition-colors hover:opacity-80"
+                    >
+                      logout
+                    </span>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
           <MenuButton label="HOME" path="/" />
         </div>
       </div>

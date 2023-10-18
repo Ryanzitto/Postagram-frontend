@@ -52,7 +52,7 @@ const Modal = (props: { text: string; color: string }) => {
 };
 
 const Login = ({ func }: Props) => {
-  const { login, user } = useStore();
+  const { user, login, saveToken } = useStore();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -77,7 +77,8 @@ const Login = ({ func }: Props) => {
       .then((response) => {
         console.log(response);
         setStatus("success");
-        login(response.data.token);
+        login(response.data.user);
+        saveToken(response.data.token);
         const timeout = setTimeout(() => {
           setStatus(null);
           router.push("/");
@@ -94,6 +95,7 @@ const Login = ({ func }: Props) => {
   useEffect(() => {
     console.log(user);
   }, [user]);
+
   return (
     <div className="w-full h-[100%] flex shadow-2xl relative">
       {status === "success" ? (
@@ -203,8 +205,6 @@ const Login = ({ func }: Props) => {
 };
 
 const Cadastro = ({ func }: Props) => {
-  const { setUser, user } = useStore();
-
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [status, setStatus] = useState<string | null>(null);
@@ -233,7 +233,6 @@ const Cadastro = ({ func }: Props) => {
       .then((response) => {
         console.log(response);
         setStatus("success");
-        setUser(response.data.user);
         const timeout = setTimeout(() => {
           setStatus(null);
           changeToLogin();
@@ -250,10 +249,6 @@ const Cadastro = ({ func }: Props) => {
   const changeToLogin = () => {
     func("LOGIN");
   };
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <>
