@@ -14,6 +14,8 @@ import {
   removeCommentService,
 } from "../services/news.service.js";
 
+import User from "../models/User.js";
+import News from "../models/News.js";
 const create = async (req, res) => {
   try {
     const { title, text, banner } = req.body;
@@ -125,6 +127,7 @@ const topNews = async (req, res) => {
 const getById = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(id);
     const news = await getByIdService(id);
 
     if (!news) {
@@ -196,6 +199,33 @@ const searchByUser = async (req, res) => {
         userAvatar: item.user.avatars,
       })),
     });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+//solução encontrada pelo gpt porém preciso refatorar para não ferir os principios da arquitetura limpa
+const searchByUserName = async (req, res) => {
+  try {
+    try {
+      const userName = req.params.userName;
+
+      // Encontre o usuário com base no userName
+      const user = await User.findOne({ userName });
+
+      if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+
+      // Encontre todas as notícias associadas a esse usuário
+      const news = await News.find({ user: user._id }).populate("user");
+
+      return res.status(200).json(news);
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Erro ao buscar notícias", error });
+    }
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -319,6 +349,7 @@ export {
   getById,
   searchByTitle,
   searchByUser,
+  searchByUserName,
   update,
   deleteNews,
   like,

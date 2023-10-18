@@ -57,8 +57,6 @@ const findByUserName = async (req, res) => {
 
     const user = await userService.findByUserNameService(userName);
 
-    console.log(user);
-
     if (!user) {
       return res.status(404).send({ message: "userName not found" });
     }
