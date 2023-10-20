@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { useStore } from "../store";
+import { useRouter } from "next/navigation";
 
 interface MenuProps {
   menuOpened: boolean;
@@ -10,6 +11,8 @@ interface MenuProps {
 }
 
 export const Menu = (props: MenuProps) => {
+  const rounter = useRouter();
+
   const { user, logout } = useStore();
 
   const [load, setLoad] = useState<boolean>(false);
@@ -56,7 +59,7 @@ export const Menu = (props: MenuProps) => {
                 <div className="w-full h-14 flex items-center">
                   <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
                     <div
-                      className="rounded-full w-[90%] h-[90%]"
+                      className="rounded-full w-[90%] h-[90%] cursor-pointer"
                       style={{
                         backgroundImage: `url(${user?.avatar})`,
                         backgroundSize: "cover",
@@ -64,15 +67,9 @@ export const Menu = (props: MenuProps) => {
                     ></div>
                   </div>
                   <div className="pl-4 flex gap-4">
-                    <Link
-                      href={`/perfil/${user?.userName}`}
-                      className="cursor-pointer font-bold text-sm text-zinc-800 transition-colors hover:opacity-80"
-                    >
-                      ver perfil
-                    </Link>
                     <span
                       onClick={() => logout()}
-                      className="cursor-pointer font-bold text-sm text-zinc-800 transition-colors hover:opacity-80"
+                      className="cursor-pointer font-bold text-sm text-zinc-800/80 transition-colors hover:opacity-60"
                     >
                       logout
                     </span>
@@ -82,6 +79,7 @@ export const Menu = (props: MenuProps) => {
             </>
           )}
           <MenuButton label="HOME" path="/" />
+          <MenuButton label="PERFIL" path={`/perfil/${user.userName}`} />
         </div>
       </div>
     </>

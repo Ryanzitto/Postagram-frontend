@@ -1,14 +1,18 @@
 "use client";
 import "./globals.css";
 import axios from "axios";
-import Link from "next/link";
 import { useState, useEffect, JSX, ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { useStore } from "./store";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Post } from "./components/Post";
+import Lottie from "react-lottie";
 
 import * as z from "zod";
+
+import animationDataOK from "../public/Animation-OK.json";
+import animationDataErro from "../public/Animation-ERRO.json";
 
 import { createPostSchema } from "./zodSchema/createPost";
 
@@ -27,8 +31,49 @@ interface topNews {
 
 type FormData = z.infer<typeof createPostSchema>;
 
+const Modal = (props: { svg: string }) => {
+  const { svg } = props;
+
+  const [state, setState] = useState({
+    isStopped: false,
+    isPaused: false,
+  });
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: svg === "ERRO" ? animationDataErro : animationDataOK,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  return (
+    <div className="w-full h-full absolute flex justify-center items-center">
+      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center">
+        <Lottie
+          options={defaultOptions}
+          height={100}
+          width={100}
+          isStopped={state.isStopped}
+          isPaused={state.isPaused}
+        />
+        <span
+          className={`${
+            svg === "ERRO" ? "text-red-500" : "text-green-500"
+          } font-bold text-xs`}
+        >
+          {svg === "ERRO"
+            ? "Token expired, please login."
+            : "Post created with success!"}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 export default function Home() {
-  const { user } = useStore();
+  const { user, logout } = useStore();
+  const router = useRouter();
   const {
     handleSubmit,
     register,
@@ -48,9 +93,26 @@ export default function Home() {
       })
       .then((response) => {
         console.log(response);
+        setSvg("SUCCESS");
+        setShowModal(true);
+        const timeout = setTimeout(() => {
+          setShowModal(false);
+          setCreateIsOpen(false);
+        }, 1200);
+
+        return () => clearTimeout(timeout);
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          setSvg("ERRO");
+          setShowModal(true);
+          const timeout = setTimeout(() => {
+            router.push("/login");
+            logout();
+          }, 1200);
+          return () => clearTimeout(timeout);
+        }
       });
   }
 
@@ -59,6 +121,10 @@ export default function Home() {
   const [load, setLoad] = useState<boolean>(false);
 
   const [createIsOpen, setCreateIsOpen] = useState<boolean>(false);
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const [svg, setSvg] = useState<string>("ERRO");
 
   const baseUrl = "http://localhost:3000";
 
@@ -118,6 +184,7 @@ export default function Home() {
       {createIsOpen && (
         <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60">
           <div className="w-[500px] h-fit bg-white rounded-md p-4 flex justify-start items-center flex-col relative">
+            {showModal && <Modal svg={svg} />}
             <div className="w-full absolute h-10 flex justify-end pr-4 flex just">
               <button
                 onClick={() => setCreateIsOpen(false)}

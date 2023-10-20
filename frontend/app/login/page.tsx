@@ -52,7 +52,7 @@ const Modal = (props: { text: string; color: string }) => {
 };
 
 const Login = ({ func }: Props) => {
-  const { user, login, saveToken } = useStore();
+  const { user, login, saveToken, logout } = useStore();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -79,11 +79,11 @@ const Login = ({ func }: Props) => {
         setStatus("success");
         login(response.data.user);
         saveToken(response.data.token);
+
         const timeout = setTimeout(() => {
           setStatus(null);
           router.push("/");
         }, 1200);
-
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
@@ -99,7 +99,7 @@ const Login = ({ func }: Props) => {
   return (
     <div className="w-full h-[100%] flex shadow-2xl relative">
       {status === "success" ? (
-        <Modal text="Logged with success " color="text-green-500" />
+        <Modal text="Logged with success" color="text-green-500" />
       ) : null}
       <div className="w-1/2 h-full rounded-l-md bg-white pb-8 flex flex-col items-center">
         <div className="w-full h-16 flex justify-start items-center pl-10">

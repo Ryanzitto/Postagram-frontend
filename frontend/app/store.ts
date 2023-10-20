@@ -19,10 +19,6 @@ const unkownUser = {
   id: null,
   token: null,
 };
-interface store {
-  user: User;
-  increase: (by: number) => void;
-}
 
 export const useStore = create(
   persist(
