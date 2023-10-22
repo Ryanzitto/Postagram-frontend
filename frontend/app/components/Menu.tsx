@@ -87,10 +87,15 @@ export const Menu = (props: MenuProps) => {
 };
 
 const MenuButton = (props: { label: string; path: string }) => {
+  const [load, setLoad] = useState<boolean>(false);
+
+  useEffect(() => {
+    setLoad(true);
+  }, []);
   const { label, path } = props;
   return (
     <button className="text-2xl font-bold text-zinc-800 cursor-pointer hover:opacity-80 transition-colors">
-      <Link href={path}>{label}</Link>
+      {load && <Link href={path}>{label}</Link>}
     </button>
   );
 };

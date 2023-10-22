@@ -2,6 +2,8 @@ import { create } from "zustand";
 
 import { persist, createJSONStorage } from "zustand/middleware";
 
+import axios from "axios";
+
 interface User {
   name: null | string;
   userName: null | string;
@@ -24,13 +26,34 @@ export const useStore = create(
   persist(
     (set: any) => ({
       user: unkownUser,
-
       login: (payload: User) => set(() => ({ user: payload })),
 
       logout: () =>
         set(() => ({
           user: unkownUser,
         })),
+
+      data: [],
+      loading: false,
+
+      // Mutador para atualizar o estado com os dados da API
+      setData: (data: any) => set({ data }),
+
+      // Mutador para definir o estado de carregamento
+      setLoading: (loading: any) => set({ loading }),
+
+      // Função para fazer a chamada à API
+      fetchData: async () => {
+        try {
+          set({ loading: true });
+          const response = await axios.get("http://localhost:3000/news");
+          set({ data: response.data.results });
+          set({ loading: false });
+        } catch (error) {
+          console.error("Erro ao buscar dados da API:", error);
+          set({ loading: false });
+        }
+      },
 
       saveToken: (payload: string) =>
         set((state: { user: User }) => ({

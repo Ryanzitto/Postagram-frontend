@@ -15,6 +15,7 @@ import animationDataOK from "../public/Animation-OK.json";
 import animationDataErro from "../public/Animation-ERRO.json";
 
 import { createPostSchema } from "./zodSchema/createPost";
+import Spinner from "./components/Spinner";
 
 interface topNews {
   banner: string;
@@ -72,7 +73,7 @@ const Modal = (props: { svg: string }) => {
 };
 
 export default function Home() {
-  const { user, logout } = useStore();
+  const { user, logout, data, loading, fetchData } = useStore();
   const router = useRouter();
   const {
     handleSubmit,
@@ -129,14 +130,17 @@ export default function Home() {
   const baseUrl = "http://localhost:3000";
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}/news`)
-      .then((response) => {
-        console.log(response);
-        setNews(response.data.results);
-      })
-      .catch((error) => console.log(error));
+    // axios
+    //   .get(`${baseUrl}/news`)
+    //   .then((response) => {
+    //     console.log(response);
+    //     setNews(response.data.results);
+    //   })
+    //   .catch((error) => console.log(error));
+    fetchData();
   }, []);
+
+  useEffect(() => console.log(data), [data]);
 
   useEffect(() => {
     console.log(user);
@@ -174,11 +178,13 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {news !== null
-            ? news.map((post) => {
-                return <Post key={Date.now() * Math.random()} post={post} />;
-              })
-            : null}
+          {loading === false ? (
+            data.map((post) => {
+              return <Post post={post} key={Date.now() * Math.random()} />;
+            })
+          ) : (
+            <Spinner />
+          )}
         </div>
       )}
       {createIsOpen && (

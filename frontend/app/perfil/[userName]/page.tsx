@@ -43,6 +43,7 @@ interface Post {
 
 const Post = ({ post }: Post) => {
   const [load, setLoad] = useState<boolean>(false);
+  const [showAllComments, setShowAllComments] = useState<boolean>(false);
 
   useEffect(() => {
     setLoad(true);
@@ -94,24 +95,53 @@ const Post = ({ post }: Post) => {
               <img className="rounded-md" src={post.banner} />
             </div>
           </div>
-          <div className="w-[90%] flex justify-end gap-2 pr-2 py-2">
-            <button>curtir</button>
+          <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
+            <div className="bg-zinc-300 rounded-full p-2 transition-colors hover:bg-zinc-200 cursor-pointer">
+              <img
+                className="cursor-pointer h-6 w-6"
+                src="https://cdn-icons-png.flaticon.com/128/3138/3138336.png"
+              />
+            </div>
+            <div className="bg-zinc-300 rounded-full p-2 transition-colors hover:bg-zinc-200 cursor-pointer">
+              <img
+                className="cursor-pointer h-6 w-6"
+                src="https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
+              />
+            </div>
           </div>
-          <div className="w-[90%] flex flex-col gap-2">
-            {post.comments.map((item) => {
-              return (
-                <div
-                  key={item}
-                  className="w-full pl-4 bg-zinc-200 p-2 rounded-md flex gap-2"
-                >
-                  <span className="font-bold cursor-pointer hover:opacity-80">
-                    {item.userName}:
-                  </span>
-                  <p className="font-light">{item.comment}</p>
-                </div>
-              );
-            })}
-          </div>
+          {post.comments.length >= 1 && (
+            <div
+              className={`w-[90%]  overflow-hidden ${
+                showAllComments ? "h-fit" : "h-0"
+              } flex flex-col gap-2 py-4 mt-4 rounded-md`}
+            >
+              <div className="w-full flex justify-end items-center pr-4">
+                {post.comments.length >= 1 && (
+                  <button
+                    className="text-xs font-bold transition-colors text-zinc-800 hover:text-zinc-800/60"
+                    onClick={() => setShowAllComments(!showAllComments)}
+                  >
+                    {showAllComments ? "Hide comments" : "Show comments"}
+                  </button>
+                )}
+              </div>
+              {post.comments.map((item) => {
+                return (
+                  <div
+                    key={Date.now() * Math.random()}
+                    className="w-full pl-4 p-2 rounded-md flex gap-2 items-center"
+                  >
+                    <span className="font-bold cursor-pointer hover:opacity-80 text-sm">
+                      {item.userName}:
+                    </span>
+                    <p className="font-light text-xs font-medium text-zinc-800/80">
+                      {item.comment}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </>
       )}
     </div>
@@ -137,7 +167,7 @@ export default function Perfil({ params }: { params: { userName: string } }) {
       .catch((error) => console.log(error));
 
     axios
-      .get(`${baseUrl}/news/${userName}`)
+      .get(`${baseUrl}/news/byUserName/${userName}`)
       .then((response) => {
         console.log(response);
         setPosts(response.data);

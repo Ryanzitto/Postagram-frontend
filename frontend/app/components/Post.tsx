@@ -1,5 +1,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useStore } from "../store";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+
+import * as z from "zod";
+
+import { createCommentSchema } from "../zodSchema/createComment";
+
+type FormData = z.infer<typeof createCommentSchema>;
 
 interface DateFormatOptions {
   year?: "numeric" | "2-digit";
@@ -25,11 +35,11 @@ interface Post {
 }
 
 export const Post = ({ post }: Post) => {
+  const { user, fetchData } = useStore();
+
   const [load, setLoad] = useState<boolean>(false);
 
-  useEffect(() => {
-    setLoad(true);
-  }, []);
+  const [showAllComments, setShowAllComments] = useState<boolean>(false);
 
   const dateFormated = (date: string) => {
     const dataOriginal = date;
@@ -43,6 +53,44 @@ export const Post = ({ post }: Post) => {
     const result = data.toLocaleDateString("pt-BR", options);
     return result;
   };
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(createCommentSchema),
+  });
+
+  async function onSubmit(data: FormData) {
+    const baseUrl = "http://localhost:3000";
+
+    axios
+      .patch(
+        `${baseUrl}/news/comment/${post.id}`,
+        {
+          comment: data.comment,
+          userName: user.userName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        fetchData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log("teste");
+  }
+
+  useEffect(() => {
+    setLoad(true);
+  }, []);
 
   return (
     <div className="w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800">
@@ -75,24 +123,87 @@ export const Post = ({ post }: Post) => {
               <img className="rounded-md" src={post.banner} />
             </div>
           </div>
-          <div className="w-[90%] flex justify-end gap-2 pr-2 py-2">
-            <button>curtir</button>
+          <div className="w-[90%] flex justify-end items-center gap-2 h-16 pr-2 py-1">
+            <img
+              className="cursor-pointer h-6 w-6"
+              src="https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
+            />
           </div>
-          <div className="w-[90%] flex flex-col gap-2">
-            {post.comments.map((item) => {
-              return (
+          <div className="w-[90%] flex justify-center gap-2 pr-2 py-1">
+            <div className="w-[10%] flex justify-center items-center">
+              <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
                 <div
-                  key={item}
-                  className="w-full pl-4 bg-zinc-200 p-2 rounded-md flex gap-2"
+                  className="rounded-full w-[90%] h-[90%] cursor-pointer"
+                  style={{
+                    backgroundImage: `url(${user?.avatar})`,
+                    backgroundSize: "cover",
+                  }}
+                ></div>
+              </div>
+            </div>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="w-[90%] flex flex-col"
+            >
+              <div className="flex gap-4">
+                <input
+                  {...register("comment", { required: true })}
+                  id="comment"
+                  name="comment"
+                  autoComplete="off"
+                  placeholder="type a comment"
+                  className="border border-slate-300 h-10 pl-6 focus:outline-none w-full rounded-md"
+                ></input>
+                <button
+                  type="submit"
+                  className="px-4 text-xl rounded-md transition-colors bg-zinc-200 font-bold flex justify-center items-center text-zinc-800/50 hover:bg-green-500 hover:text-white"
                 >
-                  <span className="font-bold cursor-pointer hover:opacity-80">
-                    {item.userName}:
-                  </span>
-                  <p className="font-light">{item.comment}</p>
-                </div>
-              );
-            })}
+                  <img
+                    className="w-6 h-6"
+                    src="https://cdn-icons-png.flaticon.com/128/5859/5859253.png"
+                  />
+                </button>
+              </div>
+              {errors?.comment && (
+                <p className="text-red-600 text-xs pt-2">
+                  {errors?.comment?.message}
+                </p>
+              )}
+            </form>
           </div>
+          {post.comments.length >= 1 && (
+            <div
+              className={`w-[90%]  overflow-hidden ${
+                showAllComments ? "h-fit" : "h-0"
+              } flex flex-col gap-2 py-4 mt-4 rounded-md`}
+            >
+              <div className="w-full flex justify-end items-center pr-4">
+                {post.comments.length >= 1 && (
+                  <button
+                    className="text-xs font-bold transition-colors text-zinc-800 hover:text-zinc-800/60"
+                    onClick={() => setShowAllComments(!showAllComments)}
+                  >
+                    {showAllComments ? "Hide comments" : "Show comments"}
+                  </button>
+                )}
+              </div>
+              {post.comments.map((item) => {
+                return (
+                  <div
+                    key={Date.now() * Math.random()}
+                    className="w-full pl-4 p-2 rounded-md flex gap-2 items-center"
+                  >
+                    <span className="font-bold cursor-pointer hover:opacity-80 text-sm">
+                      {item.userName}:
+                    </span>
+                    <p className="font-light text-xs font-medium text-zinc-800/80">
+                      {item.comment}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </>
       )}
     </div>
