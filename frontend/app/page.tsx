@@ -99,6 +99,7 @@ export default function Home() {
         const timeout = setTimeout(() => {
           setShowModal(false);
           setCreateIsOpen(false);
+          fetchData();
         }, 1200);
 
         return () => clearTimeout(timeout);

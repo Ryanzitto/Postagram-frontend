@@ -55,6 +55,21 @@ export const useStore = create(
         }
       },
 
+      fetchDataProfile: async (payload: string) => {
+        try {
+          set({ loading: true });
+          const response = await axios.get(
+            `http://localhost:3000/news/byUserName/${payload}`
+          );
+          console.log(response);
+          set({ data: response.data });
+          set({ loading: false });
+        } catch (error) {
+          console.error("Erro ao buscar dados da API:", error);
+          set({ loading: false });
+        }
+      },
+
       saveToken: (payload: string) =>
         set((state: { user: User }) => ({
           user: { ...state.user, token: payload },
