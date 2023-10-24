@@ -1,7 +1,7 @@
 "use client";
 import "./globals.css";
 import axios from "axios";
-import { useState, useEffect, JSX, ReactNode } from "react";
+import { useState, useEffect, useRef, JSX, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "./store";
 import { useForm } from "react-hook-form";
@@ -131,20 +131,7 @@ export default function Home() {
   const baseUrl = "http://localhost:3000";
 
   useEffect(() => {
-    // axios
-    //   .get(`${baseUrl}/news`)
-    //   .then((response) => {
-    //     console.log(response);
-    //     setNews(response.data.results);
-    //   })
-    //   .catch((error) => console.log(error));
     fetchData();
-  }, []);
-
-  useEffect(() => console.log(data), [data]);
-
-  useEffect(() => {
-    console.log(user);
   }, []);
 
   useEffect(() => {
@@ -181,7 +168,11 @@ export default function Home() {
           </div>
           {loading === false ? (
             data.map((post) => {
-              return <Post post={post} key={Date.now() * Math.random()} />;
+              return (
+                <>
+                  <Post post={post} key={Date.now() * Math.random()} />
+                </>
+              );
             })
           ) : (
             <Spinner />

@@ -55,7 +55,6 @@ const getAll = async (req, res) => {
 
     const news = await findAllService(limit, offset);
 
-    console.log(news);
     const total = await countNews();
 
     const currentUrl = req.baseUrl;
@@ -126,8 +125,8 @@ const topNews = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
+    console.log("entrou no getbyid");
     const { id } = req.params;
-    console.log(id);
     const news = await getByIdService(id);
 
     if (!news) {
@@ -144,10 +143,11 @@ const getById = async (req, res) => {
         comments: news.comments,
         name: news.user.name,
         userName: news.user.userName,
-        userAvatar: news.user.avatars,
+        userAvatar: news.user.avatar,
       },
     });
   } catch (error) {
+    console.log("entrou no getbyid");
     res.status(500).send({ message: error.message });
   }
 };
@@ -218,7 +218,9 @@ const searchByUserName = async (req, res) => {
       }
 
       // Encontre todas as notícias associadas a esse usuário
-      const news = await News.find({ user: user._id }).populate("user");
+      const news = await News.find({ user: user._id })
+        .sort({ _id: -1 })
+        .populate("user");
 
       return res.status(200).json(news);
     } catch (error) {

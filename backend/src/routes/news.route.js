@@ -23,7 +23,7 @@ router.get("/", getAll);
 router.get("/top", topNews);
 router.get("/search", searchByTitle);
 router.get("/byUser", authMiddleware, searchByUser);
-router.get("/:userName", searchByUserName);
+router.get("/byUserName/:userName", searchByUserName);
 router.get("/:id", authMiddleware, getById);
 router.patch("/:id", authMiddleware, update);
 router.delete("/:id", authMiddleware, deleteNews);

@@ -41,6 +41,10 @@ export const Post = ({ post }: Post) => {
 
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
 
+  const [configIsOpen, setConfigISOpen] = useState<boolean>(false);
+
+  const [inputText, setInputText] = useState<string | null>(null);
+
   const dateFormated = (date: string) => {
     const dataOriginal = date;
 
@@ -92,27 +96,56 @@ export const Post = ({ post }: Post) => {
     setLoad(true);
   }, []);
 
+  useEffect(() => {
+    console.log(inputText);
+    if(!inputText){
+      setInputText(null)
+    }
+  }, [inputText]);
+
   return (
-    <div className="w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800">
+    <div className="w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
       {load === true && (
         <>
-          <div className="w-[90%] h-20 flex justify-start items-center">
-            <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
+          <div className="w-[90%] h-20 flex items-center">
+            <div className="w-[10%]">
+              <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
+                <div
+                  className="rounded-full w-[90%] h-[90%]"
+                  style={{
+                    backgroundImage: `url(${post.avatar})`,
+                    backgroundSize: "cover",
+                  }}
+                ></div>
+              </div>
+            </div>
+            <div className="w-[80%]">
+              <div className="flex flex-col items-start h-full pb-3 pl-4">
+                <span className="text-lg font-bold hover:opacity-80">
+                  <Link href={`/perfil/${post?.userName}`}>
+                    {post?.userName}
+                  </Link>
+                </span>
+                <span className="text-xs">{dateFormated(post?.createdAt)}</span>
+              </div>
+            </div>
+            {/* <div className="w-[10%] mb-10 flex justify-center items-center cursor-pointer relative">
+              {configIsOpen && (
+                <div className="border border-slate-300 absolute bg-white rounded-md flex w-full h-fit py-2 mt-14 flex justify-center items-center">
+                  <span className="text-xs font-bold transition-colors text-zinc-800 hover:text-zinc-800/80">
+                    Edit
+                  </span>
+                </div>
+              )}
               <div
-                className="rounded-full w-[90%] h-[90%]"
-                style={{
-                  backgroundImage: `url(${post.avatar})`,
-                  backgroundSize: "cover",
-                }}
-              ></div>
-            </div>
-
-            <div className="flex flex-col items-start h-full pt-2 pl-2">
-              <span className="text-lg font-bold hover:opacity-80">
-                <Link href={`/perfil/${post?.userName}`}>{post?.userName}</Link>
-              </span>
-              <span className="text-xs">{dateFormated(post?.createdAt)}</span>
-            </div>
+                onClick={() => setConfigISOpen(!configIsOpen)}
+                className="flex gap-1 py-2"
+              >
+                <div className="bg-zinc-800 w-1 h-1 rounded-full transition-colors hover:bg-zinc-800/80"></div>
+                <div className="bg-zinc-800 w-1 h-1 rounded-full transition-colors hover:bg-zinc-800/80"></div>
+                <div className="bg-zinc-800 w-1 h-1 rounded-full transition-colors hover:bg-zinc-800/80"></div>
+              </div>
+            </div> */}
           </div>
           <div className="w-[90%] h-fit flex flex-col p-2">
             <h2 className="text-2xl font-black">{post.title}</h2>
@@ -145,7 +178,10 @@ export const Post = ({ post }: Post) => {
               onSubmit={handleSubmit(onSubmit)}
               className="w-[90%] flex flex-col"
             >
-              <div className="flex gap-4">
+              <div
+                onChange={(e) => setInputText(e.target.value)}
+                className="flex gap-4"
+              >
                 <input
                   {...register("comment", { required: true })}
                   id="comment"
@@ -154,15 +190,17 @@ export const Post = ({ post }: Post) => {
                   placeholder="type a comment"
                   className="border border-slate-300 h-10 pl-6 focus:outline-none w-full rounded-md"
                 ></input>
-                <button
-                  type="submit"
-                  className="px-4 text-xl rounded-md transition-colors bg-zinc-200 font-bold flex justify-center items-center text-zinc-800/50 hover:bg-green-500 hover:text-white"
-                >
-                  <img
-                    className="w-6 h-6"
-                    src="https://cdn-icons-png.flaticon.com/128/5859/5859253.png"
-                  />
-                </button>
+                {inputText !== null && (
+                  <button
+                    type="submit"
+                    className="px-4 text-xl rounded-md transition-colors font-bold flex justify-center items-center text-zinc-800/50 hover:bg-zinc-200 hover:text-white"
+                  >
+                    <img
+                      className="w-6 h-6"
+                      src="https://cdn-icons-png.flaticon.com/128/11600/11600263.png"
+                    />
+                  </button>
+                )}
               </div>
               {errors?.comment && (
                 <p className="text-red-600 text-xs pt-2">

@@ -43,7 +43,28 @@ interface Post {
   };
 }
 
-const Post = ({ post }: Post) => {
+interface Props {
+  post: {
+    banner: string;
+    comments: Array<any>;
+    id: string;
+    likes: Array<any>;
+    text: string;
+    title: string;
+    createdAt: string;
+    user: {
+      avatar: string;
+      email: string;
+      name: string;
+      userName: string;
+      _id: string;
+    };
+  };
+  userName: string;
+}
+
+const Post = ({ post, userName }: Props) => {
+  console.log(userName);
   const { user, loading, fetchDataProfile } = useStore();
 
   const [load, setLoad] = useState<boolean>(false);
@@ -51,10 +72,6 @@ const Post = ({ post }: Post) => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
-
-  useEffect(() => {
-    setLoad(true);
-  }, []);
 
   const deletePost = (id: string) => {
     const baseUrl = "http://localhost:3000";
@@ -68,10 +85,9 @@ const Post = ({ post }: Post) => {
         console.log(response);
         setShowModal(false);
         const timeout = setTimeout(() => {
-          fetchDataProfile(id);
-          //preciso verificar quando a requisição de delete termina, pra iniciar a req de posts do perfil
-        }, 5000);
-
+          console.log(userName);
+          fetchDataProfile(userName);
+        }, 1200);
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
@@ -91,6 +107,10 @@ const Post = ({ post }: Post) => {
     const result = data.toLocaleDateString("pt-BR", options);
     return result;
   };
+
+  useEffect(() => {
+    setLoad(true);
+  }, []);
 
   return (
     <div className="w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800">
@@ -270,7 +290,13 @@ export default function Perfil({ params }: { params: { userName: string } }) {
           </div>
           {data?.map((post) => {
             //@ts-ignore
-            return <Post post={post} key={Date.now() * Math.random()} />;
+            return (
+              <Post
+                post={post}
+                userName={params.userName}
+                key={Date.now() * Math.random()}
+              />
+            );
           })}
         </div>
       )}

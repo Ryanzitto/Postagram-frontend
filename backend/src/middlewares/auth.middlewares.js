@@ -22,7 +22,7 @@ export const authMiddleware = async (req, res, next) => {
 
     jwt.verify(token, process.env.SECRET, async (error, decoded) => {
       if (error) {
-        return res.status(401).send({ message: "Invalid Token" });
+        return res.status(401).send({ message: "Token has expired" });
       }
 
       const user = await userService.findByIdService(decoded.id);
@@ -30,7 +30,9 @@ export const authMiddleware = async (req, res, next) => {
       if (!user || !user.id) {
         return res.status(401).send({ message: "Invalid token!" });
       }
+
       req.userId = user._id;
+
       return next();
     });
   } catch (error) {
