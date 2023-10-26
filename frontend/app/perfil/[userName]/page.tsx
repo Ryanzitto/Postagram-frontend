@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useStore } from "app/store";
+
+import UpdateNews from "app/components/updateNews";
 import Spinner from "app/components/Spinner";
 
 interface User {
@@ -28,7 +30,7 @@ interface Post {
   post: {
     banner: string;
     comments: Array<any>;
-    id: string;
+    _id: string;
     likes: Array<any>;
     text: string;
     title: string;
@@ -47,7 +49,7 @@ interface Props {
   post: {
     banner: string;
     comments: Array<any>;
-    id: string;
+    _id: string;
     likes: Array<any>;
     text: string;
     title: string;
@@ -64,14 +66,37 @@ interface Props {
 }
 
 const Post = ({ post, userName }: Props) => {
-  console.log(userName);
-  const { user, loading, fetchDataProfile } = useStore();
+  const { user, loading, fetchDataProfile, updateIsOpen, setUpdateIsOpen } =
+    useStore();
 
   const [load, setLoad] = useState<boolean>(false);
 
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
+
+  const userHasLiked = post.likes.some((obj) => obj.userId === user._id);
+
+  const like = () => {
+    const baseUrl = "http://localhost:3000";
+    axios
+      .patch(
+        `${baseUrl}/news/like/${post._id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        fetchDataProfile(userName);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const deletePost = (id: string) => {
     const baseUrl = "http://localhost:3000";
@@ -113,7 +138,7 @@ const Post = ({ post, userName }: Props) => {
   }, []);
 
   return (
-    <div className="w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800">
+    <div className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
       {load === true && loading === false ? (
         <>
           <div className="w-[90%] h-20 flex justify-start items-center">
@@ -146,7 +171,7 @@ const Post = ({ post, userName }: Props) => {
             </div>
           </div>
           <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
-            <div className="bg-zinc-300 rounded-full p-2 transition-colors hover:bg-zinc-200 cursor-pointer relative flex justify-center items-center">
+            <div className="rounded-full p-2 transition-colors cursor-pointer relative flex justify-center items-center">
               {showModal && (
                 <div className="gap-4 absolute w-[250px] h-fit py-4 px-2 rounded-md border border-slate-300 flex flex-col bg-white text-center">
                   <span className="text-xs font-bold">
@@ -168,17 +193,25 @@ const Post = ({ post, userName }: Props) => {
                   </div>
                 </div>
               )}
-              <img
-                onClick={() => setShowModal(true)}
-                className="cursor-pointer h-6 w-6"
-                src="https://cdn-icons-png.flaticon.com/128/3138/3138336.png"
-              />
-            </div>
-            <div className="bg-zinc-300 rounded-full p-2 transition-colors hover:bg-zinc-200 cursor-pointer">
-              <img
-                className="cursor-pointer h-6 w-6"
-                src="https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
-              />
+              <div className="w-[90%] flex justify-end items-center gap-6 h-16 pr-2 py-1">
+                <img
+                  onClick={() => setUpdateIsOpen(true)}
+                  className="cursor-pointer h-4 w-4 transition-colors transition-colors hover:opacity-80"
+                  src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
+                />
+                <div className="flex justify-center items-center gap-2">
+                  <span>{post.likes.length}</span>
+                  <img
+                    onClick={like}
+                    className="cursor-pointer h-6 w-6"
+                    src={
+                      userHasLiked
+                        ? "https://cdn-icons-png.flaticon.com/128/2589/2589175.png"
+                        : "https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
+                    }
+                  />
+                </div>
+              </div>
             </div>
           </div>
           {post.comments.length >= 1 && (

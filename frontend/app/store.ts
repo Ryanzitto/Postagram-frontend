@@ -9,7 +9,7 @@ interface User {
   userName: null | string;
   email: null | string;
   avatar: null | string;
-  id: null | string;
+  _id: null | string;
   token: null | string;
 }
 
@@ -18,7 +18,7 @@ const unkownUser = {
   userName: null,
   email: null,
   avatar: null,
-  id: null,
+  _id: null,
   token: null,
 };
 
@@ -35,6 +35,27 @@ export const useStore = create(
 
       data: [],
       loading: false,
+
+      createIsOpen: false,
+
+      updateIsOpen: false,
+
+      currentPostUpdatingId: null,
+
+      setCurrentPostUpdatingId: (payload: string) =>
+        set(() => ({
+          currentPostUpdatingId: payload,
+        })),
+
+      setCreateIsOpen: (payload: boolean) =>
+        set(() => ({
+          createIsOpen: payload,
+        })),
+
+      setUpdateIsOpen: (payload: boolean) =>
+        set(() => ({
+          updateIsOpen: payload,
+        })),
 
       // Mutador para atualizar o estado com os dados da API
       setData: (data: any) => set({ data }),

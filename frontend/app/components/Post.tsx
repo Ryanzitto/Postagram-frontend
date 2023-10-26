@@ -35,13 +35,19 @@ interface Post {
 }
 
 export const Post = ({ post }: Post) => {
-  const { user, fetchData } = useStore();
+  const {
+    user,
+    fetchData,
+    updateIsOpen,
+    setUpdateIsOpen,
+    setCurrentPostUpdatingId,
+  } = useStore();
 
   const [load, setLoad] = useState<boolean>(false);
 
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
 
-  const [configIsOpen, setConfigISOpen] = useState<boolean>(false);
+  const [editIsOpen, setEditIsOpen] = useState<boolean>(false);
 
   const [inputText, setInputText] = useState<string | null>(null);
 
@@ -89,22 +95,48 @@ export const Post = ({ post }: Post) => {
       .catch((error) => {
         console.log(error);
       });
-    console.log("teste");
   }
+
+  const like = () => {
+    const baseUrl = "http://localhost:3000";
+    axios
+      .patch(
+        `${baseUrl}/news/like/${post.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        fetchData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const userHasLiked = post.likes.some((obj) => obj.userId === user._id);
 
   useEffect(() => {
     setLoad(true);
   }, []);
 
   useEffect(() => {
-    console.log(inputText);
-    if(!inputText){
-      setInputText(null)
+    if (!inputText) {
+      setInputText(null);
     }
   }, [inputText]);
 
+  const handleClickUpdate = (id: string) => {
+    setCurrentPostUpdatingId(id);
+    setUpdateIsOpen(true);
+  };
+
   return (
-    <div className="w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
+    <div className="relative w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
       {load === true && (
         <>
           <div className="w-[90%] h-20 flex items-center">
@@ -156,11 +188,24 @@ export const Post = ({ post }: Post) => {
               <img className="rounded-md" src={post.banner} />
             </div>
           </div>
-          <div className="w-[90%] flex justify-end items-center gap-2 h-16 pr-2 py-1">
+          <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
             <img
-              className="cursor-pointer h-6 w-6"
-              src="https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
+              onClick={() => handleClickUpdate(post.id)}
+              className="cursor-pointer h-4 w-4 transition-colors hover:opacity-80"
+              src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
             />
+            <div className="flex justify-center items-center gap-2">
+              <span>{post.likes.length}</span>
+              <img
+                onClick={like}
+                className="cursor-pointer h-6 w-6"
+                src={
+                  userHasLiked
+                    ? "https://cdn-icons-png.flaticon.com/128/2589/2589175.png"
+                    : "https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
+                }
+              />
+            </div>
           </div>
           <div className="w-[90%] flex justify-center gap-2 pr-2 py-1">
             <div className="w-[10%] flex justify-center items-center">
