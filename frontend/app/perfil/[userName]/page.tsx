@@ -52,6 +52,7 @@ interface Props {
     banner: string;
     comments: Array<any>;
     id: string;
+    _id?: string;
     likes: Array<any>;
     text: string;
     title: string;
@@ -68,6 +69,9 @@ interface Props {
 }
 
 const Post = ({ post, userName }: Props) => {
+  useEffect(() => {
+    console.log(post);
+  }, []);
   const { user, loading, fetchDataProfile, updateIsOpen, setUpdateIsOpen } =
     useStore();
 
@@ -77,13 +81,13 @@ const Post = ({ post, userName }: Props) => {
 
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
 
-  const userHasLiked = post.likes.some((obj) => obj.userId === user.id);
+  const userHasLiked = post.likes.some((obj) => obj.userId === user._id);
 
   const like = () => {
     const baseUrl = "http://localhost:3000";
     axios
       .patch(
-        `${baseUrl}/news/like/${post.id}`,
+        `${baseUrl}/news/like/${post._id}`,
         {},
         {
           headers: {
@@ -100,10 +104,10 @@ const Post = ({ post, userName }: Props) => {
       });
   };
 
-  const deletePost = (id: string) => {
+  const deletePost = (_id: string | undefined) => {
     const baseUrl = "http://localhost:3000";
     axios
-      .delete(`${baseUrl}/news/${id}`, {
+      .delete(`${baseUrl}/news/${_id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -178,7 +182,7 @@ const Post = ({ post, userName }: Props) => {
                   </span>
                   <div className="flex w-full justify-center items-center gap-4">
                     <button
-                      onClick={() => deletePost(post.id)}
+                      onClick={() => deletePost(post._id)}
                       className="font-bold bg-zinc-100 rounded-md px-4 py-1 text-sm hover:text-white hover:bg-green-500"
                     >
                       yes

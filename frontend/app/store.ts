@@ -19,6 +19,7 @@ const unkownUser = {
   email: null,
   avatar: null,
   id: null,
+  _id: null,
   token: null,
 };
 
