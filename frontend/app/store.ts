@@ -9,7 +9,7 @@ interface User {
   userName: null | string;
   email: null | string;
   avatar: null | string;
-  _id: null | string;
+  id: null | string;
   token: null | string;
 }
 
@@ -18,7 +18,7 @@ const unkownUser = {
   userName: null,
   email: null,
   avatar: null,
-  _id: null,
+  id: null,
   token: null,
 };
 
@@ -76,13 +76,13 @@ export const useStore = create(
         }
       },
 
-      fetchDataProfile: async (payload: string) => {
+      fetchDataProfile: async (payload: string | null) => {
         try {
           set({ loading: true });
           const response = await axios.get(
             `http://localhost:3000/news/byUserName/${payload}`
           );
-          console.log(response);
+          console.log(response.data);
           set({ data: response.data });
           set({ loading: false });
         } catch (error) {

@@ -1,4 +1,5 @@
 "use client";
+
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -55,7 +56,9 @@ const Modal = (props: { svg: string }) => {
   );
 };
 
-export default function UpdateNews() {
+export default function UpdateNewsProfile(userName: any) {
+  const porra = userName.userName;
+
   const {
     user,
     logout,
@@ -63,6 +66,7 @@ export default function UpdateNews() {
     setUpdateIsOpen,
     updateIsOpen,
     currentPostUpdatingId,
+    fetchDataProfile,
   } = useStore();
 
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -93,7 +97,7 @@ export default function UpdateNews() {
         const timeout = setTimeout(() => {
           setShowModal(false);
           setUpdateIsOpen(false);
-          fetchData();
+          fetchDataProfile(porra);
         }, 1200);
 
         return () => clearTimeout(timeout);

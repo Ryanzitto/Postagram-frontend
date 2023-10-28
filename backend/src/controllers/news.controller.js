@@ -16,6 +16,7 @@ import {
 
 import User from "../models/User.js";
 import News from "../models/News.js";
+
 const create = async (req, res) => {
   try {
     const { title, text, banner } = req.body;
@@ -207,29 +208,23 @@ const searchByUser = async (req, res) => {
 //solução encontrada pelo gpt porém preciso refatorar para não ferir os principios da arquitetura limpa
 const searchByUserName = async (req, res) => {
   try {
-    try {
-      const userName = req.params.userName;
+    const userName = req.params.userName;
 
-      // Encontre o usuário com base no userName
-      const user = await User.findOne({ userName });
+    // Encontre o usuário com base no userName
+    const user = await User.findOne({ userName });
 
-      if (!user) {
-        return res.status(404).json({ message: "Usuário não encontrado" });
-      }
-
-      // Encontre todas as notícias associadas a esse usuário
-      const news = await News.find({ user: user._id })
-        .sort({ _id: -1 })
-        .populate("user");
-
-      return res.status(200).json(news);
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Erro ao buscar notícias", error });
+    if (!user) {
+      return res.status(404).json({ message: "Usuário não encontrado" });
     }
+
+    // Encontre todas as notícias associadas a esse usuário
+    const news = await News.find({ user: user._id })
+      .sort({ _id: -1 })
+      .populate("user");
+
+    return res.status(200).json(news);
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    return res.status(500).json({ message: "Erro ao buscar notícias", error });
   }
 };
 

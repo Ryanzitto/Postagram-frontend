@@ -5,8 +5,10 @@ import axios from "axios";
 import Link from "next/link";
 import { useStore } from "app/store";
 
-import UpdateNews from "app/components/updateNews";
+import UpdateNewsProfile from "app/components/updateNewsProfile";
 import Spinner from "app/components/Spinner";
+
+import CreateComment from "app/components/createComment";
 
 interface User {
   avatar: string;
@@ -30,7 +32,7 @@ interface Post {
   post: {
     banner: string;
     comments: Array<any>;
-    _id: string;
+    id: string;
     likes: Array<any>;
     text: string;
     title: string;
@@ -40,7 +42,7 @@ interface Post {
       email: string;
       name: string;
       userName: string;
-      _id: string;
+      id: string;
     };
   };
 }
@@ -49,7 +51,7 @@ interface Props {
   post: {
     banner: string;
     comments: Array<any>;
-    _id: string;
+    id: string;
     likes: Array<any>;
     text: string;
     title: string;
@@ -59,7 +61,7 @@ interface Props {
       email: string;
       name: string;
       userName: string;
-      _id: string;
+      id: string;
     };
   };
   userName: string;
@@ -75,13 +77,13 @@ const Post = ({ post, userName }: Props) => {
 
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
 
-  const userHasLiked = post.likes.some((obj) => obj.userId === user._id);
+  const userHasLiked = post.likes.some((obj) => obj.userId === user.id);
 
   const like = () => {
     const baseUrl = "http://localhost:3000";
     axios
       .patch(
-        `${baseUrl}/news/like/${post._id}`,
+        `${baseUrl}/news/like/${post.id}`,
         {},
         {
           headers: {
@@ -138,24 +140,21 @@ const Post = ({ post, userName }: Props) => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
+    <div className="flex flex-col h-fit bg-white justify-start items-center relative rounded-md hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
       {load === true && loading === false ? (
         <>
           <div className="w-[90%] h-20 flex justify-start items-center">
             <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
-              <div
-                className="rounded-full w-[90%] h-[90%]"
-                style={{
-                  backgroundImage: `url(${post.user.avatar})`,
-                  backgroundSize: "cover",
-                }}
-              ></div>
+              <img
+                className="flex rounded-full w-[90%] h-[90%]"
+                src={post?.user?.avatar}
+              />
             </div>
 
             <div className="flex flex-col items-start h-full pt-2 pl-2">
               <span className="text-lg font-bold hover:opacity-80">
-                <Link href={`/perfil/${post?.user.userName}`}>
-                  {post?.user.userName}
+                <Link href={`/perfil/${post?.user?.userName}`}>
+                  {post?.user?.userName}
                 </Link>
               </span>
               <span className="text-xs">{dateFormated(post?.createdAt)}</span>
@@ -179,7 +178,7 @@ const Post = ({ post, userName }: Props) => {
                   </span>
                   <div className="flex w-full justify-center items-center gap-4">
                     <button
-                      onClick={() => deletePost(post._id)}
+                      onClick={() => deletePost(post.id)}
                       className="font-bold bg-zinc-100 rounded-md px-4 py-1 text-sm hover:text-white hover:bg-green-500"
                     >
                       yes
@@ -194,12 +193,22 @@ const Post = ({ post, userName }: Props) => {
                 </div>
               )}
               <div className="w-[90%] flex justify-end items-center gap-6 h-16 pr-2 py-1">
-                <img
-                  onClick={() => setUpdateIsOpen(true)}
-                  className="cursor-pointer h-4 w-4 transition-colors transition-colors hover:opacity-80"
-                  src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
-                />
-                <div className="flex justify-center items-center gap-2">
+                {user?.id === post?.user?.id && (
+                  <>
+                    <img
+                      onClick={() => setShowModal(true)}
+                      className="cursor-pointer h-5 w-5 transition-colors transition-colors hover:opacity-80"
+                      src="https://cdn-icons-png.flaticon.com/128/6590/6590956.png"
+                    />
+                    <img
+                      onClick={() => setUpdateIsOpen(true)}
+                      className="cursor-pointer h-4 w-4 transition-colors transition-colors hover:opacity-80"
+                      src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
+                    />
+                  </>
+                )}
+
+                <div className="flex justify-center items-center gap-1">
                   <span>{post.likes.length}</span>
                   <img
                     onClick={like}
@@ -214,6 +223,7 @@ const Post = ({ post, userName }: Props) => {
               </div>
             </div>
           </div>
+          <CreateComment post={post} />
           {post.comments.length >= 1 && (
             <div
               className={`w-[90%]  overflow-hidden ${
@@ -256,7 +266,7 @@ const Post = ({ post, userName }: Props) => {
 };
 
 export default function Perfil({ params }: { params: { userName: string } }) {
-  const { data, loading, fetchDataProfile } = useStore();
+  const { data, loading, fetchDataProfile, updateIsOpen } = useStore();
 
   useEffect(() => {
     console.log(data);
@@ -287,11 +297,15 @@ export default function Perfil({ params }: { params: { userName: string } }) {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen h-fit py-8 bg-white justify-start items-center">
+    <div
+      className={`flex flex-col min-h-screen h-fit ${
+        updateIsOpen ? "py-0" : "py-8"
+      } bg-white justify-start items-center`}
+    >
       {load === true && (
         <div className="w-[50%] h-full flex flex-col justify-start gap-4">
           <div
-            className="bg-blue-500 w-full h-[200px] relative flex justify-start items-end relative"
+            className="bg-blue-500 w-full h-[200px] relative flex justify-start items-end relative rounded-sm"
             style={{
               backgroundImage:
                 "url('https://www.pixground.com/clouds-meet-the-sea-ai-generated-4k-wallpaper/?download-img=hd')",
@@ -317,22 +331,38 @@ export default function Perfil({ params }: { params: { userName: string } }) {
                 @{user?.userName}
               </h2>
             </div>
+            <div className="w-[80%] pt-6 flex pl-6">
+              <form>
+                <label className="font-bold text-zinc-800/60 tracking-wide">
+                  Bio:
+                </label>
+                <input
+                  // {...register("title", { required: true })}
+                  id="title"
+                  name="title"
+                  placeholder="Tell about you"
+                  autoComplete="off"
+                  type="text"
+                  className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
+                ></input>
+              </form>
+            </div>
             <div className="w-[80%] pl-6 rounded-md text-sm pt-2">
               {user?.bio}
             </div>
           </div>
           {data?.map((post) => {
-            //@ts-ignore
             return (
               <Post
                 post={post}
                 userName={params.userName}
-                key={Date.now() * Math.random()}
+                key={Math.random() * Math.random()}
               />
             );
           })}
         </div>
       )}
+      {updateIsOpen && <UpdateNewsProfile userName={params.userName} />}
     </div>
   );
 }
