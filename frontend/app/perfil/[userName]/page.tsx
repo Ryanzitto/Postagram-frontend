@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useStore } from "app/store";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
+import { createBioSchema } from "../../zodSchema/createBio";
 import UpdateNewsProfile from "app/components/updateNewsProfile";
 import Spinner from "app/components/Spinner";
 
@@ -68,10 +72,9 @@ interface Props {
   userName: string;
 }
 
+type FormData = z.infer<typeof createBioSchema>;
+
 const Post = ({ post, userName }: Props) => {
-  useEffect(() => {
-    console.log(post);
-  }, []);
   const { user, loading, fetchDataProfile, updateIsOpen, setUpdateIsOpen } =
     useStore();
 
@@ -270,17 +273,15 @@ const Post = ({ post, userName }: Props) => {
 };
 
 export default function Perfil({ params }: { params: { userName: string } }) {
-  const { data, loading, fetchDataProfile, updateIsOpen } = useStore();
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  const { data, loading, fetchDataProfile, updateIsOpen, user } = useStore();
 
   const [userName, setUserName] = useState<string | null>(params.userName);
 
-  const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<User | null>(null);
 
   const [load, setLoad] = useState<boolean>(false);
+
+  const [showBioForm, setShowBioForm] = useState<boolean>(false);
 
   useEffect(() => {
     setUserName(params.userName);
@@ -289,7 +290,7 @@ export default function Perfil({ params }: { params: { userName: string } }) {
       .get(`${baseUrl}/user/${userName}`)
       .then((response) => {
         console.log(response);
-        setUser(response.data);
+        setUserProfile(response.data);
       })
       .catch((error) => console.log(error));
 
@@ -298,6 +299,47 @@ export default function Perfil({ params }: { params: { userName: string } }) {
 
   useEffect(() => {
     setLoad(true);
+  }, []);
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(createBioSchema),
+  });
+
+  async function onSubmit(data: FormData) {
+    const baseUrl = "http://localhost:3000";
+
+    axios
+      .put(`${baseUrl}/user/${user?._id}`, data, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      })
+      .then((response) => {
+        setUserName(params.userName);
+        const baseUrl = "http://localhost:3000";
+        axios
+          .get(`${baseUrl}/user/${userName}`)
+          .then((response) => {
+            console.log(response);
+            setUserProfile(response.data);
+          })
+          .catch((error) => console.log(error));
+
+        fetchDataProfile(params.userName);
+        setShowBioForm(false);
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  useEffect(() => {
+    console.log(user);
   }, []);
 
   return (
@@ -321,7 +363,7 @@ export default function Perfil({ params }: { params: { userName: string } }) {
                 <div
                   className="w-32 h-32 rounded-full"
                   style={{
-                    backgroundImage: `url(${user?.avatar})`,
+                    backgroundImage: `url(${userProfile?.avatar})`,
                     backgroundSize: "cover",
                   }}
                 ></div>
@@ -330,31 +372,59 @@ export default function Perfil({ params }: { params: { userName: string } }) {
           </div>
           <div className="w-full mt-20 flex flex-col justify-center items-center">
             <div className="w-[80%] flex flex-col gap-2 pl-6">
-              <h1 className="text-3xl font-bold text-zinc-800">{user?.name}</h1>
+              <h1 className="text-3xl font-bold text-zinc-800">
+                {userProfile?.name}
+              </h1>
               <h2 className="text-md font-medium text-zinc-800/80">
-                @{user?.userName}
+                @{userProfile?.userName}
               </h2>
             </div>
-            <div className="w-[80%] pt-6 flex pl-6">
-              <form>
-                <label className="font-bold text-zinc-800/60 tracking-wide">
-                  Bio:
-                </label>
-                <input
-                  // {...register("title", { required: true })}
-                  id="title"
-                  name="title"
-                  placeholder="Tell about you"
-                  autoComplete="off"
-                  type="text"
-                  className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
-                ></input>
-              </form>
-            </div>
-            <div className="w-[80%] pl-6 rounded-md text-sm pt-2">
-              {user?.bio}
-            </div>
+            {showBioForm === true && (
+              <div className="w-[80%] pl-6 flex pt-4 items-center">
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="flex flex-col gap-4"
+                >
+                  <label className="font-bold text-zinc-800/60 tracking-wide">
+                    Write a new Bio:
+                  </label>
+                  <input
+                    {...register("bio", { required: true })}
+                    id="bio"
+                    name="bio"
+                    placeholder="Tell about you"
+                    autoComplete="off"
+                    type="text"
+                    className="border border-transparent border-b-slate-300 focus:outline-none text-zinc-800 font-medium"
+                  ></input>
+                  <button
+                    type="submit"
+                    className="px-4 py-1 bg-zinc-800 text-white rounded-md transition-colors hover:bg-zinc-600"
+                  >
+                    Send
+                  </button>
+                  {errors?.bio && (
+                    <p className="text-red-600 text-xs pt-2">
+                      {errors?.bio?.message}
+                    </p>
+                  )}
+                </form>
+              </div>
+            )}
+            {showBioForm === false && (
+              <div className="w-[80%] flex gap-2 items-center pl-6 rounded-md text-sm pt-8">
+                <span className="text-zinc-800/80 font-medium">
+                  {userProfile?.bio}
+                </span>
+                <img
+                  onClick={() => setShowBioForm(true)}
+                  className="w-3 h-3 transition-colors hover:opacity-60 cursor-pointer"
+                  src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
+                />
+              </div>
+            )}
           </div>
+          <div className="w-full h-[1px] bg-zinc-300/50 mt-20 mb-6"></div>
           {data?.map((post) => {
             return (
               <Post

@@ -21,6 +21,7 @@ const unkownUser = {
   id: null,
   _id: null,
   token: null,
+  bio: null,
 };
 
 export const useStore = create(

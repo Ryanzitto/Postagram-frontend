@@ -136,11 +136,13 @@ export const Post = ({ post }: Post) => {
             </div>
           </div>
           <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
-            <img
-              onClick={() => handleClickUpdate(post.id)}
-              className="cursor-pointer h-4 w-4 transition-colors hover:opacity-80"
-              src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
-            />
+            {post.userName === user.userName && (
+              <img
+                onClick={() => handleClickUpdate(post.id)}
+                className="cursor-pointer h-4 w-4 transition-colors hover:opacity-80"
+                src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
+              />
+            )}
             <div className="flex justify-center items-center gap-1">
               <span>{post.likes.length}</span>
               <img
