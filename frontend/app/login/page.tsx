@@ -1,4 +1,5 @@
 "use client";
+
 import axios from "axios";
 import Lottie from "react-lottie";
 import * as z from "zod";
@@ -7,12 +8,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-
 import { registerSchema } from "../zodSchema/register";
 import { loginSchema } from "../zodSchema/login";
-import animationData from "../../public/Animation-OK.json";
-
 import { useStore } from "app/store";
+
+import animationData from "../../public/Animation-OK.json";
 
 interface Props {
   func: (newForm: string) => void;

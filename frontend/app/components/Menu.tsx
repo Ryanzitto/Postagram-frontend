@@ -92,6 +92,7 @@ const MenuButton = (props: { label: string; path: string }) => {
   useEffect(() => {
     setLoad(true);
   }, []);
+
   const { label, path } = props;
   return (
     <button className="text-2xl font-bold text-zinc-800 cursor-pointer hover:opacity-80 transition-colors">

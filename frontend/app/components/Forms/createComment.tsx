@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
 import { useStore } from "app/store";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
-import { createCommentSchema } from "../zodSchema/createComment";
+import { createCommentSchema } from "../../zodSchema/createComment";
+
+import animationDataOK from "../../../public/Animation-OK.json";
+import animationDataErro from "../../../public/Animation-ERRO.json";
 
 import * as z from "zod";
+
+import Lottie from "react-lottie";
 
 type FormData = z.infer<typeof createCommentSchema>;
 
@@ -31,10 +37,56 @@ interface Props {
   };
 }
 
+const Modal = (props: { svg: string }) => {
+  const { svg } = props;
+
+  const [state, setState] = useState({
+    isStopped: false,
+    isPaused: false,
+  });
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: svg === "ERRO" ? animationDataErro : animationDataOK,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  return (
+    <div className="w-full h-full absolute flex justify-center items-center">
+      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center">
+        <Lottie
+          options={defaultOptions}
+          height={100}
+          width={100}
+          isStopped={state.isStopped}
+          isPaused={state.isPaused}
+        />
+        <span
+          className={`${
+            svg === "ERRO" ? "text-red-500" : "text-green-500"
+          } font-bold text-xs`}
+        >
+          {svg === "ERRO"
+            ? "Token expired, please login."
+            : "Post created with success!"}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 export default function CreateComment({ post }: Props) {
-  const { user, fetchDataProfile } = useStore();
+  const { user, fetchDataProfile, logout } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const [svg, setSvg] = useState<string>("ERRO");
+
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -63,15 +115,32 @@ export default function CreateComment({ post }: Props) {
       )
       .then((response) => {
         console.log(response);
-        fetchDataProfile(user.userName);
+        setSvg("SUCCESS");
+        setShowModal(true);
+        const timeout = setTimeout(() => {
+          setShowModal(false);
+          fetchDataProfile(user.userName);
+        }, 1200);
+
+        return () => clearTimeout(timeout);
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          setSvg("ERRO");
+          setShowModal(true);
+          const timeout = setTimeout(() => {
+            router.push("/login");
+            logout();
+          }, 1200);
+          return () => clearTimeout(timeout);
+        }
       });
   }
 
   return (
     <div className="w-[90%] flex justify-center gap-2 pr-2 py-1">
+      {showModal && <Modal svg={svg} />}
       <div className="w-[10%] flex justify-center items-center">
         <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
           <div

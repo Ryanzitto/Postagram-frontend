@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useStore } from "../store";
 import axios from "axios";
-import CreateComment from "./createComment";
+import CreateComment from "./Forms/createComment";
 
 interface DateFormatOptions {
   year?: "numeric" | "2-digit";

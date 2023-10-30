@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useStore } from "../store";
-import { Post } from "../components/Post";
+import { useStore } from "../../store";
+import { Post } from "../Post";
 
-import Spinner from "../components/Spinner";
-import CreateNews from "./createNews";
-import UpdateNews from "./updateNews";
+import Spinner from "../Spinner";
+import CreateNews from "../Forms/createNews";
+import UpdateNews from "../Forms/updateNews";
 
 export default function Home() {
   const {

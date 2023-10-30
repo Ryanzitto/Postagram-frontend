@@ -2,16 +2,16 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useStore } from "../store";
+import { useStore } from "../../store";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Lottie from "react-lottie";
 
 import * as z from "zod";
 
-import animationDataOK from "../../public/Animation-OK.json";
-import animationDataErro from "../../public/Animation-ERRO.json";
-import { createPostSchema } from "../zodSchema/createPost";
+import animationDataOK from "../../../public/Animation-OK.json";
+import animationDataErro from "../../../public/Animation-ERRO.json";
+import { createPostSchema } from "../../zodSchema/createPost";
 
 type FormData = z.infer<typeof createPostSchema>;
 
@@ -60,6 +60,8 @@ export default function CreateNews() {
 
   const [showModal, setShowModal] = useState<boolean>(false);
 
+  const [svg, setSvg] = useState<string>("ERRO");
+
   const router = useRouter();
   const {
     handleSubmit,
@@ -104,7 +106,6 @@ export default function CreateNews() {
       });
   }
 
-  const [svg, setSvg] = useState<string>("ERRO");
   return (
     <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60">
       <div className="w-[500px] h-fit bg-white rounded-md p-4 flex justify-start items-center flex-col relative">
