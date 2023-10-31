@@ -8,6 +8,19 @@ import Spinner from "../Spinner";
 import CreateNews from "../Forms/createNews";
 import UpdateNews from "../Forms/updateNews";
 
+interface Post {
+  avatar: string;
+  banner: string;
+  comments: [any];
+  createdAt: string;
+  likes: [any];
+  name: string;
+  text: string;
+  title: string;
+  userName: string;
+  _id: string;
+}
+
 export default function Home() {
   const {
     user,
@@ -34,6 +47,9 @@ export default function Home() {
     setUpdateIsOpen(false);
   }, []);
 
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
   return (
     <main className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
       {load === true && (
@@ -64,12 +80,8 @@ export default function Home() {
               </div>
             </div>
             {loading === false ? (
-              data.map((post) => {
-                return (
-                  <>
-                    <Post post={post} key={Date.now() * Math.random()} />
-                  </>
-                );
+              data.map((post: Post) => {
+                return <Post post={post} key={post._id} />;
               })
             ) : (
               <Spinner />

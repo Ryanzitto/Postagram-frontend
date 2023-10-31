@@ -11,7 +11,7 @@ import Link from "next/link";
 
 import UpdateNewsProfile from "app/components/Forms/updateNewsProfile";
 import Spinner from "app/components/Spinner";
-import CreateComment from "app/components/Forms/createComment";
+import CreateCommentProfile from "../Forms/createCommentProfile";
 
 import { createBioSchema } from "../../zodSchema/createBio";
 
@@ -37,7 +37,7 @@ interface Post {
   post: {
     banner: string;
     comments: Array<any>;
-    id: string;
+    _id: string;
     likes: Array<any>;
     text: string;
     title: string;
@@ -47,7 +47,7 @@ interface Post {
       email: string;
       name: string;
       userName: string;
-      id: string;
+      _id: string;
     };
   };
 }
@@ -56,8 +56,7 @@ interface Props {
   post: {
     banner: string;
     comments: Array<any>;
-    id: string;
-    _id?: string;
+    _id: string;
     likes: Array<any>;
     text: string;
     title: string;
@@ -231,7 +230,7 @@ const Post = ({ post, userName }: Props) => {
               </div>
             </div>
           </div>
-          <CreateComment post={post} />
+          <CreateCommentProfile post={post} />
           {post.comments.length >= 1 && (
             <div
               className={`w-[90%]  overflow-hidden ${
@@ -348,15 +347,23 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
       {load === true && (
         <div className="w-[50%] h-full flex flex-col justify-start gap-4">
           <div
-            className="bg-blue-500 w-full h-[200px] relative flex justify-start items-end relative rounded-sm"
+            className="bg-blue-500 w-full h-[200px] relative flex justify-start relative rounded-sm"
             style={{
               backgroundImage:
                 "url('https://www.pixground.com/clouds-meet-the-sea-ai-generated-4k-wallpaper/?download-img=hd')",
               backgroundSize: "cover",
             }}
           >
+            <div className="w-full h-10 absolute flex justify-end items-center pr-4 pt-4">
+              <div className="w-8 h-8 bg-white/60 rounded-full flex justify-center items-center cursor-pointer hover:bg-white/90">
+                <img
+                  className="w-4 h-4"
+                  src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
+                />
+              </div>
+            </div>
             <div className="flex">
-              <div className="absolute -mt-16 ml-20 bg-zinc-800 rounded-full border-4 border-zinc-800 justify-center items-center">
+              <div className="absolute mt-32 ml-20 bg-zinc-800 rounded-full border-4 border-zinc-800 justify-center items-center">
                 <div
                   className="w-32 h-32 rounded-full"
                   style={{

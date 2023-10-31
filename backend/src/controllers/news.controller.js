@@ -2,7 +2,6 @@ import {
   createService,
   findAllService,
   countNews,
-  topNewsService,
   getByIdService,
   searchByTitleService,
   searchByUserService,
@@ -83,7 +82,7 @@ const getAll = async (req, res) => {
       offset,
       total,
       results: news.map((item) => ({
-        id: item._id,
+        _id: item._id,
         title: item.title,
         text: item.text,
         banner: item.banner,
@@ -94,30 +93,6 @@ const getAll = async (req, res) => {
         avatar: item.user.avatar,
         createdAt: item.createdAt,
       })),
-    });
-  } catch (error) {
-    res.status(500).send({ message: error });
-  }
-};
-
-const topNews = async (req, res) => {
-  try {
-    const news = await topNewsService();
-    if (!news) {
-      return res.status(400).send({ message: "There is no news here" });
-    }
-
-    res.send({
-      news: {
-        id: news._id,
-        title: news.title,
-        text: news.text,
-        banner: news.banner,
-        likes: news.likes,
-        comments: news.comments,
-        userName: news.user.name,
-        userAvatar: news.user.avatars,
-      },
     });
   } catch (error) {
     res.status(500).send({ message: error });
@@ -136,7 +111,7 @@ const getById = async (req, res) => {
 
     return res.send({
       news: {
-        id: news._id,
+        _id: news._id,
         title: news.title,
         text: news.text,
         banner: news.banner,
@@ -342,7 +317,6 @@ const removeComment = async (req, res) => {
 export {
   create,
   getAll,
-  topNews,
   getById,
   searchByTitle,
   searchByUser,

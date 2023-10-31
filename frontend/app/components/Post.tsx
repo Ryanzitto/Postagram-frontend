@@ -17,14 +17,13 @@ interface Post {
   post: {
     banner: string;
     comments: Array<any>;
-    id: string;
+    _id: string;
     likes: Array<any>;
     text: string;
     title: string;
     userName: string;
     avatar: string;
     createdAt: string;
-    user: any;
   };
 }
 
@@ -53,7 +52,7 @@ export const Post = ({ post }: Post) => {
     const baseUrl = "http://localhost:3000";
     axios
       .patch(
-        `${baseUrl}/news/like/${post.id}`,
+        `${baseUrl}/news/like/${post._id}`,
         {},
         {
           headers: {
@@ -74,11 +73,10 @@ export const Post = ({ post }: Post) => {
 
   useEffect(() => {
     setLoad(true);
-    console.log(post);
   }, []);
 
-  const handleClickUpdate = (id: string) => {
-    setCurrentPostUpdatingId(id);
+  const handleClickUpdate = (_id: string) => {
+    setCurrentPostUpdatingId(_id);
     setUpdateIsOpen(true);
   };
 
@@ -138,7 +136,7 @@ export const Post = ({ post }: Post) => {
           <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
             {post.userName === user.userName && (
               <img
-                onClick={() => handleClickUpdate(post.id)}
+                onClick={() => handleClickUpdate(post._id)}
                 className="cursor-pointer h-4 w-4 transition-colors hover:opacity-80"
                 src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
               />

@@ -7,8 +7,6 @@ const findAllService = (limit, offset) =>
 
 const countNews = () => News.countDocuments();
 
-const topNewsService = () => News.findOne().sort({ _id: -1 }).populate("user");
-
 const getByIdService = (id) => News.findById(id).populate("user");
 
 const searchByTitleService = (title) =>
@@ -67,7 +65,6 @@ export {
   createService,
   findAllService,
   countNews,
-  topNewsService,
   getByIdService,
   searchByTitleService,
   searchByUserService,

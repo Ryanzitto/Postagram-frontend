@@ -6,7 +6,6 @@ const router = Router();
 import {
   getAll,
   create,
-  topNews,
   getById,
   searchByTitle,
   searchByUser,
@@ -20,7 +19,6 @@ import {
 
 router.post("/", authMiddleware, create);
 router.get("/", getAll);
-router.get("/top", topNews);
 router.get("/search", searchByTitle);
 router.get("/byUser", authMiddleware, searchByUser);
 router.get("/byUserName/:userName", searchByUserName);

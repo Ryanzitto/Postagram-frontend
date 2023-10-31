@@ -27,6 +27,13 @@ interface Props {
     text: string;
     title: string;
     createdAt: string;
+    user: {
+      avatar: string;
+      email: string;
+      name: string;
+      userName: string;
+      id: string;
+    };
   };
 }
 
@@ -70,8 +77,8 @@ const Modal = (props: { svg: string }) => {
   );
 };
 
-export default function CreateComment({ post }: Props) {
-  const { user, fetchData, logout } = useStore();
+export default function CreateCommentProfile({ post }: Props) {
+  const { user, fetchDataProfile, logout } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
 
@@ -112,7 +119,7 @@ export default function CreateComment({ post }: Props) {
         setShowModal(true);
         const timeout = setTimeout(() => {
           setShowModal(false);
-          fetchData();
+          fetchDataProfile(user.userName);
         }, 1200);
 
         return () => clearTimeout(timeout);
