@@ -78,8 +78,8 @@ export const Menu = (props: MenuProps) => {
               )}
             </>
           )}
-          <MenuButton label="HOME" path="/" />
-          <MenuButton label="PERFIL" path={`/perfil/${user.userName}`} />
+          <MenuButton label="FEED" path="/" />
+          <MenuButton label="PROFILE" path={`/perfil/${user.userName}`} />
         </div>
       </div>
     </>

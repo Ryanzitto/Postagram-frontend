@@ -101,10 +101,9 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    console.log("entrou no getbyid");
     const { id } = req.params;
     const news = await getByIdService(id);
-
+    console.log(news);
     if (!news) {
       res.status(400).send({ message: "news not found" });
     }
@@ -117,9 +116,16 @@ const getById = async (req, res) => {
         banner: news.banner,
         likes: news.likes,
         comments: news.comments,
-        name: news.user.name,
-        userName: news.user.userName,
-        userAvatar: news.user.avatar,
+        createdAt: news.createdAt,
+        user: {
+          _id: news.user._id,
+          name: news.user.name,
+          userName: news.user.userName,
+          email: news.user.email,
+          avatar: news.user.avatar,
+          __v: news.user.__v,
+          bio: news.user.bio,
+        },
       },
     });
   } catch (error) {
@@ -161,7 +167,6 @@ const searchByUser = async (req, res) => {
   try {
     const id = req.userId;
     const news = await searchByUserService(id);
-    console.log(news);
     return res.send({
       results: news.map((item) => ({
         id: item._id,

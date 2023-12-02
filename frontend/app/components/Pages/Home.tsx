@@ -54,7 +54,7 @@ export default function Home() {
     <main className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
       {load === true && (
         <>
-          <div className="w-[50%] h-full flex flex-col gap-4 p-2 pt-10">
+          <div className="w-[50%] h-full flex flex-col items-center gap-4 p-2 relative">
             <div className="w-full py-4 h-fit border border-slate-300 rounded-md flex">
               <div className="w-[20%] flex justify-center items-center">
                 <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
@@ -81,14 +81,13 @@ export default function Home() {
             </div>
             {loading === false ? (
               data.map((post: Post) => {
-                return <Post post={post} key={post._id} />;
+                return <Post _id={post._id} key={post._id} />;
               })
             ) : (
               <Spinner />
             )}
           </div>
           {createIsOpen && <CreateNews />}
-          {updateIsOpen && <UpdateNews />}
         </>
       )}
     </main>

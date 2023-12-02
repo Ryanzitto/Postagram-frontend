@@ -34,21 +34,22 @@ interface DateFormatOptions {
 }
 
 interface Post {
-  post: {
-    banner: string;
-    comments: Array<any>;
+  banner: string;
+  comments: Array<any>;
+  _id: string;
+  likes: Array<any>;
+  text: string;
+  title: string;
+  createdAt: string;
+  __v: number;
+  user: {
+    avatar: string;
+    bio?: string;
+    email: string;
+    name: string;
+    userName: string;
     _id: string;
-    likes: Array<any>;
-    text: string;
-    title: string;
-    createdAt: string;
-    user: {
-      avatar: string;
-      email: string;
-      name: string;
-      userName: string;
-      _id: string;
-    };
+    __v: number;
   };
 }
 
@@ -61,12 +62,15 @@ interface Props {
     text: string;
     title: string;
     createdAt: string;
+    __v: number;
     user: {
       avatar: string;
+      bio?: string;
       email: string;
       name: string;
       userName: string;
-      id: string;
+      _id: string;
+      __v: number;
     };
   };
   userName: string;
@@ -75,8 +79,7 @@ interface Props {
 type FormData = z.infer<typeof createBioSchema>;
 
 const Post = ({ post, userName }: Props) => {
-  const { user, loading, fetchDataProfile, updateIsOpen, setUpdateIsOpen } =
-    useStore();
+  const { user, loading, fetchDataProfile, setUpdateIsOpen } = useStore();
 
   const [load, setLoad] = useState<boolean>(false);
 
@@ -84,7 +87,15 @@ const Post = ({ post, userName }: Props) => {
 
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
 
-  const userHasLiked = post.likes.some((obj) => obj.userId === user._id);
+  const [dataPost, setDataPost] = useState<Post>(post);
+
+  const [userHasLiked, setUserHasLiked] = useState<boolean>(
+    post.likes.some((obj) => obj.userId === user._id)
+  );
+
+  useEffect(() => {
+    console.log(userHasLiked);
+  }, []);
 
   const like = () => {
     const baseUrl = "http://localhost:3000";
@@ -100,7 +111,7 @@ const Post = ({ post, userName }: Props) => {
       )
       .then((response) => {
         console.log(response);
-        fetchDataProfile(userName);
+        fetchDataPost(post._id);
       })
       .catch((error) => {
         console.log(error);
@@ -132,14 +143,32 @@ const Post = ({ post, userName }: Props) => {
   const dateFormated = (date: string) => {
     const dataOriginal = date;
 
-    const data = new Date(dataOriginal);
+    const dataPost = new Date(dataOriginal);
 
     const options: DateFormatOptions = {
       month: "long",
       day: "numeric",
     };
-    const result = data.toLocaleDateString("pt-BR", options);
+    const result = dataPost.toLocaleDateString("pt-BR", options);
     return result;
+  };
+
+  const fetchDataPost = (_id: string) => {
+    const baseUrl = "http://localhost:3000";
+    axios
+      .get(`${baseUrl}/news/${_id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setDataPost(response.data.news);
+        setUserHasLiked(!userHasLiked);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -154,26 +183,26 @@ const Post = ({ post, userName }: Props) => {
             <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
               <img
                 className="flex rounded-full w-[90%] h-[90%]"
-                src={post?.user?.avatar}
+                src={dataPost?.user?.avatar}
               />
             </div>
 
             <div className="flex flex-col items-start h-full pt-2 pl-2">
               <span className="text-lg font-bold hover:opacity-80">
-                <Link href={`/perfil/${post?.user?.userName}`}>
-                  {post?.user?.userName}
+                <Link href={`/perfil/${dataPost?.user?.userName}`}>
+                  {dataPost?.user?.userName}
                 </Link>
               </span>
               <span className="text-xs">{dateFormated(post?.createdAt)}</span>
             </div>
           </div>
           <div className="w-[90%] h-fit flex flex-col p-2">
-            <h2 className="text-2xl font-black">{post.title}</h2>
-            <h2 className="text-sm font-light">{post.text}</h2>
+            <h2 className="text-2xl font-black">{dataPost.title}</h2>
+            <h2 className="text-sm font-light">{dataPost.text}</h2>
           </div>
           <div className="w-full h-fit flex justify-center items-center">
             <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
-              <img className="rounded-md" src={post.banner} />
+              <img className="rounded-md" src={dataPost.banner} />
             </div>
           </div>
           <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
@@ -185,7 +214,7 @@ const Post = ({ post, userName }: Props) => {
                   </span>
                   <div className="flex w-full justify-center items-center gap-4">
                     <button
-                      onClick={() => deletePost(post._id)}
+                      onClick={() => deletePost(dataPost._id)}
                       className="font-bold bg-zinc-100 rounded-md px-4 py-1 text-sm hover:text-white hover:bg-green-500"
                     >
                       yes
@@ -200,7 +229,7 @@ const Post = ({ post, userName }: Props) => {
                 </div>
               )}
               <div className="w-[90%] flex justify-end items-center gap-6 h-16 pr-2 py-1">
-                {user?.id === post?.user?.id && (
+                {user?._id === dataPost?.user?._id && (
                   <>
                     <img
                       onClick={() => setShowModal(true)}
@@ -216,12 +245,12 @@ const Post = ({ post, userName }: Props) => {
                 )}
 
                 <div className="flex justify-center items-center gap-1">
-                  <span>{post.likes.length}</span>
+                  <span>{dataPost.likes.length}</span>
                   <img
                     onClick={like}
                     className="cursor-pointer h-6 w-6"
                     src={
-                      userHasLiked
+                      userHasLiked === true
                         ? "https://cdn-icons-png.flaticon.com/128/2589/2589175.png"
                         : "https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
                     }
@@ -230,15 +259,15 @@ const Post = ({ post, userName }: Props) => {
               </div>
             </div>
           </div>
-          <CreateCommentProfile post={post} />
-          {post.comments.length >= 1 && (
+          <CreateCommentProfile post={dataPost} />
+          {dataPost.comments.length >= 1 && (
             <div
               className={`w-[90%]  overflow-hidden ${
                 showAllComments ? "h-fit" : "h-0"
               } flex flex-col gap-2 py-4 mt-4 rounded-md`}
             >
               <div className="w-full flex justify-end items-center pr-4">
-                {post.comments.length >= 1 && (
+                {dataPost.comments.length >= 1 && (
                   <button
                     className="text-xs font-bold transition-colors text-zinc-800 hover:text-zinc-800/60"
                     onClick={() => setShowAllComments(!showAllComments)}
@@ -247,7 +276,7 @@ const Post = ({ post, userName }: Props) => {
                   </button>
                 )}
               </div>
-              {post.comments.map((item) => {
+              {dataPost.comments.map((item) => {
                 return (
                   <div
                     key={Date.now() * Math.random()}
@@ -291,11 +320,11 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
     resolver: zodResolver(createBioSchema),
   });
 
-  async function onSubmit(data: FormData) {
+  async function onSubmit(dataPost: FormData) {
     const baseUrl = "http://localhost:3000";
 
     axios
-      .put(`${baseUrl}/user/${user?._id}`, data, {
+      .put(`${baseUrl}/user/${user?._id}`, dataPost, {
         headers: {
           Authorization: `Bearer ${user?.token}`,
         },
@@ -374,7 +403,7 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
               </div>
             </div>
           </div>
-          <div className="w-full mt-20 flex flex-col justify-center items-center">
+          <div className="w-full mt-20 mb-10 flex flex-col justify-center items-center">
             <div className="w-[80%] flex flex-col gap-2 pl-6">
               <h1 className="text-3xl font-bold text-zinc-800">
                 {userProfile?.name}
@@ -428,7 +457,6 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
               </div>
             )}
           </div>
-          <div className="w-full h-[1px] bg-zinc-300/50 mt-20 mb-6"></div>
           {data?.map((post) => {
             return (
               <Post

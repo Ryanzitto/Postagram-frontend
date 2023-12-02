@@ -27,12 +27,15 @@ interface Props {
     text: string;
     title: string;
     createdAt: string;
+    __v: number;
     user: {
       avatar: string;
+      bio?: string;
       email: string;
       name: string;
       userName: string;
-      id: string;
+      _id: string;
+      __v: number;
     };
   };
 }

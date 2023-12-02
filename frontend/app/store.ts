@@ -36,6 +36,7 @@ export const useStore = create(
         })),
 
       data: [],
+
       loading: false,
 
       createIsOpen: false,
