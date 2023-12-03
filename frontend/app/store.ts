@@ -37,13 +37,26 @@ export const useStore = create(
 
       data: [],
 
+      totalPosts: null,
+
       loading: false,
+
+      nextUrl: null,
+
+      previousUrl: null,
 
       createIsOpen: false,
 
       updateIsOpen: false,
 
       currentPostUpdatingId: null,
+
+      postIsLoading: false,
+
+      setPostIsLoading: (payload: boolean) =>
+        set(() => ({
+          postIsLoading: payload,
+        })),
 
       setCurrentPostUpdatingId: (payload: string) =>
         set(() => ({
@@ -72,7 +85,11 @@ export const useStore = create(
           set({ loading: true });
           const response = await axios.get("http://localhost:3000/news");
           set({ data: response.data.results });
+          set({ nextUrl: response.data.nextUrl });
+          set({ previousUrl: response.data.previousUrl });
           set({ loading: false });
+          set({ totalPosts: response.data.total });
+          console.log(response);
         } catch (error) {
           console.error("Erro ao buscar dados da API:", error);
           set({ loading: false });

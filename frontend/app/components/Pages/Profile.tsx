@@ -93,10 +93,6 @@ const Post = ({ post, userName }: Props) => {
     post.likes.some((obj) => obj.userId === user._id)
   );
 
-  useEffect(() => {
-    console.log(userHasLiked);
-  }, []);
-
   const like = () => {
     const baseUrl = "http://localhost:3000";
     axios

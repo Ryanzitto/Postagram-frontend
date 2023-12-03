@@ -56,7 +56,7 @@ const Modal = (props: { svg: string }) => {
 };
 
 export default function CreateNews() {
-  const { user, logout, fetchData, setCreateIsOpen, createIsOpen } = useStore();
+  const { user, logout, fetchData, setCreateIsOpen } = useStore();
 
   const [showModal, setShowModal] = useState<boolean>(false);
 

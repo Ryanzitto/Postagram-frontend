@@ -61,6 +61,8 @@ export default function UpdateNews() {
 
   const [showModal, setShowModal] = useState<boolean>(false);
 
+  const [svg, setSvg] = useState<string>("ERRO");
+
   const router = useRouter();
 
   const {
@@ -105,8 +107,6 @@ export default function UpdateNews() {
         }
       });
   }
-
-  const [svg, setSvg] = useState<string>("ERRO");
 
   return (
     <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60">
