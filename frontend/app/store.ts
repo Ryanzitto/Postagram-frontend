@@ -80,10 +80,10 @@ export const useStore = create(
       setLoading: (loading: any) => set({ loading }),
 
       // Função para fazer a chamada à API
-      fetchData: async () => {
+      fetchData: async (payload: string) => {
         try {
           set({ loading: true });
-          const response = await axios.get("http://localhost:3000/news");
+          const response = await axios.get(payload);
           set({ data: response.data.results });
           set({ nextUrl: response.data.nextUrl });
           set({ previousUrl: response.data.previousUrl });

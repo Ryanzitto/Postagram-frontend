@@ -62,17 +62,17 @@ const getAll = async (req, res) => {
     const next = offset + limit;
 
     const nextUrl =
-      next < total ? `${currentUrl}?limit${limit}&offset${next}` : null;
+      next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
 
     const previous = offset - limit < 0 ? null : offset - limit;
 
     const previousUrl =
       previous !== null
-        ? `${currentUrl}?limit${limit}&offset${previous}`
+        ? `${currentUrl}?limit=${limit}&offset=${previous}`
         : null;
 
     if (news.length === 0) {
-      return res.status(400).send({ message: "there is no registred news" });
+      return res.status(400).send({ message: "there is no registered news" });
     }
 
     res.send({

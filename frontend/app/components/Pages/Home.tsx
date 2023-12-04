@@ -21,74 +21,66 @@ interface Post {
   _id: string;
 }
 
-// const PostsList = () => {
-//   const { nextUrl, previousUrl, data, totalPosts } = useStore();
+const PostsList = () => {
+  const { nextUrl, previousUrl, data, totalPosts, fetchData } = useStore();
 
-//   const [posts, setPosts] = useState(data);
+  const [posts, setPosts] = useState(data);
 
-//   const postsPorPagina = 5;
+  const postsPorPagina = 5;
 
-//   const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
-//   // Calcula o número total de páginas
-//   const [totalPages, setTotalPages] = useState<number | null>(null);
+  const [numeroDePáginas, setNumeroDePáginas] = useState<number | null>(null);
 
-//   useEffect(() => {
-//     if (totalPosts) {
-//       setTotalPages(Math.ceil(totalPosts / postsPorPagina));
-//     }
-//   }, [totalPosts]);
+  const next = () => {
+    if (nextUrl !== null) {
+      fetchData("http://localhost:3000" + nextUrl);
+      //@ts-ignore
+      if (currentPage < numeroDePáginas) {
+        setCurrentPage((numeroDePáginas) => numeroDePáginas + 1);
+      }
+    }
+  };
 
-//   // Atualiza os posts a serem exibidos com base na página atual
-//   const paginatedPosts = posts.slice(
-//     (currentPage - 1) * postsPorPagina,
-//     currentPage * postsPorPagina
-//   );
+  const prev = () => {
+    if (previousUrl !== null) {
+      fetchData("http://localhost:3000" + previousUrl);
+      if (currentPage === 1) {
+        return;
+      } else {
+        setCurrentPage((numeroDePáginas) => numeroDePáginas - 1);
+      }
+    }
+  };
 
-//   // Atualiza os posts (simulação de dados)
-//   useEffect(() => {
-//     // Lógica para carregar os posts (pode ser uma chamada à API, etc.)
-//     // Substitua esta lógica pelo método real de obter seus posts
-//     const fetchPosts = async () => {
-//       // Simulação de dados, você substituirá isso com sua lógica real de obtenção de dados
-//       const response = await fetch(
-//         "https://jsonplaceholder.typicode.com/posts"
-//       );
-//       const data = await response.json();
-//       setPosts(data);
-//     };
-
-//     fetchPosts();
-//   }, []);
-
-//   return (
-//     <div>
-//       {/* Renderiza a lista de posts na página atual */}
-//       <ul>
-//         {paginatedPosts.map((post) => (
-//           <li key={post._id}>{post.title}</li>
-//         ))}
-//       </ul>
-
-//       {/* Renderiza a navegação de páginas */}
-//       <div>
-//         <p>
-//           Página {currentPage} de {totalPages}
-//         </p>
-//         <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-//           Anterior
-//         </button>
-//         <button
-//           onClick={() =>
-//             setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-//           }
-//         >
-//           Próxima
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
+  useEffect(() => {
+    //@ts-ignore
+    setNumeroDePáginas(Math.ceil(totalPosts / postsPorPagina));
+  }, [totalPosts]);
+  return (
+    <div className="w-full h-24 flex flex-col justify-center items-center gap-2 ">
+      <span className="text-sm font-bold">
+        Page: {currentPage}/{numeroDePáginas}
+      </span>
+      <div className="w-full flex justify-center items-center gap-2 pt-4">
+        <button
+          onClick={prev}
+          className="bg-blue-300 p-2 px-4 rounded-sm text-sm font-medium transition-colors hover:opacity-80 disabled:text-black/20 disabled:bg-gray-200 disabled:cursor-not-allowed"
+          disabled={previousUrl === null ? true : false}
+        >
+          PREV
+        </button>
+        <button
+          onClick={next}
+          className="bg-blue-300 p-2 px-4 rounded-sm text-sm font-medium transition-colors hover:opacity-80 disabled:text-black/20 disabled:bg-gray-200 disabled:cursor-not-allowed"
+          disabled={nextUrl === null ? true : false}
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const Alert = (props: { status: string; text: string }) => {
   const { status, text } = props;
@@ -135,7 +127,7 @@ export default function Home() {
   const [showAlert, setShowAlert] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchData();
+    fetchData("http://localhost:3000/news");
   }, []);
 
   useEffect(() => {
@@ -185,9 +177,7 @@ export default function Home() {
             ) : (
               <Spinner />
             )}
-            <div className="w-full bg-red-500 h-10">
-              <h1>teste</h1>
-            </div>
+            <PostsList />
           </div>
           {createIsOpen && <CreateNews />}
         </>

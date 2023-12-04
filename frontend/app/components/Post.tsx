@@ -433,7 +433,7 @@ const UpdateNews = () => {
         const timeout = setTimeout(() => {
           setShowModal(false);
           setUpdateIsOpen(false);
-          fetchData();
+          fetchData("http://localhost:3000/news");
         }, 1200);
 
         return () => clearTimeout(timeout);
