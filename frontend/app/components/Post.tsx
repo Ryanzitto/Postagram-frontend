@@ -67,6 +67,7 @@ export const Post = ({ _id }: PostID) => {
     updateIsOpen,
     currentPostUpdatingId,
     postIsLoading,
+    logout,
   } = useStore();
 
   const [load, setLoad] = useState<boolean>(false);
@@ -77,17 +78,9 @@ export const Post = ({ _id }: PostID) => {
 
   const [userHasLiked, setUserHasLiked] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (post) {
-      setUserHasLiked(post.likes.some((obj) => obj.userId === user._id));
-    }
-  }, [post]);
-
   const [loadContent, setLoadContent] = useState<boolean>(postIsLoading);
 
-  useEffect(() => {
-    console.log(userHasLiked);
-  }, []);
+  const router = useRouter();
 
   const dateFormated = (date: string) => {
     const dataOriginal = date;
@@ -127,7 +120,6 @@ export const Post = ({ _id }: PostID) => {
 
   const fetchPost = () => {
     const baseUrl = "http://localhost:3000";
-    console.log();
     axios
       .get(`${baseUrl}/news/${_id}`, {
         headers: {
@@ -140,6 +132,13 @@ export const Post = ({ _id }: PostID) => {
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          const timeout = setTimeout(() => {
+            router.push("/login");
+            logout();
+          }, 1200);
+          return () => clearTimeout(timeout);
+        }
       });
   };
 
@@ -162,6 +161,16 @@ export const Post = ({ _id }: PostID) => {
   useEffect(() => {
     setLoadContent(postIsLoading);
   }, [postIsLoading]);
+
+  useEffect(() => {
+    console.log(userHasLiked);
+  }, []);
+
+  useEffect(() => {
+    if (post) {
+      setUserHasLiked(post.likes.some((obj) => obj.userId === user._id));
+    }
+  }, [post]);
 
   return (
     <div className="relative w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
@@ -327,7 +336,6 @@ const CreateComment = ({ post }: Props) => {
       .then((response) => {
         console.log(response);
         setPostIsLoading(false);
-
         setShowModal(true);
         const timeout = setTimeout(() => {
           setShowModal(false);

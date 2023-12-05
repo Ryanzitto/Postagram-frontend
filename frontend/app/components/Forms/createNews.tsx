@@ -87,7 +87,7 @@ export default function CreateNews() {
         const timeout = setTimeout(() => {
           setShowModal(false);
           setCreateIsOpen(false);
-          fetchData();
+          fetchData("http://localhost:3000/news");
         }, 1200);
 
         return () => clearTimeout(timeout);

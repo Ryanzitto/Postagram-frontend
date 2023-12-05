@@ -3,6 +3,7 @@ import cors from "cors";
 import userRoute from "./src/routes/user.route.js";
 import authRoute from "./src/routes/auth.route.js";
 import newsRoute from "./src/routes/news.route.js";
+import pictureRoute from "./src/routes/picture.route.js";
 import { connectDB } from "./src/database/db.js";
 import dotenv from "dotenv";
 
@@ -19,6 +20,7 @@ app.use(cors());
 app.use("/user", userRoute);
 app.use("/auth", authRoute);
 app.use("/news", newsRoute);
+app.use("/picture", pictureRoute);
 
 const port = process.env.PORT || 3000;
 
