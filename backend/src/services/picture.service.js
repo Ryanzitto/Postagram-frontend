@@ -1,8 +1,7 @@
 import Picture from "../models/Picture.js";
 
-const createPictureService = (picture) => {
-  console.log(picture);
-  return Picture.create(picture);
-};
+const createPictureService = (picture) => Picture.create(picture);
 
-export { createPictureService };
+const getPictureByIdService = (id) => Picture.findById(id);
+
+export { createPictureService, getPictureByIdService };

@@ -1,7 +1,6 @@
 import Picture from "../models/Picture.js";
 import fs from "fs";
-
-console.log("chegou no controller");
+import { getPictureByIdService } from "../services/picture.service.js";
 
 const create = async (req, res) => {
   try {
@@ -30,6 +29,22 @@ const findAll = async (req, res) => {
   }
 };
 
+const getPictureById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const picture = await getPictureByIdService(id);
+
+    if (!picture) {
+      return res.status(404).send({ message: "Não foi encontrada uma imagem" });
+    }
+
+    res.status(200).send(picture);
+  } catch (error) {
+    res.status(500).send({ message: "Erro ao buscar imagem." });
+  }
+};
+
 const remove = async (req, res) => {
   try {
     const id = req.params.id;
@@ -48,4 +63,4 @@ const remove = async (req, res) => {
   }
 };
 
-export { create, findAll, remove };
+export { create, findAll, remove, getPictureById };

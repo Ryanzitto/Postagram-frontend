@@ -36,12 +36,12 @@ const create = async (req, res) => {
       src: file.path,
     });
 
-    await createPictureService(picture);
+    const pictureRef = await createPictureService(picture);
 
     const news = await createService({
       title,
       text,
-      banner: picture.src,
+      banner: pictureRef,
       user: req.userId,
     });
 
