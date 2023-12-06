@@ -5,16 +5,16 @@ console.log("chegou no controller");
 
 const create = async (req, res) => {
   try {
-    const { name } = req.body;
-
     const file = req.file;
 
     const picture = new Picture({
-      name,
       src: file.path,
     });
 
+    console.log("path da imagem:" + picture.src);
+
     await picture.save();
+
     res.status(200).send({ message: "sucesso", picture });
   } catch (error) {
     res.status(500).send({ message: error });

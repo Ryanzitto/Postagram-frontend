@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth.middlewares.js";
+import upload from "../../config/multer.js";
 
 const router = Router();
 
@@ -17,7 +18,7 @@ import {
   removeComment,
 } from "../controllers/news.controller.js";
 
-router.post("/", authMiddleware, create);
+router.post("/", authMiddleware, upload.single("file"), create);
 router.get("/", getAll);
 router.get("/search", searchByTitle);
 router.get("/byUser", authMiddleware, searchByUser);

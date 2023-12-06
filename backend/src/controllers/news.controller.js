@@ -13,23 +13,35 @@ import {
   removeCommentService,
 } from "../services/news.service.js";
 
+import { createPictureService } from "../services/picture.service.js";
+
 import User from "../models/User.js";
 import News from "../models/News.js";
 
+import Picture from "../models/Picture.js";
+
 const create = async (req, res) => {
   try {
-    const { title, text, banner } = req.body;
+    const { title, text } = req.body;
 
-    if (!title || !text || !banner) {
+    const file = req.file;
+
+    if (!title || !text || !file) {
       res.status(400).send({
         message: "Submit all fields for registration",
       });
     }
 
+    const picture = new Picture({
+      src: file.path,
+    });
+
+    await createPictureService(picture);
+
     const news = await createService({
       title,
       text,
-      banner,
+      banner: picture.src,
       user: req.userId,
     });
 
@@ -211,6 +223,8 @@ const searchByUserName = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { title, text, banner } = req.body;
+
+    const file = req.file;
 
     const { id } = req.params;
 
