@@ -33,20 +33,18 @@ const findAll = async (req, res) => {
 const remove = async (req, res) => {
   try {
     const id = req.params.id;
-    const picture = await Picture.findById(id);
-    console.log(id);
+    const picture = await Picture.findOneAndRemove({ _id: id });
+
     if (!picture) {
       return res.status(404).send({ message: "Imagem não encontrada" });
     }
 
-    console.log("aqui");
     fs.unlinkSync(picture.src);
-    console.log("aqui");
-    await picture.remove();
 
     res.send({ message: "Imagem removida com sucesso!" });
   } catch (error) {
-    res.status(500).send({ message: "Erro ao buscar imagem." });
+    console.error(error);
+    res.status(500).send({ message: "Erro ao remover imagem." });
   }
 };
 
