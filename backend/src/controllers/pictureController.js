@@ -1,24 +1,26 @@
 import Picture from "../models/Picture.js";
+
 import fs from "fs";
+
 import { getPictureByIdService } from "../services/picture.service.js";
 
-const create = async (req, res) => {
-  try {
-    const file = req.file;
+// const create = async (req, res) => {
+//   try {
+//     const file = req.file;
 
-    const picture = new Picture({
-      src: file.path,
-    });
+//     const picture = new Picture({
+//       src: file.path,
+//     });
 
-    console.log("path da imagem:" + picture.src);
+//     console.log("path da imagem:" + picture.src);
 
-    await picture.save();
+//     await picture.save();
 
-    res.status(200).send({ message: "sucesso", picture });
-  } catch (error) {
-    res.status(500).send({ message: error });
-  }
-};
+//     res.status(200).send({ message: "sucesso", picture });
+//   } catch (error) {
+//     res.status(500).send({ message: error });
+//   }
+// };
 
 const findAll = async (req, res) => {
   try {
@@ -63,4 +65,4 @@ const remove = async (req, res) => {
   }
 };
 
-export { create, findAll, remove, getPictureById };
+export { findAll, remove, getPictureById };

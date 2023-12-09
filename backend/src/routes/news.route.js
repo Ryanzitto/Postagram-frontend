@@ -24,6 +24,7 @@ router.get("/search", searchByTitle);
 router.get("/byUser", authMiddleware, searchByUser);
 router.get("/byUserName/:userName", searchByUserName);
 router.get("/:id", authMiddleware, getById);
+router.post("/", authMiddleware, upload.single("file"), create);
 router.patch("/:id", authMiddleware, update);
 router.delete("/:id", authMiddleware, deleteNews);
 router.patch("/like/:id", authMiddleware, like);

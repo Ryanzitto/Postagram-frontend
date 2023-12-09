@@ -13,13 +13,18 @@ import {
   removeCommentService,
 } from "../services/news.service.js";
 
-import { createPictureService } from "../services/picture.service.js";
+import {
+  createPictureService,
+  removePictureService,
+  getPictureByIdService,
+} from "../services/picture.service.js";
 
 import User from "../models/User.js";
 import News from "../models/News.js";
 
 import Picture from "../models/Picture.js";
 
+import fs from "fs";
 const create = async (req, res) => {
   try {
     const { title, text } = req.body;
@@ -38,6 +43,7 @@ const create = async (req, res) => {
 
     const pictureRef = await createPictureService(picture);
 
+    console.log(pictureRef);
     const news = await createService({
       title,
       text,
@@ -222,13 +228,11 @@ const searchByUserName = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { title, text, banner } = req.body;
-
-    const file = req.file;
+    const { title, text } = req.body;
 
     const { id } = req.params;
 
-    if (!title && !text && !banner) {
+    if (!title && !text) {
       res.status(400).send({
         message: "Submit at least one field",
       });
@@ -236,13 +240,11 @@ const update = async (req, res) => {
 
     const news = await getByIdService(id);
 
-    console.log(news.user.id != req.userId);
-
     if (news.user.id != req.userId) {
       return res.status(400).send({ message: "you did not update this post" });
     }
 
-    await updateService(id, title, text, banner);
+    await updateService(id, title, text);
 
     return res.send({ message: "Post successfully updated" });
   } catch (error) {
@@ -253,13 +255,26 @@ const update = async (req, res) => {
 const deleteNews = async (req, res) => {
   try {
     const { id } = req.params;
+
+    const { idPicture } = req.body;
+
     const news = await getByIdService(id);
 
     if (news.user.id != req.userId) {
       return res.status(400).send({ message: "you did not delete this post" });
     }
 
+    const picture = await getPictureByIdService(idPicture);
+
+    if (!picture) {
+      res.status(404).send({ message: "Imagem não encontrada" });
+    }
+
     await deleteNewsService(id);
+
+    await removePictureService(idPicture);
+
+    fs.unlinkSync(picture.src);
 
     return res.send({ message: "news deleted!" });
   } catch (error) {

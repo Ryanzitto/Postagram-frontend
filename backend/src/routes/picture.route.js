@@ -3,7 +3,6 @@ import { Router } from "express";
 import upload from "../../config/multer.js";
 
 import {
-  create,
   findAll,
   remove,
   getPictureById,
@@ -13,7 +12,7 @@ const router = Router();
 
 router.delete("/:id", remove);
 
-router.post("/", upload.single("file"), create);
+// router.post("/", upload.single("file"), create);
 
 router.get("/", findAll);
 
