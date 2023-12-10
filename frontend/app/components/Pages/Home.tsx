@@ -141,10 +141,6 @@ export default function Home() {
     setUpdateIsOpen(false);
   }, []);
 
-  // useEffect(() => {
-  //   console.log(data);
-  // }, [data]);
-
   return (
     <main className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
       {load === true && (
