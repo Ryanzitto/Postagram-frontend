@@ -5,16 +5,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import axios from "axios";
-import Lottie from "react-lottie";
 
 import { useStore } from "../store";
 import { updatePostSchema } from "../zodSchema/updtadePost";
 import { createCommentSchema } from "../zodSchema/createComment";
 
 import Spinner from "./Spinner";
-
-import animationDataOK from "../../public/Animation-OK.json";
-import animationDataErro from "../../public/Animation-ERRO.json";
 
 interface DateFormatOptions {
   year?: "numeric" | "2-digit";
@@ -26,7 +22,10 @@ interface DateFormatOptions {
 }
 
 interface Post {
-  banner: string;
+  banner: {
+    src: string;
+    _id: string;
+  };
   comments: Array<any>;
   _id: string;
   likes: Array<any>;
@@ -42,7 +41,10 @@ interface Post {
 
 interface Props {
   post: {
-    banner: string;
+    banner: {
+      src: string;
+      _id: string;
+    };
     comments: Array<any>;
     _id: string;
     likes: Array<any>;
@@ -79,6 +81,15 @@ export const Post = ({ _id }: PostID) => {
   const [userHasLiked, setUserHasLiked] = useState<boolean>(false);
 
   const [loadContent, setLoadContent] = useState<boolean>(postIsLoading);
+
+  const [urlFormated, setUrlFormated] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (post) {
+      setUrlFormated("http://localhost:3000/" + post?.banner.src);
+      console.log(urlFormated);
+    }
+  }, [post]);
 
   const router = useRouter();
 
@@ -162,9 +173,9 @@ export const Post = ({ _id }: PostID) => {
     setLoadContent(postIsLoading);
   }, [postIsLoading]);
 
-  useEffect(() => {
-    console.log(userHasLiked);
-  }, []);
+  // useEffect(() => {
+  //   console.log(userHasLiked);
+  // }, []);
 
   useEffect(() => {
     if (post) {
@@ -228,7 +239,7 @@ export const Post = ({ _id }: PostID) => {
               </div>
               <div className="w-full h-fit flex justify-center items-center">
                 <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
-                  <img className="rounded-md" src={post.banner} />
+                  <img className="rounded-md" src={urlFormated} />
                 </div>
               </div>
               <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
@@ -550,41 +561,9 @@ const UpdateNews = () => {
 };
 
 const Modal = (props: { svg: string }) => {
-  const { svg } = props;
-
-  const [state, setState] = useState({
-    isStopped: false,
-    isPaused: false,
-  });
-
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: svg === "ERRO" ? animationDataErro : animationDataOK,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
   return (
     <div className="w-full h-full absolute flex justify-center items-center">
-      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center">
-        <Lottie
-          options={defaultOptions}
-          height={100}
-          width={100}
-          isStopped={state.isStopped}
-          isPaused={state.isPaused}
-        />
-        <span
-          className={`${
-            svg === "ERRO" ? "text-red-500" : "text-green-500"
-          } font-bold text-xs`}
-        >
-          {svg === "ERRO"
-            ? "Token expired, please login."
-            : "Post updated with success!"}
-        </span>
-      </div>
+      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center"></div>
     </div>
   );
 };

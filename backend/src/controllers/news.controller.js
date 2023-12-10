@@ -25,6 +25,7 @@ import News from "../models/News.js";
 import Picture from "../models/Picture.js";
 
 import fs from "fs";
+
 const create = async (req, res) => {
   try {
     const { title, text } = req.body;
@@ -43,11 +44,10 @@ const create = async (req, res) => {
 
     const pictureRef = await createPictureService(picture);
 
-    console.log(pictureRef);
     const news = await createService({
       title,
       text,
-      banner: pictureRef,
+      banner: pictureRef._id,
       user: req.userId,
     });
 
@@ -93,6 +93,8 @@ const getAll = async (req, res) => {
       return res.status(400).send({ message: "there is no registered news" });
     }
 
+    console.log(news);
+
     res.send({
       nextUrl,
       previousUrl,
@@ -106,10 +108,12 @@ const getAll = async (req, res) => {
         banner: item.banner,
         likes: item.likes,
         comments: item.comments,
-        name: item.user.name,
-        userName: item.user.userName,
-        avatar: item.user.avatar,
-        createdAt: item.createdAt,
+        user: {
+          name: item.user.name,
+          userName: item.user.userName,
+          avatar: item.user.avatar,
+          createdAt: item.createdAt,
+        },
       })),
     });
   } catch (error) {
@@ -120,8 +124,9 @@ const getAll = async (req, res) => {
 const getById = async (req, res) => {
   try {
     const { id } = req.params;
+
     const news = await getByIdService(id);
-    console.log(news);
+
     if (!news) {
       res.status(400).send({ message: "news not found" });
     }
@@ -218,7 +223,8 @@ const searchByUserName = async (req, res) => {
     // Encontre todas as notícias associadas a esse usuário
     const news = await News.find({ user: user._id })
       .sort({ _id: -1 })
-      .populate("user");
+      .populate("user")
+      .populate("banner");
 
     return res.status(200).json(news);
   } catch (error) {

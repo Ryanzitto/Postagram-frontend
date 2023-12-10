@@ -9,48 +9,14 @@ import Lottie from "react-lottie";
 
 import * as z from "zod";
 
-import animationDataOK from "../../../public/Animation-OK.json";
-import animationDataErro from "../../../public/Animation-ERRO.json";
 import { updatePostSchema } from "../../zodSchema/updtadePost";
 
 type FormData = z.infer<typeof updatePostSchema>;
 
 const Modal = (props: { svg: string }) => {
-  const { svg } = props;
-
-  const [state, setState] = useState({
-    isStopped: false,
-    isPaused: false,
-  });
-
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: svg === "ERRO" ? animationDataErro : animationDataOK,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
   return (
     <div className="w-full h-full absolute flex justify-center items-center">
-      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center">
-        <Lottie
-          options={defaultOptions}
-          height={100}
-          width={100}
-          isStopped={state.isStopped}
-          isPaused={state.isPaused}
-        />
-        <span
-          className={`${
-            svg === "ERRO" ? "text-red-500" : "text-green-500"
-          } font-bold text-xs`}
-        >
-          {svg === "ERRO"
-            ? "Token expired, please login."
-            : "Post updated with success!"}
-        </span>
-      </div>
+      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center"></div>
     </div>
   );
 };

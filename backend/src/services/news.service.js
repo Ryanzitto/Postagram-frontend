@@ -3,11 +3,17 @@ import News from "../models/News.js";
 const createService = (body) => News.create(body);
 
 const findAllService = (limit, offset) =>
-  News.find().sort({ _id: -1 }).skip(offset).limit(limit).populate("user");
+  News.find()
+    .sort({ _id: -1 })
+    .skip(offset)
+    .limit(limit)
+    .populate("user")
+    .populate("banner");
 
 const countNews = () => News.countDocuments();
 
-const getByIdService = (id) => News.findById(id).populate("user");
+const getByIdService = (id) =>
+  News.findById(id).populate("user").populate("banner");
 
 const searchByTitleService = (title) =>
   News.find({
@@ -17,7 +23,7 @@ const searchByTitleService = (title) =>
     .populate("user");
 
 const searchByUserService = (id) =>
-  News.find({ user: id }).sort({ _id: -1 }).populate("user");
+  News.find({ user: id }).sort({ _id: -1 }).populate("user").populate("banner");
 
 const updateService = (id, title, text, banner) =>
   News.findOneAndUpdate(

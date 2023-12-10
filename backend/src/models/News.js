@@ -10,7 +10,8 @@ const NewsSchema = mongoose.Schema({
     require: true,
   },
   banner: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Picture",
     require: true,
   },
   createdAt: {

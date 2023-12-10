@@ -8,9 +8,14 @@ import { Post } from "../Post";
 import Spinner from "../Spinner";
 import CreateNews from "../Forms/createNews";
 
+import Uploader from "../General/Uploader";
+
 interface Post {
   avatar: string;
-  banner: string;
+  banner: {
+    src: string;
+    _id: string;
+  };
   comments: [any];
   createdAt: string;
   likes: [any];
@@ -136,13 +141,12 @@ export default function Home() {
     setUpdateIsOpen(false);
   }, []);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
+
   return (
     <main className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
-      {showAlert && <Alert status="OK" text="teste Sucesso" />}
-
       {load === true && (
         <>
           <div className="w-[50%] h-full flex flex-col items-center gap-4 p-2 relative">

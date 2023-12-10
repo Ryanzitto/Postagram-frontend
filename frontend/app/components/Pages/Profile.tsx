@@ -171,6 +171,9 @@ const Post = ({ post, userName }: Props) => {
     setLoad(true);
   }, []);
 
+  useEffect(() => {
+    console.log(dataPost);
+  }, [dataPost]);
   return (
     <div className="flex flex-col h-fit bg-white justify-start items-center relative rounded-md hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
       {load === true && loading === false ? (
