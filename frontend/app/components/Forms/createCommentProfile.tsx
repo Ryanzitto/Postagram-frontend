@@ -15,7 +15,7 @@ type FormData = z.infer<typeof createCommentSchema>;
 
 interface Props {
   post: {
-    banner: string;
+    banner: { src: string; _id: string };
     comments: Array<any>;
     _id: string;
     likes: Array<any>;

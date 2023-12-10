@@ -34,7 +34,10 @@ interface DateFormatOptions {
 }
 
 interface Post {
-  banner: string;
+  banner: {
+    src: string;
+    _id: string;
+  };
   comments: Array<any>;
   _id: string;
   likes: Array<any>;
@@ -55,7 +58,10 @@ interface Post {
 
 interface Props {
   post: {
-    banner: string;
+    banner: {
+      src: string;
+      _id: string;
+    };
     comments: Array<any>;
     _id: string;
     likes: Array<any>;
@@ -114,10 +120,15 @@ const Post = ({ post, userName }: Props) => {
       });
   };
 
-  const deletePost = (_id: string | undefined) => {
+  const deletePost = (_id: string | undefined, _idPicture: string) => {
     const baseUrl = "http://localhost:3000";
+
+    const data = {
+      idPicture: _idPicture,
+    };
     axios
       .delete(`${baseUrl}/news/${_id}`, {
+        data,
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -201,7 +212,10 @@ const Post = ({ post, userName }: Props) => {
           </div>
           <div className="w-full h-fit flex justify-center items-center">
             <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
-              <img className="rounded-md" src={dataPost.banner} />
+              <img
+                className="rounded-md"
+                src={"http://localhost:3000/" + dataPost.banner.src}
+              />
             </div>
           </div>
           <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
@@ -213,7 +227,9 @@ const Post = ({ post, userName }: Props) => {
                   </span>
                   <div className="flex w-full justify-center items-center gap-4">
                     <button
-                      onClick={() => deletePost(dataPost._id)}
+                      onClick={() =>
+                        deletePost(dataPost._id, dataPost.banner._id)
+                      }
                       className="font-bold bg-zinc-100 rounded-md px-4 py-1 text-sm hover:text-white hover:bg-green-500"
                     >
                       yes

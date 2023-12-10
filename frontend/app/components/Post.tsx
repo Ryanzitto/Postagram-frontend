@@ -529,23 +529,6 @@ const UpdateNews = () => {
               <p className="text-red-600 text-xs">{errors?.text?.message}</p>
             )}
           </div>
-          <div className="flex flex-col gap-2 pt-4">
-            <label className="font-bold text-zinc-800/60 tracking-wide">
-              Image URL:
-            </label>
-            <input
-              {...register("banner", { required: true })}
-              id="banner"
-              name="banner"
-              placeholder="New image url here"
-              autoComplete="off"
-              type="text"
-              className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
-            ></input>
-            {errors?.banner && (
-              <p className="text-red-600 text-xs">{errors?.banner?.message}</p>
-            )}
-          </div>
           <div className="flex flex-col gap-2 pt-8">
             <button
               type="submit"

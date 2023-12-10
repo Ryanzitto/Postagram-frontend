@@ -9,31 +9,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { createPostSchema } from "../../zodSchema/createPost";
-
-import { DropzoneState, useDropzone } from "react-dropzone";
-
-import { UploadIcon } from "public/icons/uploadIcon";
 import { FileIcon } from "public/icons/fileIcon";
+
+import { useDropzone } from "react-dropzone";
 import { CloseIcon } from "public/icons/closeIcon";
+import { UploadIcon } from "public/icons/uploadIcon";
 
 type FormData = z.infer<typeof createPostSchema>;
 
-const Modal = (props: { svg: string }) => {
-  return (
-    <div className="w-full h-full absolute flex justify-center items-center">
-      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center"></div>
-    </div>
-  );
-};
-
 export default function CreateNews() {
-  const { user, logout, fetchData, setCreateIsOpen } = useStore();
+  const { setCreateIsOpen, user, fetchData, logout } = useStore();
 
-  const [showModal, setShowModal] = useState<boolean>(false);
-
-  const [svg, setSvg] = useState<string>("ERRO");
-
-  const router = useRouter();
+  const [erroMessageFile, setErroMessageFile] = useState<string>("");
 
   const {
     handleSubmit,
@@ -43,70 +30,78 @@ export default function CreateNews() {
     resolver: zodResolver(createPostSchema),
   });
 
+  const router = useRouter();
+
   async function onSubmit(data: FormData) {
-    console.log("onSubmit called");
-    console.log("data", data);
-    // const baseUrl = "http://localhost:3000";
+    if (data.file.length === 0) {
+      setErroMessageFile("Selecione um arquivo para continuar!");
+      return;
+    }
 
-    // axios
-    //   .post(`${baseUrl}/news/`, data, {
-    //     headers: {
-    //       Authorization: `Bearer ${user.token}`,
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-    //     setSvg("SUCCESS");
-    //     setShowModal(true);
-    //     const timeout = setTimeout(() => {
-    //       setShowModal(false);
-    //       setCreateIsOpen(false);
-    //       fetchData("http://localhost:3000/news");
-    //     }, 1200);
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("text", data.text);
+    formData.append("file", data.file[0]);
 
-    //     return () => clearTimeout(timeout);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     if (error.response.data.message === "Token has expired") {
-    //       setSvg("ERRO");
-    //       setShowModal(true);
-    //       const timeout = setTimeout(() => {
-    //         router.push("/login");
-    //         logout();
-    //       }, 1200);
-    //       return () => clearTimeout(timeout);
-    //     }
-    //   });
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
+    const baseUrl = "http://localhost:3000";
+
+    axios
+      .post(`${baseUrl}/news/`, formData, config)
+
+      .then((response) => {
+        console.log(response);
+        const timeout = setTimeout(() => {
+          setCreateIsOpen(false);
+          fetchData("http://localhost:3000/news");
+        }, 1200);
+
+        return () => clearTimeout(timeout);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          const timeout = setTimeout(() => {
+            router.push("/login");
+            logout();
+          }, 1200);
+          return () => clearTimeout(timeout);
+        }
+      });
   }
 
-  const [file, setFile] = useState<File | null>(null);
+  // const removeFile = useCallback(() => {
+  //   setFile(null);
+  // }, [file]);
 
-  const removeFile = useCallback(() => {
-    setFile(null);
-  }, [file]);
+  // const onDrop = useCallback((files: FileList[]) => {
+  //   console.log("entrou aqui");
+  //   setFile(files[0]);
+  // }, []);
 
-  const onDrop = useCallback((files: File[]) => {
-    console.log("entrou aqui");
-    setFile(files[0]);
-  }, []);
+  // useEffect(() => {
+  //   if (file) {
+  //     console.log(file);
+  //   }
+  // });
 
-  useEffect(() => {
-    console.log(file);
-  }, [file]);
-
-  const dropzone = useDropzone({
-    onDrop,
-    accept: {
-      "image/jpeg": [".jpeg"],
-      "image/png": [".png"],
-    },
-  });
+  // const dropzone = useDropzone({
+  //   onDrop,
+  //   accept: {
+  //     "image/jpeg": [".jpeg"],
+  //     "image/png": [".png"],
+  //   },
+  // });
 
   return (
     <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60">
       <div className="w-[500px] h-fit bg-white rounded-md p-4 flex justify-start items-center flex-col relative">
-        {showModal && <Modal svg={svg} />}
         <div className="w-full absolute h-10 flex justify-end pr-4 flex just">
           <button
             onClick={() => setCreateIsOpen(false)}
@@ -164,7 +159,7 @@ export default function CreateNews() {
               <p className="text-red-600 text-xs">{errors?.text?.message}</p>
             )}
           </div>
-          <div className="w-full flex justify-center items-center">
+          {/* <div className="w-full flex justify-center items-center">
             {file ? (
               <div className="w-[95%] h-[200px] rounded-lg border-dashed border-4 border-gray-600 bg-gray-700 flex justify-center items-center">
                 <div className="bg-white w-fit p-2 rounded-md shadow-md flex gap-3 items-center justify-center">
@@ -218,18 +213,41 @@ export default function CreateNews() {
                 <input
                   {...register("file", { required: true })}
                   {...dropzone.getInputProps()}
-                  className="hidden"
                   id="file"
                   name="file"
-                  autoComplete="off"
                   type="file"
-                />
+                  accept="image/png, image/jpeg" />
+
                 {errors?.file && (
                   <p className="text-red-600 text-xs">
                     {errors?.file?.message}
                   </p>
                 )}
               </div>
+            )}
+          </div> */}
+          <div
+            className="flex flex-col gap-2"
+            onChange={() => setErroMessageFile("")}
+          >
+            <label
+              htmlFor={"file"}
+              className="font-bold text-zinc-800/60 tracking-wide"
+            >
+              File:
+            </label>
+            <input
+              {...register("file", { required: true })}
+              id="file"
+              name="file"
+              type="file"
+              className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
+            />
+            {errors?.file && (
+              <p className="text-red-600 text-xs">{errors?.file?.message}</p>
+            )}
+            {erroMessageFile !== "" && (
+              <p className="text-red-600 text-xs">{erroMessageFile}</p>
             )}
           </div>
           <div className="flex flex-col gap-2 pt-8">

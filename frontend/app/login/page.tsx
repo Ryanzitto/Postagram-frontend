@@ -1,7 +1,6 @@
 "use client";
 
 import axios from "axios";
-import Lottie from "react-lottie";
 import * as z from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,8 +11,6 @@ import { registerSchema } from "../zodSchema/register";
 import { loginSchema } from "../zodSchema/login";
 import { useStore } from "app/store";
 
-import animationData from "../../public/Animation-OK.json";
-
 interface Props {
   func: (newForm: string) => void;
 }
@@ -21,32 +18,9 @@ interface Props {
 type FormData = z.infer<typeof registerSchema>;
 
 const Modal = (props: { text: string; color: string }) => {
-  const { text, color } = props;
-  const [state, setState] = useState({
-    isStopped: false,
-    isPaused: false,
-  });
-
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
   return (
     <div className="w-full h-full absolute flex justify-center items-center">
-      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center">
-        <Lottie
-          options={defaultOptions}
-          height={100}
-          width={100}
-          isStopped={state.isStopped}
-          isPaused={state.isPaused}
-        />
-        <span className={`${color} font-bold text-xs`}>{text}</span>
-      </div>
+      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center"></div>
     </div>
   );
 };
