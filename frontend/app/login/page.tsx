@@ -1,15 +1,15 @@
 "use client";
-
 import axios from "axios";
 import * as z from "zod";
 
+import { Modal } from "app/components/General/Modal";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { registerSchema } from "../zodSchema/register";
 import { loginSchema } from "../zodSchema/login";
 import { useStore } from "app/store";
+import { useState } from "react";
 
 interface Props {
   func: (newForm: string) => void;
@@ -17,20 +17,14 @@ interface Props {
 
 type FormData = z.infer<typeof registerSchema>;
 
-const Modal = (props: { text: string; color: string }) => {
-  return (
-    <div className="w-full h-full absolute flex justify-center items-center">
-      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center"></div>
-    </div>
-  );
-};
-
 const Login = ({ func }: Props) => {
   const { user, login, saveToken, logout } = useStore();
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [status, setStatus] = useState<string | null>(null);
+
+  const [showModal, setShowModal] = useState<boolean | null>(null);
 
   const router = useRouter();
 
@@ -43,7 +37,7 @@ const Login = ({ func }: Props) => {
   });
 
   async function onSubmit(data: FormData) {
-    setErrorMessage(null);
+    setErrorMessage("");
     const baseUrl = "http://localhost:3000";
 
     axios
@@ -51,30 +45,29 @@ const Login = ({ func }: Props) => {
       .then((response) => {
         console.log(response);
         setStatus("success");
+        setShowModal(true);
         login(response.data.user);
         saveToken(response.data.token);
 
         const timeout = setTimeout(() => {
           setStatus(null);
+          setShowModal(false);
           router.push("/");
         }, 1200);
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
         console.log(error);
+        setStatus("error");
         setErrorMessage(error.response.data.message);
       });
   }
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
   return (
     <div className="w-full h-[100%] flex shadow-2xl relative">
-      {status === "success" ? (
-        <Modal text="Logged with success" color="text-green-500" />
-      ) : null}
+      {status === "success" && (
+        <Modal text="Logged with success" status={status} />
+      )}
       <div className="w-1/2 h-full rounded-l-md bg-white pb-8 flex flex-col items-center">
         <div className="w-full h-16 flex justify-start items-center pl-10">
           <span className="text-3xl font-black text-zinc-800">A</span>
@@ -228,7 +221,7 @@ const Cadastro = ({ func }: Props) => {
     <>
       <div className="w-full h-fit rounded-md bg-white shadow-2xl pb-6 flex justify-center items-center flex flex-col">
         {status === "success" ? (
-          <Modal text="Logged with success " color="text-green-500" />
+          <Modal text="Logged with success" status={status} />
         ) : null}
         <div className="w-full h-28 flex flex-col justify-center items-center gap-2 bg-zinc-800 rounded-t-md">
           <div className="flex gap-2">

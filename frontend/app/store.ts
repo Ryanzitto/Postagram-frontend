@@ -89,7 +89,6 @@ export const useStore = create(
           set({ previousUrl: response.data.previousUrl });
           set({ loading: false });
           set({ totalPosts: response.data.total });
-          console.log(response);
         } catch (error) {
           console.error("Erro ao buscar dados da API:", error);
           set({ loading: false });
@@ -102,7 +101,6 @@ export const useStore = create(
           const response = await axios.get(
             `http://localhost:3000/news/byUserName/${payload}`
           );
-          console.log(response.data);
           set({ data: response.data });
           set({ loading: false });
         } catch (error) {

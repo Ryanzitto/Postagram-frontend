@@ -85,7 +85,13 @@ interface Props {
 type FormData = z.infer<typeof createBioSchema>;
 
 const Post = ({ post, userName }: Props) => {
-  const { user, loading, fetchDataProfile, setUpdateIsOpen } = useStore();
+  const {
+    user,
+    loading,
+    fetchDataProfile,
+    setUpdateIsOpen,
+    setCurrentPostUpdatingId,
+  } = useStore();
 
   const [load, setLoad] = useState<boolean>(false);
 
@@ -112,12 +118,9 @@ const Post = ({ post, userName }: Props) => {
         }
       )
       .then((response) => {
-        console.log(response);
         fetchDataPost(post._id);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const deletePost = (_id: string | undefined, _idPicture: string) => {
@@ -137,7 +140,6 @@ const Post = ({ post, userName }: Props) => {
         console.log(response);
         setShowModal(false);
         const timeout = setTimeout(() => {
-          console.log(userName);
           fetchDataProfile(userName);
         }, 1200);
         return () => clearTimeout(timeout);
@@ -178,13 +180,14 @@ const Post = ({ post, userName }: Props) => {
       });
   };
 
+  const handleClickUpdate = () => {
+    setUpdateIsOpen(true);
+    setCurrentPostUpdatingId(post._id);
+  };
   useEffect(() => {
     setLoad(true);
   }, []);
 
-  useEffect(() => {
-    console.log(dataPost);
-  }, [dataPost]);
   return (
     <div className="flex flex-col h-fit bg-white justify-start items-center relative rounded-md hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
       {load === true && loading === false ? (
@@ -252,7 +255,7 @@ const Post = ({ post, userName }: Props) => {
                       src="https://cdn-icons-png.flaticon.com/128/6590/6590956.png"
                     />
                     <img
-                      onClick={() => setUpdateIsOpen(true)}
+                      onClick={handleClickUpdate}
                       className="cursor-pointer h-4 w-4 transition-colors transition-colors hover:opacity-80"
                       src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
                     />

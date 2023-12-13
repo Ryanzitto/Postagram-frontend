@@ -239,7 +239,7 @@ const update = async (req, res) => {
     const { id } = req.params;
 
     if (!title && !text) {
-      res.status(400).send({
+      return res.status(400).send({
         message: "Submit at least one field",
       });
     }

@@ -11,15 +11,9 @@ import * as z from "zod";
 
 import { updatePostSchema } from "../../zodSchema/updtadePost";
 
-type FormData = z.infer<typeof updatePostSchema>;
+import { Modal } from "../General/Modal";
 
-const Modal = (props: { svg: string }) => {
-  return (
-    <div className="w-full h-full absolute flex justify-center items-center">
-      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center"></div>
-    </div>
-  );
-};
+type FormData = z.infer<typeof updatePostSchema>;
 
 export default function UpdateNewsProfile(userName: any) {
   const porra = userName.userName;
@@ -27,14 +21,16 @@ export default function UpdateNewsProfile(userName: any) {
   const {
     user,
     logout,
-    fetchData,
     setUpdateIsOpen,
-    updateIsOpen,
     currentPostUpdatingId,
     fetchDataProfile,
   } = useStore();
 
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [text, setText] = useState<string>("");
+
+  const [status, setStatus] = useState<string>("");
+
+  const [showModal, setShowModal] = useState<boolean | null>(null);
 
   const router = useRouter();
 
@@ -57,8 +53,9 @@ export default function UpdateNewsProfile(userName: any) {
       })
       .then((response) => {
         console.log(response);
-        setSvg("SUCCESS");
         setShowModal(true);
+        setText("Post Updated.");
+        setStatus("success");
         const timeout = setTimeout(() => {
           setShowModal(false);
           setUpdateIsOpen(false);
@@ -70,7 +67,6 @@ export default function UpdateNewsProfile(userName: any) {
       .catch((error) => {
         console.log(error);
         if (error.response.data.message === "Token has expired") {
-          setSvg("ERRO");
           setShowModal(true);
           const timeout = setTimeout(() => {
             router.push("/login");
@@ -78,15 +74,20 @@ export default function UpdateNewsProfile(userName: any) {
           }, 1200);
           return () => clearTimeout(timeout);
         }
+        setShowModal(true);
+        setText(error.response.data.message);
+        setStatus("error");
+        const timeout = setTimeout(() => {
+          setShowModal(false);
+        }, 1200);
+        return () => clearTimeout(timeout);
       });
   }
-
-  const [svg, setSvg] = useState<string>("ERRO");
 
   return (
     <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60">
       <div className="w-[500px] h-fit bg-white rounded-md p-4 flex justify-start items-center flex-col relative">
-        {showModal && <Modal svg={svg} />}
+        {showModal === true && <Modal text={text} status={status} />}
         <div className="w-full absolute h-10 flex justify-end pr-4 flex just">
           <button
             onClick={() => setUpdateIsOpen(false)}

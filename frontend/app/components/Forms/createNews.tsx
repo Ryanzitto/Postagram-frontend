@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "../../store";
 import { useForm } from "react-hook-form";
@@ -9,11 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { createPostSchema } from "../../zodSchema/createPost";
-import { FileIcon } from "public/icons/fileIcon";
 
-import { useDropzone } from "react-dropzone";
-import { CloseIcon } from "public/icons/closeIcon";
-import { UploadIcon } from "public/icons/uploadIcon";
+import { Modal } from "../General/Modal";
 
 type FormData = z.infer<typeof createPostSchema>;
 
@@ -21,6 +18,12 @@ export default function CreateNews() {
   const { setCreateIsOpen, user, fetchData, logout } = useStore();
 
   const [erroMessageFile, setErroMessageFile] = useState<string>("");
+
+  const [text, setText] = useState<string>("");
+
+  const [status, setStatus] = useState<string>("");
+
+  const [showModal, setShowModal] = useState<boolean | null>(null);
 
   const {
     handleSubmit,
@@ -57,8 +60,12 @@ export default function CreateNews() {
 
       .then((response) => {
         console.log(response);
+        setShowModal(true);
+        setText("Post created.");
+        setStatus("success");
         const timeout = setTimeout(() => {
           setCreateIsOpen(false);
+          setShowModal(false);
           fetchData("http://localhost:3000/news");
         }, 1200);
 
@@ -66,6 +73,9 @@ export default function CreateNews() {
       })
       .catch((error) => {
         console.log(error);
+        setShowModal(true);
+        setText("Error.");
+        setStatus("error");
         if (error.response.data.message === "Token has expired") {
           const timeout = setTimeout(() => {
             router.push("/login");
@@ -76,32 +86,10 @@ export default function CreateNews() {
       });
   }
 
-  // const removeFile = useCallback(() => {
-  //   setFile(null);
-  // }, [file]);
-
-  // const onDrop = useCallback((files: FileList[]) => {
-  //   console.log("entrou aqui");
-  //   setFile(files[0]);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (file) {
-  //     console.log(file);
-  //   }
-  // });
-
-  // const dropzone = useDropzone({
-  //   onDrop,
-  //   accept: {
-  //     "image/jpeg": [".jpeg"],
-  //     "image/png": [".png"],
-  //   },
-  // });
-
   return (
     <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60">
       <div className="w-[500px] h-fit bg-white rounded-md p-4 flex justify-start items-center flex-col relative">
+        {showModal === true && <Modal text={text} status={status} />}
         <div className="w-full absolute h-10 flex justify-end pr-4 flex just">
           <button
             onClick={() => setCreateIsOpen(false)}
@@ -159,96 +147,32 @@ export default function CreateNews() {
               <p className="text-red-600 text-xs">{errors?.text?.message}</p>
             )}
           </div>
-          {/* <div className="w-full flex justify-center items-center">
-            {file ? (
-              <div className="w-[95%] h-[200px] rounded-lg border-dashed border-4 border-gray-600 bg-gray-700 flex justify-center items-center">
-                <div className="bg-white w-fit p-2 rounded-md shadow-md flex gap-3 items-center justify-center">
-                  <FileIcon />
-                  <span className="text-sm text-gray-500 my-4">
-                    {file?.name}
-                  </span>
-                  <button
-                    onClick={removeFile}
-                    type="button"
-                    className=" mt-1 p-1"
-                  >
-                    <CloseIcon className="hover:text-red-400 transition-colors" />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div
-                {...dropzone.getRootProps()}
-                className={`w-[95%] bg-gray-700 h-[200px] rounded-lg border-dashed border-4 hover:border-gray-500 hover:bg-gray-600 transition-all ${
-                  dropzone.isDragActive ? "border-blue-500" : "border-gray-600"
-                }`}
-              >
-                <label
-                  htmlFor="dropzone-file"
-                  className="cursor-pointer w-full h-full"
-                >
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6 w-full h-full">
-                    <UploadIcon
-                      className={`w-10 h-10 mb-3 ${
-                        dropzone.isDragActive
-                          ? "text-blue-500"
-                          : "text-gray-500"
-                      }`}
-                    />
-                    {dropzone.isDragActive ? (
-                      <p className="font-bold text-lg text-blue-400">
-                        Solte para adcionar
-                      </p>
-                    ) : (
-                      <>
-                        <p className="text-md text-gray-500 mb-2">
-                          <span className="font-bold">CLIQUE PARA ENVIAR</span>{" "}
-                          ou arraste até aqui.
-                        </p>
-                        <p className="text-gray-300 text-sm">PNG/JPG</p>
-                      </>
-                    )}
-                  </div>
-                </label>
-                <input
-                  {...register("file", { required: true })}
-                  {...dropzone.getInputProps()}
-                  id="file"
-                  name="file"
-                  type="file"
-                  accept="image/png, image/jpeg" />
-
-                {errors?.file && (
-                  <p className="text-red-600 text-xs">
-                    {errors?.file?.message}
-                  </p>
-                )}
-              </div>
-            )}
-          </div> */}
-          <div
-            className="flex flex-col gap-2"
-            onChange={() => setErroMessageFile("")}
-          >
+          <div className="flex flex-col gap-2 pt-4">
             <label
               htmlFor={"file"}
               className="font-bold text-zinc-800/60 tracking-wide"
             >
-              File:
+              Image:
             </label>
-            <input
-              {...register("file", { required: true })}
-              id="file"
-              name="file"
-              type="file"
-              className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
-            />
-            {errors?.file && (
-              <p className="text-red-600 text-xs">{errors?.file?.message}</p>
-            )}
-            {erroMessageFile !== "" && (
-              <p className="text-red-600 text-xs">{erroMessageFile}</p>
-            )}
+            <div
+              onChange={() => setErroMessageFile("")}
+              className="relative p-4 border border-gray-300 bg-gray-100 rounded-md flex items-center justify-center"
+            >
+              <input
+                {...register("file", { required: true })}
+                id="file"
+                name="file"
+                type="file"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <span className="text-gray-700">Escolher arquivo</span>
+              {errors?.file && (
+                <p className="text-red-600 text-xs">{errors?.file?.message}</p>
+              )}
+              {erroMessageFile !== "" && (
+                <p className="text-red-600 text-xs">{erroMessageFile}</p>
+              )}
+            </div>
           </div>
           <div className="flex flex-col gap-2 pt-8">
             <button

@@ -7,10 +7,11 @@ import Link from "next/link";
 import axios from "axios";
 
 import { useStore } from "../store";
-import { updatePostSchema } from "../zodSchema/updtadePost";
 import { createCommentSchema } from "../zodSchema/createComment";
 
 import Spinner from "./Spinner";
+
+import { Modal } from "./General/Modal";
 
 interface DateFormatOptions {
   year?: "numeric" | "2-digit";
@@ -57,16 +58,13 @@ interface Props {
 interface PostID {
   _id: string;
 }
-type FormData = z.infer<typeof updatePostSchema>;
 
 type FormDataComment = z.infer<typeof createCommentSchema>;
 
 export const Post = ({ _id }: PostID) => {
   const {
     user,
-    setUpdateIsOpen,
     setCurrentPostUpdatingId,
-    updateIsOpen,
     currentPostUpdatingId,
     postIsLoading,
     logout,
@@ -87,7 +85,6 @@ export const Post = ({ _id }: PostID) => {
   useEffect(() => {
     if (post) {
       setUrlFormated("http://localhost:3000/" + post?.banner.src);
-      console.log(urlFormated);
     }
   }, [post]);
 
@@ -155,7 +152,6 @@ export const Post = ({ _id }: PostID) => {
 
   const handleClickUpdate = (_id: string) => {
     setCurrentPostUpdatingId(_id);
-    setUpdateIsOpen(true);
   };
 
   useEffect(() => {
@@ -172,10 +168,6 @@ export const Post = ({ _id }: PostID) => {
   useEffect(() => {
     setLoadContent(postIsLoading);
   }, [postIsLoading]);
-
-  // useEffect(() => {
-  //   console.log(userHasLiked);
-  // }, []);
 
   useEffect(() => {
     if (post) {
@@ -215,23 +207,6 @@ export const Post = ({ _id }: PostID) => {
                     </span>
                   </div>
                 </div>
-                {/* <div className="w-[10%] mb-10 flex justify-center items-center cursor-pointer relative">
-              {configIsOpen && (
-                <div className="border border-slate-300 absolute bg-white rounded-md flex w-full h-fit py-2 mt-14 flex justify-center items-center">
-                  <span className="text-xs font-bold transition-colors text-zinc-800 hover:text-zinc-800/80">
-                    Edit
-                  </span>
-                </div>
-              )}
-              <div
-                onClick={() => setConfigISOpen(!configIsOpen)}
-                className="flex gap-1 py-2"
-              >
-                <div className="bg-zinc-800 w-1 h-1 rounded-full transition-colors hover:bg-zinc-800/80"></div>
-                <div className="bg-zinc-800 w-1 h-1 rounded-full transition-colors hover:bg-zinc-800/80"></div>
-                <div className="bg-zinc-800 w-1 h-1 rounded-full transition-colors hover:bg-zinc-800/80"></div>
-              </div>
-            </div> */}
               </div>
               <div className="w-[90%] h-fit flex flex-col p-2">
                 <h2 className="text-2xl font-black">{post.title}</h2>
@@ -243,13 +218,6 @@ export const Post = ({ _id }: PostID) => {
                 </div>
               </div>
               <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
-                {post?.user?.userName === user.userName && (
-                  <img
-                    onClick={() => handleClickUpdate(post._id)}
-                    className="cursor-pointer h-4 w-4 transition-colors hover:opacity-80"
-                    src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
-                  />
-                )}
                 <div className="flex justify-center items-center gap-1">
                   <span>{post.likes.length}</span>
                   <img
@@ -304,18 +272,26 @@ export const Post = ({ _id }: PostID) => {
       ) : (
         <Spinner />
       )}
-      {updateIsOpen ? <UpdateNews /> : null}
     </div>
   );
 };
 
 const CreateComment = ({ post }: Props) => {
-  const { user, logout, setCurrentPostUpdatingId, setPostIsLoading } =
-    useStore();
+  const {
+    user,
+    logout,
+    setCurrentPostUpdatingId,
+    setPostIsLoading,
+    fetchData,
+  } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
 
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [text, setText] = useState<string>("");
+
+  const [status, setStatus] = useState<string>("");
+
+  const [showModal, setShowModal] = useState<boolean | null>(null);
 
   const router = useRouter();
 
@@ -328,7 +304,6 @@ const CreateComment = ({ post }: Props) => {
   });
 
   async function onSubmit(data: FormDataComment) {
-    console.log(data);
     const baseUrl = "http://localhost:3000";
     setPostIsLoading(true);
     axios
@@ -346,18 +321,21 @@ const CreateComment = ({ post }: Props) => {
       )
       .then((response) => {
         console.log(response);
-        setPostIsLoading(false);
         setShowModal(true);
+        setText("Comment created.");
+        setStatus("success");
         const timeout = setTimeout(() => {
           setShowModal(false);
-          setCurrentPostUpdatingId(post._id);
+          fetchData("http://localhost:3000/news");
         }, 1200);
 
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
         console.log(error);
-        setPostIsLoading(false);
+        setShowModal(true);
+        setText("Error.");
+        setStatus("error");
         if (error.response.data.message === "Token has expired") {
           setShowModal(true);
           const timeout = setTimeout(() => {
@@ -371,6 +349,9 @@ const CreateComment = ({ post }: Props) => {
 
   return (
     <div className="w-[90%] flex justify-center gap-2 pr-2 py-1">
+      <div className="absolute w-full">
+        {showModal === true && <Modal text={text} status={status} />}
+      </div>
       <div className="w-[10%] flex justify-center items-center">
         <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
           <div
@@ -414,139 +395,6 @@ const CreateComment = ({ post }: Props) => {
           </p>
         )}
       </form>
-    </div>
-  );
-};
-
-const UpdateNews = () => {
-  const { user, logout, fetchData, setUpdateIsOpen, currentPostUpdatingId } =
-    useStore();
-
-  const [showModal, setShowModal] = useState<boolean>(false);
-
-  const [svg, setSvg] = useState<string>("ERRO");
-
-  const router = useRouter();
-
-  const {
-    handleSubmit,
-    register,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
-    resolver: zodResolver(updatePostSchema),
-  });
-
-  async function onSubmit(data: FormData) {
-    const baseUrl = "http://localhost:3000";
-
-    axios
-      .patch(`${baseUrl}/news/${currentPostUpdatingId}`, data, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        setShowModal(true);
-        setSvg("SUCCESS");
-        const timeout = setTimeout(() => {
-          setShowModal(false);
-          setUpdateIsOpen(false);
-          fetchData("http://localhost:3000/news");
-        }, 1200);
-
-        return () => clearTimeout(timeout);
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response.data.message === "Token has expired") {
-          setShowModal(true);
-          setSvg("ERRO");
-          const timeout = setTimeout(() => {
-            router.push("/login");
-            logout();
-          }, 1200);
-          return () => clearTimeout(timeout);
-        }
-      });
-  }
-
-  return (
-    <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60 -mt-36">
-      <div className="w-[500px] h-fit bg-white rounded-md p-4 flex justify-start items-center flex-col relative">
-        {showModal && <Modal svg={svg} />}
-        <div className="w-full absolute h-10 flex justify-end pr-4 flex just">
-          <button
-            onClick={() => setUpdateIsOpen(false)}
-            className="p-4 rounded-md  transition-colors bg-zinc-200 font-bold flex justify-center items-center text-zinc-800/50 hover:bg-red-500 hover:text-white"
-          >
-            X
-          </button>
-        </div>
-        <div className="w-full flex justify-center items-center">
-          <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
-            <div
-              className="rounded-full w-[90%] h-[90%]"
-              style={{
-                backgroundImage: `url(${user?.avatar})`,
-                backgroundSize: "cover",
-              }}
-            ></div>
-          </div>
-        </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] h-fit p-4">
-          <div className="flex flex-col gap-2">
-            <label className="font-bold text-zinc-800/60 tracking-wide">
-              Title:
-            </label>
-            <input
-              {...register("title", { required: true })}
-              id="title"
-              name="title"
-              placeholder="New title here"
-              autoComplete="off"
-              type="text"
-              className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
-            ></input>
-            {errors?.title && (
-              <p className="text-red-600 text-xs">{errors?.title?.message}</p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2 pt-4">
-            <label className="font-bold text-zinc-800/60 tracking-wide">
-              Subtitle:
-            </label>
-            <input
-              {...register("text", { required: true })}
-              id="text"
-              name="text"
-              placeholder="New text here"
-              autoComplete="off"
-              type="text"
-              className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
-            ></input>
-            {errors?.text && (
-              <p className="text-red-600 text-xs">{errors?.text?.message}</p>
-            )}
-          </div>
-          <div className="flex flex-col gap-2 pt-8">
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500  rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-const Modal = (props: { svg: string }) => {
-  return (
-    <div className="w-full h-full absolute flex justify-center items-center">
-      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center"></div>
     </div>
   );
 };

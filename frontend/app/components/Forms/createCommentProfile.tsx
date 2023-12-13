@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 
 import { createCommentSchema } from "../../zodSchema/createComment";
 
+import { Modal } from "../General/Modal";
+
 import * as z from "zod";
 
 type FormData = z.infer<typeof createCommentSchema>;
@@ -35,22 +37,16 @@ interface Props {
   };
 }
 
-const Modal = (props: { svg: string }) => {
-  return (
-    <div className="w-full h-full absolute flex justify-center items-center">
-      <div className="w-[300px] h-[150px] bg-white border border-slate-300 rounded-md flex flex-col justify-center items-center"></div>
-    </div>
-  );
-};
-
 export default function CreateCommentProfile({ post }: Props) {
   const { user, fetchDataProfile, logout } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
 
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [text, setText] = useState<string>("");
 
-  const [svg, setSvg] = useState<string>("ERRO");
+  const [status, setStatus] = useState<string>("");
+
+  const [showModal, setShowModal] = useState<boolean | null>(null);
 
   const router = useRouter();
 
@@ -63,7 +59,6 @@ export default function CreateCommentProfile({ post }: Props) {
   });
 
   async function onSubmit(data: FormData) {
-    console.log(data);
     const baseUrl = "http://localhost:3000";
 
     axios
@@ -81,8 +76,9 @@ export default function CreateCommentProfile({ post }: Props) {
       )
       .then((response) => {
         console.log(response);
-        setSvg("SUCCESS");
         setShowModal(true);
+        setText("Comment created.");
+        setStatus("success");
         const timeout = setTimeout(() => {
           setShowModal(false);
           fetchDataProfile(user.userName);
@@ -92,8 +88,10 @@ export default function CreateCommentProfile({ post }: Props) {
       })
       .catch((error) => {
         console.log(error);
+        setShowModal(true);
+        setText("Error.");
+        setStatus("error");
         if (error.response.data.message === "Token has expired") {
-          setSvg("ERRO");
           setShowModal(true);
           const timeout = setTimeout(() => {
             router.push("/login");
@@ -105,8 +103,10 @@ export default function CreateCommentProfile({ post }: Props) {
   }
 
   return (
-    <div className="w-[90%] flex justify-center gap-2 pr-2 py-1">
-      {showModal && <Modal svg={svg} />}
+    <div className="w-[90%] h-fit flex justify-center gap-2 pr-2 py-1">
+      <div className="absolute w-full">
+        {showModal === true && <Modal text={text} status={status} />}
+      </div>
       <div className="w-[10%] flex justify-center items-center">
         <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
           <div

@@ -6,9 +6,8 @@ import { useStore } from "../../store";
 import { Post } from "../Post";
 
 import Spinner from "../Spinner";
-import CreateNews from "../Forms/createNews";
 
-import Uploader from "../General/Uploader";
+import CreateNews from "../Forms/createNews";
 
 interface Post {
   avatar: string;
@@ -87,43 +86,9 @@ const PostsList = () => {
   );
 };
 
-const Alert = (props: { status: string; text: string }) => {
-  const { status, text } = props;
-
-  const [killAlert, setKillAlert] = useState<boolean>(false);
-
-  useEffect(() => {
-    const timeOut = setTimeout(() => {
-      setKillAlert(true);
-    }, 5000);
-
-    return () => {
-      clearTimeout(timeOut);
-    };
-  }, []);
-  return (
-    <div className="w-screen h-40 rounded-md fixed flex items-center pl-4">
-      <div className="w-80 h-[90%] bg-green-200 border border-green-300 flex rounded-md flex flex-col gap-4">
-        <span className="ml-4 mt-4 text-green-600 font-bold">SUCESSO!</span>
-        <div className="w-full h-full flex border-t border-green-300 items-center">
-          <p className="ml-4 text-sm text-green-500 font-medium">{text}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export default function Home() {
-  const {
-    user,
-    data,
-    loading,
-    fetchData,
-    createIsOpen,
-    setCreateIsOpen,
-    updateIsOpen,
-    setUpdateIsOpen,
-  } = useStore();
+  const { user, data, loading, fetchData, createIsOpen, setCreateIsOpen } =
+    useStore();
 
   const router = useRouter();
 
@@ -138,7 +103,6 @@ export default function Home() {
   useEffect(() => {
     setLoad(true);
     setCreateIsOpen(false);
-    setUpdateIsOpen(false);
   }, []);
 
   return (
