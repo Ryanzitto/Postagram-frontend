@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "../../store";
 import { useForm } from "react-hook-form";
@@ -11,6 +11,8 @@ import * as z from "zod";
 import { createPostSchema } from "../../zodSchema/createPost";
 
 import { Modal } from "../General/Modal";
+
+import { FileIcon } from "public/icons/fileIcon";
 
 type FormData = z.infer<typeof createPostSchema>;
 
@@ -24,6 +26,12 @@ export default function CreateNews() {
   const [status, setStatus] = useState<string>("");
 
   const [showModal, setShowModal] = useState<boolean | null>(null);
+
+  const [hasFile, setHasfile] = useState<boolean>(false);
+
+  const [fileName, setFileName] = useState<string>("");
+
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const {
     handleSubmit,
@@ -85,6 +93,21 @@ export default function CreateNews() {
         }
       });
   }
+
+  const onChange = (e) => {
+    if (e.target.files[0]) {
+      setHasfile(true);
+      setFileName(e.target.files[0].name);
+      setErroMessageFile("");
+
+      // Cria uma URL de dados para a imagem selecionada
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
 
   return (
     <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60">
@@ -155,7 +178,7 @@ export default function CreateNews() {
               Image:
             </label>
             <div
-              onChange={() => setErroMessageFile("")}
+              onChange={(e) => onChange(e)}
               className="relative p-4 border border-gray-300 bg-gray-100 rounded-md flex items-center justify-center"
             >
               <input
@@ -165,7 +188,24 @@ export default function CreateNews() {
                 type="file"
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              <span className="text-gray-700">Escolher arquivo</span>
+              {hasFile === false && (
+                <span className="text-gray-500">Escolher arquivo</span>
+              )}
+              {hasFile === true && (
+                <div className="flex flex-col gap-4 justify-center items-center">
+                  {previewImage && (
+                    <img
+                      src={previewImage}
+                      alt="Preview"
+                      className="max-w-full max-h-32 rounded-md border border-zinc-300"
+                    />
+                  )}
+                  <div className="flex gap-2 justify-center items-center">
+                    <FileIcon />
+                    <span className="text-gray-500">{fileName}</span>
+                  </div>
+                </div>
+              )}
               {errors?.file && (
                 <p className="text-red-600 text-xs">{errors?.file?.message}</p>
               )}
