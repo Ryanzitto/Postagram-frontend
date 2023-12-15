@@ -7,7 +7,7 @@ import { Post } from "../Post";
 
 import Spinner from "../Spinner";
 
-import CreateNews from "../Forms/createNews";
+import CreatePost from "../Forms/createPost";
 
 interface Post {
   avatar: string;
@@ -97,7 +97,7 @@ export default function Home() {
   const [showAlert, setShowAlert] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchData("http://localhost:3000/news");
+    fetchData("http://localhost:3000/post");
   }, []);
 
   useEffect(() => {
@@ -143,7 +143,7 @@ export default function Home() {
             )}
             <PostsList />
           </div>
-          {createIsOpen && <CreateNews />}
+          {createIsOpen && <CreatePost />}
         </>
       )}
     </main>

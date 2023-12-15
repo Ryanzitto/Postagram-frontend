@@ -16,7 +16,7 @@ import { FileIcon } from "public/icons/fileIcon";
 
 type FormData = z.infer<typeof createPostSchema>;
 
-export default function CreateNews() {
+export default function CreatePost() {
   const { setCreateIsOpen, user, fetchData, logout } = useStore();
 
   const [erroMessageFile, setErroMessageFile] = useState<string>("");
@@ -64,7 +64,7 @@ export default function CreateNews() {
     const baseUrl = "http://localhost:3000";
 
     axios
-      .post(`${baseUrl}/news/`, formData, config)
+      .post(`${baseUrl}/post/`, formData, config)
 
       .then((response) => {
         console.log(response);
@@ -74,7 +74,7 @@ export default function CreateNews() {
         const timeout = setTimeout(() => {
           setCreateIsOpen(false);
           setShowModal(false);
-          fetchData("http://localhost:3000/news");
+          fetchData("http://localhost:3000/post");
         }, 1200);
 
         return () => clearTimeout(timeout);

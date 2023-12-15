@@ -1,17 +1,17 @@
 import {
   createService,
   findAllService,
-  countNews,
+  countPost,
   getByIdService,
   searchByTitleService,
   searchByUserService,
   updateService,
-  deleteNewsService,
+  deletePostService,
   likeService,
   likeDeleteService,
   addCommentService,
   removeCommentService,
-} from "../services/news.service.js";
+} from "../services/post.service.js";
 
 import {
   createPictureService,
@@ -20,7 +20,7 @@ import {
 } from "../services/picture.service.js";
 
 import User from "../models/User.js";
-import News from "../models/News.js";
+import Post from "../models/Post.js";
 
 import Picture from "../models/Picture.js";
 
@@ -44,14 +44,14 @@ const create = async (req, res) => {
 
     const pictureRef = await createPictureService(picture);
 
-    const news = await createService({
+    const posts = await createService({
       title,
       text,
       banner: pictureRef._id,
       user: req.userId,
     });
 
-    res.status(201).send({ news });
+    res.status(201).send({ posts });
   } catch (error) {
     res.status(500).send({ message: error });
   }
@@ -71,9 +71,9 @@ const getAll = async (req, res) => {
     limit = Number(limit);
     offset = Number(offset);
 
-    const news = await findAllService(limit, offset);
+    const posts = await findAllService(limit, offset);
 
-    const total = await countNews();
+    const total = await countPost();
 
     const currentUrl = req.baseUrl;
 
@@ -89,11 +89,11 @@ const getAll = async (req, res) => {
         ? `${currentUrl}?limit=${limit}&offset=${previous}`
         : null;
 
-    if (news.length === 0) {
+    if (posts.length === 0) {
       return res.status(400).send({ message: "there is no registered news" });
     }
 
-    console.log(news);
+    console.log(posts);
 
     res.send({
       nextUrl,
@@ -101,7 +101,7 @@ const getAll = async (req, res) => {
       limit,
       offset,
       total,
-      results: news.map((item) => ({
+      results: posts.map((item) => ({
         _id: item._id,
         title: item.title,
         text: item.text,
@@ -125,29 +125,29 @@ const getById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const news = await getByIdService(id);
+    const posts = await getByIdService(id);
 
-    if (!news) {
-      res.status(400).send({ message: "news not found" });
+    if (!posts) {
+      res.status(400).send({ message: "post not found" });
     }
 
     return res.send({
-      news: {
-        _id: news._id,
-        title: news.title,
-        text: news.text,
-        banner: news.banner,
-        likes: news.likes,
-        comments: news.comments,
-        createdAt: news.createdAt,
+      posts: {
+        _id: posts._id,
+        title: posts.title,
+        text: posts.text,
+        banner: posts.banner,
+        likes: posts.likes,
+        comments: posts.comments,
+        createdAt: posts.createdAt,
         user: {
-          _id: news.user._id,
-          name: news.user.name,
-          userName: news.user.userName,
-          email: news.user.email,
-          avatar: news.user.avatar,
-          __v: news.user.__v,
-          bio: news.user.bio,
+          _id: posts.user._id,
+          name: posts.user.name,
+          userName: posts.user.userName,
+          email: posts.user.email,
+          avatar: posts.user.avatar,
+          __v: posts.user.__v,
+          bio: posts.user.bio,
         },
       },
     });
@@ -160,16 +160,16 @@ const getById = async (req, res) => {
 const searchByTitle = async (req, res) => {
   try {
     const { title } = req.query;
-    const news = await searchByTitleService(title);
+    const posts = await searchByTitleService(title);
 
-    if (news.length === 0) {
-      return res.status(400).send({ message: "no news existing " });
+    if (posts.length === 0) {
+      return res.status(400).send({ message: "no posts existing " });
     }
 
-    console.log(news);
+    console.log(posts);
 
     return res.send({
-      news: news.map((item) => ({
+      posts: posts.map((item) => ({
         id: item._id,
         title: item.title,
         text: item.text,
@@ -189,9 +189,9 @@ const searchByTitle = async (req, res) => {
 const searchByUser = async (req, res) => {
   try {
     const id = req.userId;
-    const news = await searchByUserService(id);
+    const posts = await searchByUserService(id);
     return res.send({
-      results: news.map((item) => ({
+      results: posts.map((item) => ({
         id: item._id,
         title: item.title,
         text: item.text,
@@ -221,14 +221,14 @@ const searchByUserName = async (req, res) => {
     }
 
     // Encontre todas as notícias associadas a esse usuário
-    const news = await News.find({ user: user._id })
+    const posts = await Post.find({ user: user._id })
       .sort({ _id: -1 })
       .populate("user")
       .populate("banner");
 
-    return res.status(200).json(news);
+    return res.status(200).json(posts);
   } catch (error) {
-    return res.status(500).json({ message: "Erro ao buscar notícias", error });
+    return res.status(500).json({ message: "Erro ao buscar Posts", error });
   }
 };
 
@@ -244,9 +244,9 @@ const update = async (req, res) => {
       });
     }
 
-    const news = await getByIdService(id);
+    const posts = await getByIdService(id);
 
-    if (news.user.id != req.userId) {
+    if (posts.user.id != req.userId) {
       return res.status(400).send({ message: "you did not update this post" });
     }
 
@@ -258,15 +258,15 @@ const update = async (req, res) => {
   }
 };
 
-const deleteNews = async (req, res) => {
+const deletePost = async (req, res) => {
   try {
     const { id } = req.params;
 
     const { idPicture } = req.body;
 
-    const news = await getByIdService(id);
+    const posts = await getByIdService(id);
 
-    if (news.user.id != req.userId) {
+    if (posts.user.id != req.userId) {
       return res.status(400).send({ message: "you did not delete this post" });
     }
 
@@ -276,13 +276,13 @@ const deleteNews = async (req, res) => {
       res.status(404).send({ message: "Imagem não encontrada" });
     }
 
-    await deleteNewsService(id);
+    await deletePostService(id);
 
     await removePictureService(idPicture);
 
     fs.unlinkSync(picture.src);
 
-    return res.send({ message: "news deleted!" });
+    return res.send({ message: "post deleted!" });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -292,10 +292,9 @@ const like = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
 
-  const newsLiked = await likeService(id, userId);
-  console.log(newsLiked);
+  const postLiked = await likeService(id, userId);
 
-  if (!newsLiked) {
+  if (!postLiked) {
     await likeDeleteService(id, userId);
     return res.status(200).send({ message: "like removed" });
   }
@@ -362,7 +361,7 @@ export {
   searchByUser,
   searchByUserName,
   update,
-  deleteNews,
+  deletePost,
   like,
   comment,
   removeComment,

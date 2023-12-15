@@ -108,7 +108,7 @@ export const Post = ({ _id }: PostID) => {
       const baseUrl = "http://localhost:3000";
       axios
         .patch(
-          `${baseUrl}/news/like/${post._id}`,
+          `${baseUrl}/post/like/${post._id}`,
           {},
           {
             headers: {
@@ -129,14 +129,14 @@ export const Post = ({ _id }: PostID) => {
   const fetchPost = () => {
     const baseUrl = "http://localhost:3000";
     axios
-      .get(`${baseUrl}/news/${_id}`, {
+      .get(`${baseUrl}/post/${_id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       })
       .then((response) => {
         console.log(response);
-        setPost(response.data.news);
+        setPost(response.data.posts);
       })
       .catch((error) => {
         console.log(error);
@@ -308,7 +308,7 @@ const CreateComment = ({ post }: Props) => {
     setPostIsLoading(true);
     axios
       .patch(
-        `${baseUrl}/news/comment/${post._id}`,
+        `${baseUrl}/post/comment/${post._id}`,
         {
           comment: data.comment,
           userName: user.userName,
@@ -326,7 +326,7 @@ const CreateComment = ({ post }: Props) => {
         setStatus("success");
         const timeout = setTimeout(() => {
           setShowModal(false);
-          fetchData("http://localhost:3000/news");
+          fetchData("http://localhost:3000/post");
         }, 1200);
 
         return () => clearTimeout(timeout);

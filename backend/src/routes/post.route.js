@@ -12,11 +12,11 @@ import {
   searchByUser,
   searchByUserName,
   update,
-  deleteNews,
+  deletePost,
   like,
   comment,
   removeComment,
-} from "../controllers/news.controller.js";
+} from "../controllers/post.controller.js";
 
 router.post("/", authMiddleware, upload.single("file"), create);
 router.get("/", getAll);
@@ -26,7 +26,7 @@ router.get("/byUserName/:userName", searchByUserName);
 router.get("/:id", authMiddleware, getById);
 router.post("/", authMiddleware, upload.single("file"), create);
 router.patch("/:id", authMiddleware, update);
-router.delete("/:id", authMiddleware, deleteNews);
+router.delete("/:id", authMiddleware, deletePost);
 router.patch("/like/:id", authMiddleware, like);
 router.patch("/comment/:id", authMiddleware, comment);
 router.patch("/removeComment/:id/:idComment", authMiddleware, removeComment);

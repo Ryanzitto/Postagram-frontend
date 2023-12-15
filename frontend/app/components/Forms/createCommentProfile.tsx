@@ -63,7 +63,7 @@ export default function CreateCommentProfile({ post }: Props) {
 
     axios
       .patch(
-        `${baseUrl}/news/comment/${post._id}`,
+        `${baseUrl}/post/comment/${post._id}`,
         {
           comment: data.comment,
           userName: user.userName,

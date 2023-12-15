@@ -15,7 +15,7 @@ import { Modal } from "../General/Modal";
 
 type FormData = z.infer<typeof updatePostSchema>;
 
-export default function UpdateNewsProfile(userName: any) {
+export default function UpdatePostProfile(userName: any) {
   const porra = userName.userName;
 
   const {
@@ -46,7 +46,7 @@ export default function UpdateNewsProfile(userName: any) {
     const baseUrl = "http://localhost:3000";
 
     axios
-      .patch(`${baseUrl}/news/${currentPostUpdatingId}`, data, {
+      .patch(`${baseUrl}/post/${currentPostUpdatingId}`, data, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },

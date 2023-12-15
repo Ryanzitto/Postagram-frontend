@@ -99,7 +99,7 @@ export const useStore = create(
         try {
           set({ loading: true });
           const response = await axios.get(
-            `http://localhost:3000/news/byUserName/${payload}`
+            `http://localhost:3000/post/byUserName/${payload}`
           );
           set({ data: response.data });
           set({ loading: false });

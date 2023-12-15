@@ -9,7 +9,7 @@ import * as z from "zod";
 import axios from "axios";
 import Link from "next/link";
 
-import UpdateNewsProfile from "app/components/Forms/updateNewsProfile";
+import UpdatePostProfile from "app/components/Forms/updatePostProfile";
 import Spinner from "app/components/Spinner";
 import CreateCommentProfile from "../Forms/createCommentProfile";
 
@@ -109,7 +109,7 @@ const Post = ({ post, userName }: Props) => {
     const baseUrl = "http://localhost:3000";
     axios
       .patch(
-        `${baseUrl}/news/like/${post._id}`,
+        `${baseUrl}/post/like/${post._id}`,
         {},
         {
           headers: {
@@ -130,7 +130,7 @@ const Post = ({ post, userName }: Props) => {
       idPicture: _idPicture,
     };
     axios
-      .delete(`${baseUrl}/news/${_id}`, {
+      .delete(`${baseUrl}/post/${_id}`, {
         data,
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -165,14 +165,14 @@ const Post = ({ post, userName }: Props) => {
   const fetchDataPost = (_id: string) => {
     const baseUrl = "http://localhost:3000";
     axios
-      .get(`${baseUrl}/news/${_id}`, {
+      .get(`${baseUrl}/post/${_id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       })
       .then((response) => {
         console.log(response);
-        setDataPost(response.data.news);
+        setDataPost(response.data.posts);
         setUserHasLiked(!userHasLiked);
       })
       .catch((error) => {
@@ -486,7 +486,7 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
           })}
         </div>
       )}
-      {updateIsOpen && <UpdateNewsProfile userName={userName} />}
+      {updateIsOpen && <UpdatePostProfile userName={userName} />}
     </div>
   );
 }

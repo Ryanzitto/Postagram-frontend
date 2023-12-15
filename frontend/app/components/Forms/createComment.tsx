@@ -53,7 +53,7 @@ export default function CreateComment({ post }: Props) {
 
     axios
       .patch(
-        `${baseUrl}/news/comment/${post._id}`,
+        `${baseUrl}/post/comment/${post._id}`,
         {
           comment: data.comment,
           userName: user.userName,
@@ -72,7 +72,7 @@ export default function CreateComment({ post }: Props) {
 
         const timeout = setTimeout(() => {
           setShowModal(false);
-          fetchData("http://localhost:3000/news");
+          fetchData("http://localhost:3000/post");
         }, 1200);
 
         return () => clearTimeout(timeout);
