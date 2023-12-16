@@ -7,7 +7,6 @@ export const registerSchema = z
     email: z.string().email(),
     password: z.string().min(8),
     confirmPassword: z.string(),
-    avatar: z.string(),
   })
   .refine((data) => data.password == data.confirmPassword, {
     message: "Senhas não coincidem",

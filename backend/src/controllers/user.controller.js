@@ -1,24 +1,42 @@
 import userService from "../services/user.service.js";
 
+import {
+  createPictureService,
+  updatePictureService,
+  getPictureByIdService,
+} from "../services/picture.service.js";
+
+import Picture from "../models/Picture.js";
+
+import fs from "fs";
+
 const create = async (req, res) => {
   try {
-    const { name, userName, email, password, avatar } = req.body;
+    const { name, userName, email, password } = req.body;
 
-    if (!name || !userName || !email || !password || !avatar) {
+    const file = req.file;
+
+    const picture = new Picture({
+      src: file.path,
+    });
+
+    if (!name || !userName || !email || !password) {
       res.status(400).send({ message: "Submit all fields for registration" });
     }
 
-    const user = await userService.createService(req.body);
+    const pictureRef = await createPictureService(picture);
+
+    const user = await userService.createService({
+      name: name,
+      userName: userName,
+      email: email,
+      password: password,
+      avatar: pictureRef._id,
+    });
 
     res.status(201).send({
       message: "User created successfully",
-      user: {
-        id: user._id,
-        name,
-        userName,
-        email,
-        avatar,
-      },
+      user: user,
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -69,27 +87,35 @@ const findByUserName = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { name, userName, email, password, avatar, bio } = req.body;
+    const { name, userName, email, password, bio, pictureID } = req.body;
 
-    if (!name && !userName && !email && !password && !avatar && !bio) {
-      res
+    const file = req.file;
+
+    const id = req.params.id;
+
+    if (!name && !userName && !email && !password && !bio && !file) {
+      return res
         .status(400)
         .send({ message: "Submit at least one field for registration" });
     }
 
-    const id = req.params.id;
+    if (file && pictureID) {
+      const pictureToRemove = await getPictureByIdService(pictureID);
 
-    await userService.updateService(
-      id,
-      name,
-      userName,
-      email,
-      password,
-      avatar,
-      bio
-    );
+      fs.unlinkSync(pictureToRemove.src);
 
-    res.send({ message: "User succesfully updated" });
+      const picture = new Picture({
+        src: file.path,
+      });
+
+      const updatedPicture = await updatePictureService(pictureID, picture);
+    }
+
+    const newUserData = req.body;
+
+    const userUpdated = await userService.updateService(id, newUserData);
+
+    res.status(200).send({ message: "User updated with sucess." });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }

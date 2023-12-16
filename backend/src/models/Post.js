@@ -12,7 +12,7 @@ const PostSchema = mongoose.Schema({
   banner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Picture",
-    require: true,
+    required: true,
   },
   createdAt: {
     type: Date,

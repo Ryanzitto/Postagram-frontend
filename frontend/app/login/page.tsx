@@ -195,7 +195,6 @@ const Cadastro = ({ func }: Props) => {
         userName: data.userName,
         email: data.email,
         password: data.password,
-        avatar: data.avatar,
       })
       .then((response) => {
         console.log(response);
@@ -356,29 +355,6 @@ const Cadastro = ({ func }: Props) => {
                     {errors?.confirmPassword && (
                       <p className="text-red-600 text-xs">
                         {errors?.confirmPassword?.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="w-[90%] flex flex-col gap-1 ">
-                    <label
-                      htmlFor="avatar"
-                      className="font-bold text-zinc-800 text-xs"
-                    >
-                      Avatar URL:
-                    </label>
-                    <input
-                      {...register("avatar", { required: true })}
-                      id="avatar"
-                      name="avatar"
-                      placeholder="https://imagem.com"
-                      autoComplete="off"
-                      className={`border border-zinc-300 rounded-md h-10 focus:outline-none text-sm pl-2 ${
-                        errors.avatar ? "border border-red-500" : null
-                      }`}
-                    ></input>
-                    {errors?.avatar && (
-                      <p className="text-red-600 text-xs">
-                        {errors?.avatar?.message}
                       </p>
                     )}
                   </div>

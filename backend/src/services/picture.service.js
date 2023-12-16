@@ -6,4 +6,16 @@ const getPictureByIdService = (id) => Picture.findById({ _id: id });
 
 const removePictureService = (id) => Picture.findOneAndRemove({ _id: id });
 
-export { createPictureService, getPictureByIdService, removePictureService };
+const updatePictureService = (id, picture) =>
+  Picture.findOneAndUpdate(
+    { _id: id },
+    { $set: { src: picture.src } },
+    { new: true }
+  );
+
+export {
+  createPictureService,
+  getPictureByIdService,
+  removePictureService,
+  updatePictureService,
+};
