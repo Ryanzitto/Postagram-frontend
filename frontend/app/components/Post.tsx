@@ -35,7 +35,10 @@ interface Post {
   createdAt: string;
   user: {
     userName: string;
-    avatar: string;
+    avatar: {
+      src: string;
+      _id: string;
+    };
     createdAt: string;
   };
 }
@@ -62,13 +65,7 @@ interface PostID {
 type FormDataComment = z.infer<typeof createCommentSchema>;
 
 export const Post = ({ _id }: PostID) => {
-  const {
-    user,
-    setCurrentPostUpdatingId,
-    currentPostUpdatingId,
-    postIsLoading,
-    logout,
-  } = useStore();
+  const { user, currentPostUpdatingId, postIsLoading, logout } = useStore();
 
   const [load, setLoad] = useState<boolean>(false);
 
@@ -82,9 +79,12 @@ export const Post = ({ _id }: PostID) => {
 
   const [urlFormated, setUrlFormated] = useState<string | undefined>(undefined);
 
+  const [urlAvatar, setUrlAvatar] = useState<string | undefined>(undefined);
+
   useEffect(() => {
     if (post) {
       setUrlFormated("http://localhost:3000/" + post?.banner.src);
+      setUrlAvatar("http://localhost:3000/" + post.user.avatar.src);
     }
   }, [post]);
 
@@ -135,7 +135,6 @@ export const Post = ({ _id }: PostID) => {
         },
       })
       .then((response) => {
-        console.log(response);
         setPost(response.data.posts);
       })
       .catch((error) => {
@@ -148,10 +147,6 @@ export const Post = ({ _id }: PostID) => {
           return () => clearTimeout(timeout);
         }
       });
-  };
-
-  const handleClickUpdate = (_id: string) => {
-    setCurrentPostUpdatingId(_id);
   };
 
   useEffect(() => {
@@ -173,6 +168,7 @@ export const Post = ({ _id }: PostID) => {
     if (post) {
       setUserHasLiked(post.likes.some((obj) => obj.userId === user._id));
     }
+    console.log(post);
   }, [post]);
 
   return (
@@ -186,17 +182,16 @@ export const Post = ({ _id }: PostID) => {
               <div className="w-[90%] h-20 flex items-center">
                 <div className="w-[10%]">
                   <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
-                    <div
-                      className="rounded-full w-[90%] h-[90%]"
-                      style={{
-                        backgroundImage: `url(${post.user?.avatar})`,
-                        backgroundSize: "cover",
-                      }}
-                    ></div>
+                    <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
+                      <img
+                        className="rounded-full w-full h-full object-cover"
+                        src={`http://localhost:3000/${post.user.avatar.src}`}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="w-[80%]">
-                  <div className="flex flex-col items-start h-full pb-3 pl-4">
+                <div className="w-[90%]">
+                  <div className="flex flex-col items-start h-full pb-3 pl-10 md:pl-8">
                     <span className="text-lg font-bold hover:opacity-80">
                       <Link href={`/perfil/${post?.user?.userName}`}>
                         {post?.user?.userName}
@@ -277,13 +272,7 @@ export const Post = ({ _id }: PostID) => {
 };
 
 const CreateComment = ({ post }: Props) => {
-  const {
-    user,
-    logout,
-    setCurrentPostUpdatingId,
-    setPostIsLoading,
-    fetchData,
-  } = useStore();
+  const { user, logout, setPostIsLoading, fetchData } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
 
@@ -348,19 +337,16 @@ const CreateComment = ({ post }: Props) => {
   }
 
   return (
-    <div className="w-[90%] flex justify-center gap-2 pr-2 py-1">
+    <div className="w-[90%] flex justify-center items-center gap-2 pr-2 py-1">
       <div className="absolute w-full">
         {showModal === true && <Modal text={text} status={status} />}
       </div>
-      <div className="w-[10%] flex justify-center items-center">
-        <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
-          <div
-            className="rounded-full w-[90%] h-[90%] cursor-pointer"
-            style={{
-              backgroundImage: `url(${user?.avatar})`,
-              backgroundSize: "cover",
-            }}
-          ></div>
+      <div className="w-[10%] max-h-[10%] flex justify-center items-center">
+        <div className="rounded-full w-10 h-10 flex justify-center items-center">
+          <img
+            className="rounded-full w-full h-full object-cover"
+            src={`http://localhost:3000/${user.avatar.src}`}
+          />
         </div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] flex flex-col">

@@ -1,9 +1,11 @@
 "use client";
+
 import "./globals.css";
 import { Menu } from "./components/Menu";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { useState } from "react";
+import { useStore } from "./store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,11 +20,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const [menuOpened, setMenuOpened] = useState(false);
-
+  const { user } = useStore();
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Menu menuOpened={menuOpened} setMenuOpened={setMenuOpened} />
+        {user.token !== null && (
+          <Menu menuOpened={menuOpened} setMenuOpened={setMenuOpened} />
+        )}
         {children}
       </body>
     </html>

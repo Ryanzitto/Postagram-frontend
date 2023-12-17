@@ -55,16 +55,15 @@ export const Menu = (props: MenuProps) => {
         <div className="flex-1 flex items-start justify-start flex-col gap-6 p-8 bg-zinc-100 pt-28">
           {load === true && (
             <>
-              {user.token !== null && (
+              {user !== null && (
                 <div className="w-full h-14 flex items-center">
                   <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
-                    <div
-                      className="rounded-full w-[90%] h-[90%] cursor-pointer"
-                      style={{
-                        backgroundImage: `url(${user?.avatar})`,
-                        backgroundSize: "cover",
-                      }}
-                    ></div>
+                    <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
+                      <img
+                        className="rounded-full w-full h-full object-cover"
+                        src={`http://localhost:3000/${user.avatar.src}`}
+                      />
+                    </div>
                   </div>
                   <div className="pl-4 flex gap-4">
                     <span
@@ -79,7 +78,9 @@ export const Menu = (props: MenuProps) => {
             </>
           )}
           <MenuButton label="FEED" path="/" />
-          <MenuButton label="PROFILE" path={`/perfil/${user.userName}`} />
+          {user != null && (
+            <MenuButton label="PROFILE" path={`/perfil/${user?.userName}`} />
+          )}
         </div>
       </div>
     </>

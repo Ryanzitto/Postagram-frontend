@@ -26,7 +26,10 @@ interface Props {
     createdAt: string;
     __v: number;
     user: {
-      avatar: string;
+      avatar: {
+        src: string;
+        _id: string;
+      };
       bio?: string;
       email: string;
       name: string;
@@ -107,15 +110,12 @@ export default function CreateCommentProfile({ post }: Props) {
       <div className="absolute w-full">
         {showModal === true && <Modal text={text} status={status} />}
       </div>
-      <div className="w-[10%] flex justify-center items-center">
-        <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
-          <div
-            className="rounded-full w-[90%] h-[90%] cursor-pointer"
-            style={{
-              backgroundImage: `url(${user?.avatar})`,
-              backgroundSize: "cover",
-            }}
-          ></div>
+      <div className="w-[10%] max-h-[10%] flex justify-center items-center">
+        <div className="rounded-full w-10 h-10 flex justify-center items-center">
+          <img
+            className="rounded-full w-full h-full object-cover"
+            src={`http://localhost:3000/${user.avatar.src}`}
+          />
         </div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] flex flex-col">

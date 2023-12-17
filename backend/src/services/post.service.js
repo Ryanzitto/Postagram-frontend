@@ -7,23 +7,40 @@ const findAllService = (limit, offset) =>
     .sort({ _id: -1 })
     .skip(offset)
     .limit(limit)
-    .populate("user")
+    .populate({
+      path: "user",
+      populate: { path: "avatar" },
+    })
     .populate("banner");
 
 const countPost = () => Post.countDocuments();
 
 const getByIdService = (id) =>
-  Post.findById(id).populate("user").populate("banner");
+  Post.findById(id)
+    .populate({
+      path: "user",
+      populate: { path: "avatar" },
+    })
+    .populate("banner");
 
 const searchByTitleService = (title) =>
   Post.find({
     title: { $regex: `${title || ""}`, $options: "i" },
   })
     .sort({ _id: -1 })
-    .populate("user");
+    .populate({
+      path: "user",
+      populate: { path: "avatar" },
+    });
 
 const searchByUserService = (id) =>
-  Post.find({ user: id }).sort({ _id: -1 }).populate("user").populate("banner");
+  Post.find({ user: id })
+    .sort({ _id: -1 })
+    .populate({
+      path: "user",
+      populate: { path: "avatar" },
+    })
+    .populate("banner");
 
 const updateService = (id, title, text, banner) =>
   Post.findOneAndUpdate(

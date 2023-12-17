@@ -5,34 +5,46 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import axios from "axios";
 
 interface User {
-  name: null | string;
-  userName: null | string;
-  email: null | string;
-  avatar: null | string;
-  id: null | string;
-  token: null | string;
+  name?: string;
+  userName?: string;
+  email?: string;
+  avatar?: {
+    src?: string;
+    _id?: string;
+  };
+  id?: string;
+  token?: string;
 }
-
-const unkownUser = {
-  name: null,
-  userName: null,
-  email: null,
-  avatar: null,
-  id: null,
-  _id: null,
-  token: null,
-  bio: null,
-};
 
 export const useStore = create(
   persist(
     (set: any) => ({
-      user: unkownUser,
+      user: {
+        name: "Guest",
+        userName: "Guest" + Date.now(),
+        email: null,
+        avatar: {
+          src: "uploads/avatar.png",
+          _id: null,
+        },
+        _id: "123",
+        token: null,
+      },
       login: (payload: User) => set(() => ({ user: payload })),
 
       logout: () =>
         set(() => ({
-          user: unkownUser,
+          user: {
+            name: "visitante",
+            userName: "Guest" + Date.now(),
+            email: null,
+            avatar: {
+              src: "uploads/avatar.png",
+              _id: null,
+            },
+            id: null,
+            token: null,
+          },
         })),
 
       data: [],

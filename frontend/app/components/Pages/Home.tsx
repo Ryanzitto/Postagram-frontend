@@ -8,9 +8,13 @@ import { Post } from "../Post";
 import Spinner from "../Spinner";
 
 import CreatePost from "../Forms/createPost";
+import { Modal } from "../General/Modal";
 
 interface Post {
-  avatar: string;
+  avatar: {
+    src: string;
+    _id: string;
+  };
   banner: {
     src: string;
     _id: string;
@@ -87,14 +91,19 @@ const PostsList = () => {
 };
 
 export default function Home() {
-  const { user, data, loading, fetchData, createIsOpen, setCreateIsOpen } =
-    useStore();
+  const {
+    user,
+    data,
+    loading,
+    fetchData,
+    createIsOpen,
+    setCreateIsOpen,
+    setCurrentPostUpdatingId,
+  } = useStore();
 
   const router = useRouter();
 
   const [load, setLoad] = useState<boolean>(false);
-
-  const [showAlert, setShowAlert] = useState<boolean>(false);
 
   useEffect(() => {
     fetchData("http://localhost:3000/post");
@@ -103,23 +112,33 @@ export default function Home() {
   useEffect(() => {
     setLoad(true);
     setCreateIsOpen(false);
+    setCurrentPostUpdatingId("");
   }, []);
+
+  useEffect(() => {
+    if (user.token === null) {
+      const timeOut = setTimeout(() => {
+        router.push("/login");
+      },2000)
+      
+      return () => clearTimeout(timeOut)
+    }
+  }, [user]);
 
   return (
     <main className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
       {load === true && (
         <>
-          <div className="w-[50%] h-full flex flex-col items-center gap-4 p-2 relative">
+          <div className="sm:w-[80%] md:w-[50%] h-full flex flex-col items-center gap-4 p-2 relative">
             <div className="w-full py-4 h-fit border border-slate-300 rounded-md flex">
               <div className="w-[20%] flex justify-center items-center">
-                <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
-                  <div
-                    className="rounded-full w-[90%] h-[90%]"
-                    style={{
-                      backgroundImage: `url(${user?.avatar})`,
-                      backgroundSize: "cover",
-                    }}
-                  ></div>
+                <div className="rounded-full w-16 h-16 bg-zinc-800 flex justify-center items-center">
+                  <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
+                    <img
+                      className="rounded-full w-full h-full object-cover"
+                      src={`http://localhost:3000/${user.avatar.src}`}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -144,6 +163,14 @@ export default function Home() {
             <PostsList />
           </div>
           {createIsOpen && <CreatePost />}
+          {user.token === null && (
+            <div className="fixed w-full h-full">
+              <Modal
+                text="OPS, você não está conectado, você será redirecionado."
+                status="error"
+              />
+            </div>
+          )}
         </>
       )}
     </main>

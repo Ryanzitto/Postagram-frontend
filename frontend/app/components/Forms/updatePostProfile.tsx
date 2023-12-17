@@ -23,6 +23,7 @@ export default function UpdatePostProfile(userName: any) {
     logout,
     setUpdateIsOpen,
     currentPostUpdatingId,
+    setCurrentPostUpdatingId,
     fetchDataProfile,
   } = useStore();
 
@@ -45,43 +46,45 @@ export default function UpdatePostProfile(userName: any) {
   async function onSubmit(data: FormData) {
     const baseUrl = "http://localhost:3000";
 
-    axios
-      .patch(`${baseUrl}/post/${currentPostUpdatingId}`, data, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        setShowModal(true);
-        setText("Post Updated.");
-        setStatus("success");
-        const timeout = setTimeout(() => {
-          setShowModal(false);
-          setUpdateIsOpen(false);
-          fetchDataProfile(porra);
-        }, 1200);
-
-        return () => clearTimeout(timeout);
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response.data.message === "Token has expired") {
+    if (data.text && data.title) {
+      axios
+        .patch(`${baseUrl}/post/${currentPostUpdatingId}`, data, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
+        .then((response) => {
+          console.log(response);
           setShowModal(true);
+          setText("Post Updated.");
+          setStatus("success");
           const timeout = setTimeout(() => {
-            router.push("/login");
-            logout();
+            setShowModal(false);
+            setUpdateIsOpen(false);
+            fetchDataProfile(porra);
+          }, 1200);
+
+          return () => clearTimeout(timeout);
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.data.message === "Token has expired") {
+            setShowModal(true);
+            const timeout = setTimeout(() => {
+              router.push("/login");
+              logout();
+            }, 1200);
+            return () => clearTimeout(timeout);
+          }
+          setShowModal(true);
+          setText(error.response.data.message);
+          setStatus("error");
+          const timeout = setTimeout(() => {
+            setShowModal(false);
           }, 1200);
           return () => clearTimeout(timeout);
-        }
-        setShowModal(true);
-        setText(error.response.data.message);
-        setStatus("error");
-        const timeout = setTimeout(() => {
-          setShowModal(false);
-        }, 1200);
-        return () => clearTimeout(timeout);
-      });
+        });
+    }
   }
 
   return (
@@ -98,19 +101,18 @@ export default function UpdatePostProfile(userName: any) {
         </div>
         <div className="w-full flex justify-center items-center">
           <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
-            <div
-              className="rounded-full w-[90%] h-[90%]"
-              style={{
-                backgroundImage: `url(${user?.avatar})`,
-                backgroundSize: "cover",
-              }}
-            ></div>
+            <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
+              <img
+                className="rounded-full w-full h-full object-cover"
+                src={`http://localhost:3000/${user.avatar.src}`}
+              />
+            </div>
           </div>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] h-fit p-4">
           <div className="flex flex-col gap-2">
             <label className="font-bold text-zinc-800/60 tracking-wide">
-              Title:
+              New Title:
             </label>
             <input
               {...register("title", { required: true })}
@@ -127,7 +129,7 @@ export default function UpdatePostProfile(userName: any) {
           </div>
           <div className="flex flex-col gap-2 pt-4">
             <label className="font-bold text-zinc-800/60 tracking-wide">
-              Subtitle:
+              New Subtitle:
             </label>
             <input
               {...register("text", { required: true })}

@@ -16,7 +16,10 @@ import CreateCommentProfile from "../Forms/createCommentProfile";
 import { createBioSchema } from "../../zodSchema/createBio";
 
 interface User {
-  avatar: string;
+  avatar: {
+    src: string;
+    _id: string;
+  };
   email: string;
   name: string;
   userName: string;
@@ -46,7 +49,10 @@ interface Post {
   createdAt: string;
   __v: number;
   user: {
-    avatar: string;
+    avatar: {
+      src: string;
+      _id: string;
+    };
     bio?: string;
     email: string;
     name: string;
@@ -70,7 +76,10 @@ interface Props {
     createdAt: string;
     __v: number;
     user: {
-      avatar: string;
+      avatar: {
+        src: string;
+        _id: string;
+      };
       bio?: string;
       email: string;
       name: string;
@@ -90,6 +99,7 @@ const Post = ({ post, userName }: Props) => {
     loading,
     fetchDataProfile,
     setUpdateIsOpen,
+    updateIsOpen,
     setCurrentPostUpdatingId,
   } = useStore();
 
@@ -184,20 +194,23 @@ const Post = ({ post, userName }: Props) => {
     setUpdateIsOpen(true);
     setCurrentPostUpdatingId(post._id);
   };
+
   useEffect(() => {
     setLoad(true);
   }, []);
 
   return (
-    <div className="flex flex-col h-fit bg-white justify-start items-center relative rounded-md hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
+    <div className="w-[95%] flex flex-col h-fit bg-white justify-start items-center relative rounded-md hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
       {load === true && loading === false ? (
         <>
           <div className="w-[90%] h-20 flex justify-start items-center">
             <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
-              <img
-                className="flex rounded-full w-[90%] h-[90%]"
-                src={dataPost?.user?.avatar}
-              />
+              <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
+                <img
+                  className="rounded-full w-full h-full object-cover"
+                  src={`http://localhost:3000/${user.avatar.src}`}
+                />
+              </div>
             </div>
 
             <div className="flex flex-col items-start h-full pt-2 pl-2">
@@ -392,7 +405,7 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
       } bg-white justify-start items-center`}
     >
       {load === true && (
-        <div className="w-[50%] h-full flex flex-col justify-start gap-4">
+        <div className="sm:w-[80%] md:w-[50%] relative h-full flex flex-col justify-center items-center gap-4">
           <div
             className="bg-blue-500 w-full h-[200px] relative flex justify-start relative rounded-sm"
             style={{
@@ -412,12 +425,19 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
             <div className="flex">
               <div className="absolute mt-32 ml-20 bg-zinc-800 rounded-full border-4 border-zinc-800 justify-center items-center">
                 <div
-                  className="w-32 h-32 rounded-full"
+                  className="w-32 h-32 rounded-full flex justify-center items-center"
                   style={{
                     backgroundImage: `url(${userProfile?.avatar})`,
                     backgroundSize: "cover",
                   }}
-                ></div>
+                >
+                  <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
+                    <img
+                      className="rounded-full w-full h-full object-cover"
+                      src={`http://localhost:3000/${userProfile?.avatar.src}`}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -238,6 +238,7 @@ const update = async (req, res) => {
 
     const { id } = req.params;
 
+    console.log(id);
     if (!title && !text) {
       return res.status(400).send({
         message: "Submit at least one field",
@@ -245,6 +246,8 @@ const update = async (req, res) => {
     }
 
     const posts = await getByIdService(id);
+
+    console.log(posts);
 
     if (posts.user.id != req.userId) {
       return res.status(400).send({ message: "you did not update this post" });
