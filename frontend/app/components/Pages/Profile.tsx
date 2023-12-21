@@ -1,5 +1,7 @@
 "use client";
 
+import { motion, AnimatePresence } from "framer-motion";
+
 import { useEffect, useState } from "react";
 import { useStore } from "app/store";
 import { useForm } from "react-hook-form";
@@ -200,7 +202,22 @@ const Post = ({ post, userName }: Props) => {
   }, []);
 
   return (
-    <div className="w-[95%] flex flex-col h-fit bg-white justify-start items-center relative rounded-md hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
+    <motion.div
+      whileInView={"visible"}
+      initial={{
+        opacity: 0,
+      }}
+      variants={{
+        visible: {
+          opacity: 1,
+          transition: {
+            duration: 1,
+            delay: 0,
+          },
+        },
+      }}
+      className="w-[95%] flex flex-col h-fit bg-white justify-start items-center relative rounded-md hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300"
+    >
       {load === true && loading === false ? (
         <>
           <div className="w-[90%] h-20 flex justify-start items-center">
@@ -236,29 +253,52 @@ const Post = ({ post, userName }: Props) => {
           </div>
           <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
             <div className="rounded-full p-2 transition-colors cursor-pointer relative flex justify-center items-center">
-              {showModal && (
-                <div className="gap-4 absolute w-[250px] h-fit py-4 px-2 rounded-md border border-slate-300 flex flex-col bg-white text-center">
-                  <span className="text-xs font-bold">
-                    Are you sure to delete this post?
-                  </span>
-                  <div className="flex w-full justify-center items-center gap-4">
-                    <button
-                      onClick={() =>
-                        deletePost(dataPost._id, dataPost.banner._id)
-                      }
-                      className="font-bold bg-zinc-100 rounded-md px-4 py-1 text-sm hover:text-white hover:bg-green-500"
-                    >
-                      yes
-                    </button>
-                    <button
-                      onClick={() => setShowModal(false)}
-                      className="font-bold bg-zinc-100 rounded-md px-4 py-1 text-sm hover:text-white hover:bg-red-500"
-                    >
-                      no
-                    </button>
-                  </div>
-                </div>
-              )}
+              <AnimatePresence>
+                {showModal && (
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      y: 50,
+                      scale: 0.8,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      scale: 1,
+                    }}
+                    transition={{
+                      duration: 0.2,
+                      delay: 0,
+                    }}
+                    className="gap-4 absolute w-[250px] h-fit py-4 px-2 rounded-md border border-slate-300 flex flex-col bg-white text-center"
+                  >
+                    <span className="text-xs font-bold">
+                      Are you sure to delete this post?
+                    </span>
+                    <div className="flex w-full justify-center items-center gap-4">
+                      <button
+                        onClick={() =>
+                          deletePost(dataPost._id, dataPost.banner._id)
+                        }
+                        className="font-bold bg-zinc-100 rounded-md px-4 py-1 text-sm hover:text-white hover:bg-green-500"
+                      >
+                        yes
+                      </button>
+                      <button
+                        onClick={() => setShowModal(false)}
+                        className="font-bold bg-zinc-100 rounded-md px-4 py-1 text-sm hover:text-white hover:bg-red-500"
+                      >
+                        no
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <div className="w-[90%] flex justify-end items-center gap-6 h-16 pr-2 py-1">
                 {user?._id === dataPost?.user?._id && (
                   <>
@@ -328,7 +368,7 @@ const Post = ({ post, userName }: Props) => {
       ) : (
         <Spinner />
       )}
-    </div>
+    </motion.div>
   );
 };
 
@@ -450,38 +490,62 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
                 @{userProfile?.userName}
               </h2>
             </div>
-            {showBioForm === true && (
-              <div className="w-[80%] pl-6 flex pt-4 items-center">
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="flex flex-col gap-4"
+
+            <AnimatePresence>
+              {showBioForm === true && (
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    y: 50,
+                    scale: 0.8,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.8,
+                  }}
+                  transition={{
+                    duration: 0.2,
+                    delay: 0,
+                  }}
+                  className="w-[80%] pl-6 flex pt-4 items-center"
                 >
-                  <label className="font-bold text-zinc-800/60 tracking-wide">
-                    Write a new Bio:
-                  </label>
-                  <input
-                    {...register("bio", { required: true })}
-                    id="bio"
-                    name="bio"
-                    placeholder="Tell about you"
-                    autoComplete="off"
-                    type="text"
-                    className="border border-transparent border-b-slate-300 focus:outline-none text-zinc-800 font-medium"
-                  ></input>
-                  <button
-                    type="submit"
-                    className="px-4 py-1 bg-zinc-800 text-white rounded-md transition-colors hover:bg-zinc-600"
+                  <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="flex flex-col gap-4"
                   >
-                    Send
-                  </button>
-                  {errors?.bio && (
-                    <p className="text-red-600 text-xs pt-2">
-                      {errors?.bio?.message}
-                    </p>
-                  )}
-                </form>
-              </div>
-            )}
+                    <label className="font-bold text-zinc-800/60 tracking-wide">
+                      Write a new Bio:
+                    </label>
+                    <input
+                      {...register("bio", { required: true })}
+                      id="bio"
+                      name="bio"
+                      placeholder="Tell about you"
+                      autoComplete="off"
+                      type="text"
+                      className="border border-transparent border-b-slate-300 focus:outline-none text-zinc-800 font-medium"
+                    ></input>
+                    <button
+                      type="submit"
+                      className="px-4 py-1 bg-zinc-800 text-white rounded-md transition-colors hover:bg-zinc-600"
+                    >
+                      Send
+                    </button>
+                    {errors?.bio && (
+                      <p className="text-red-600 text-xs pt-2">
+                        {errors?.bio?.message}
+                      </p>
+                    )}
+                  </form>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {showBioForm === false && (
               <div className="w-[80%] flex gap-2 items-center pl-6 rounded-md text-sm pt-8">
                 <span className="text-zinc-800/80 font-medium">
@@ -506,7 +570,9 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
           })}
         </div>
       )}
-      {updateIsOpen && <UpdatePostProfile userName={userName} />}
+      <AnimatePresence>
+        {updateIsOpen && <UpdatePostProfile userName={userName} />}
+      </AnimatePresence>
     </div>
   );
 }

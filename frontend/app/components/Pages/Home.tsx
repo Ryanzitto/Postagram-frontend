@@ -1,5 +1,7 @@
 "use client";
 
+import { motion, AnimatePresence } from "framer-motion";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "../../store";
@@ -119,9 +121,9 @@ export default function Home() {
     if (user.token === null) {
       const timeOut = setTimeout(() => {
         router.push("/login");
-      },2000)
-      
-      return () => clearTimeout(timeOut)
+      }, 2000);
+
+      return () => clearTimeout(timeOut);
     }
   }, [user]);
 
@@ -129,7 +131,22 @@ export default function Home() {
     <main className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
       {load === true && (
         <>
-          <div className="sm:w-[80%] md:w-[50%] h-full flex flex-col items-center gap-4 p-2 relative">
+          <motion.div
+            whileInView={"visible"}
+            initial={{
+              opacity: 0,
+            }}
+            variants={{
+              visible: {
+                opacity: 1,
+                transition: {
+                  duration: 1,
+                  delay: 0,
+                },
+              },
+            }}
+            className="sm:w-[80%] md:w-[50%] h-full flex flex-col items-center gap-4 p-2 relative"
+          >
             <div className="w-full py-4 h-fit border border-slate-300 rounded-md flex">
               <div className="w-[20%] flex justify-center items-center">
                 <div className="rounded-full w-16 h-16 bg-zinc-800 flex justify-center items-center">
@@ -161,8 +178,9 @@ export default function Home() {
               <Spinner />
             )}
             <PostsList />
-          </div>
-          {createIsOpen && <CreatePost />}
+          </motion.div>
+          <AnimatePresence>{createIsOpen && <CreatePost />}</AnimatePresence>
+
           {user.token === null && (
             <div className="fixed w-full h-full">
               <Modal

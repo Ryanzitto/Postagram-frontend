@@ -11,6 +11,8 @@ import { loginSchema } from "../zodSchema/login";
 import { useStore } from "app/store";
 import { useState } from "react";
 
+import { FileIcon } from "public/icons/fileIcon";
+
 interface Props {
   func: (newForm: string) => void;
 }
@@ -68,22 +70,24 @@ const Login = ({ func }: Props) => {
       {status === "success" && (
         <Modal text="Logged with success" status={status} />
       )}
-      <div className="w-1/2 h-full rounded-l-md bg-white pb-8 flex flex-col items-center">
-        <div className="w-full h-16 flex justify-start items-center pl-10">
-          <span className="text-3xl font-black text-zinc-800">A</span>
-        </div>
-        <div className="w-full h-28 flex flex-col justify-center items-start pl-10 gap-2">
-          <div className="flex gap-2">
-            <span className="text-4xl font-black text-zinc-600/90">We are</span>
-            <span className="text-4xl font-black text-zinc-800">App</span>
+      <div className="w-full lg:w-1/2 sm:rounded-md h-full lg:rounded-r-none bg-white flex flex-col items-center">
+        <div className="w-full h-28 flex flex-col justify-center items-start px-2 sm:pl-12 lg:pl-8 pt-6 gap-2">
+          <div className="flex flex-col">
+            <span className="text-2xl font-black text-zinc-600/60">We are</span>
+            <div className="flex">
+              <span className="text-4xl font-black text-zinc-700">POST</span>
+              <span className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
+                AGRAM
+              </span>
+            </div>
           </div>
-          <p className="text-sm font-medium text-zinc-800/80">
+          <p className="text-sm font-medium text-zinc-800/80 pb-6">
             Welcome back, please login to your account
           </p>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-[80%] border border-zinc-300 rounded-md h-fit py-8 flex flex-col items-center gap-4"
+          className="w-[80%] border border-zinc-300 rounded-md h-fit py-8 flex flex-col items-center gap-4 mt-6"
         >
           <div className="w-[80%] flex flex-col gap-1">
             <label htmlFor="email" className="font-bold text-zinc-800 text-sm">
@@ -166,7 +170,7 @@ const Login = ({ func }: Props) => {
           </div>
         </form>
       </div>
-      <div className="w-1/2 h-full rounded-r-md bg-zinc-800"></div>
+      <div className="hidden lg:flex w-1/2 h-full rounded-r-md bg-zinc-800"></div>
     </div>
   );
 };
@@ -216,6 +220,31 @@ const Cadastro = ({ func }: Props) => {
     func("LOGIN");
   };
 
+  const [showModal, setShowModal] = useState<boolean | null>(null);
+
+  const [hasFile, setHasfile] = useState<boolean>(false);
+
+  const [fileName, setFileName] = useState<string>("");
+
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const [erroMessageFile, setErroMessageFile] = useState<string>("");
+
+  const onChange = (e) => {
+    if (e.target.files[0]) {
+      setHasfile(true);
+      setFileName(e.target.files[0].name);
+      setErroMessageFile("");
+
+      // Cria uma URL de dados para a imagem selecionada
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
   return (
     <>
       <div className="w-full h-fit rounded-md bg-white shadow-2xl pb-6 flex justify-center items-center flex flex-col">
@@ -223,9 +252,9 @@ const Cadastro = ({ func }: Props) => {
           <Modal text="Logged with success" status={status} />
         ) : null}
         <div className="w-full h-28 flex flex-col justify-center items-center gap-2 bg-zinc-800 rounded-t-md">
-          <div className="flex gap-2">
-            <span className="text-4xl font-black text-white/80">We are</span>
-            <span className="text-4xl font-black text-white">App</span>
+          <div className="flex flex-col">
+            <span className="text-2xl font-black text-white/80">We are</span>
+            <span className="text-4xl font-black text-white">POSTAGRAM</span>
           </div>
           <p className="text-sm font-medium text-white/80">
             Hi, create an account to continue
@@ -357,6 +386,60 @@ const Cadastro = ({ func }: Props) => {
                         {errors?.confirmPassword?.message}
                       </p>
                     )}
+                  </div>
+                  <div className="flex w-[90%] h-fit flex-col gap-2">
+                    <label
+                      htmlFor="file"
+                      className="font-bold text-zinc-800 text-xs"
+                    >
+                      Avatar:
+                    </label>
+                    <div
+                      onChange={(e) => onChange(e)}
+                      className={`relative p-4  ${
+                        hasFile ? null : "border border-gray-300 bg-gray-100"
+                      } rounded-md flex items-start justify-start`}
+                    >
+                      <input
+                        {...register("file", { required: true })}
+                        id="file"
+                        name="file"
+                        type="file"
+                        className="absolute inset-0 h-10 opacity-0 cursor-pointer"
+                      />
+                      {hasFile === false && (
+                        <span className="text-gray-500">Escolher arquivo</span>
+                      )}
+                      {hasFile === true && (
+                        <div className="flex gap-2 justify-start items-start">
+                          {previewImage && (
+                            <img
+                              src={previewImage}
+                              alt="Preview"
+                              className="w-12 h-12 rounded-full object-cover border border-zinc-300"
+                            />
+                          )}
+                          <div className="flex flex-col justify-start items-start gap-1">
+                            <span className="text-gray-500 text-xs">
+                              {fileName}
+                            </span>
+                            <span className="text-zinc-600 rounded-md p-1 text-xs">
+                              Click to change
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      {errors?.file && (
+                        <p className="text-red-600 text-xs">
+                          {errors?.file?.message}
+                        </p>
+                      )}
+                      {erroMessageFile !== "" && (
+                        <p className="text-red-600 text-xs">
+                          {erroMessageFile}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { motion, AnimatePresence } from "framer-motion";
+
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -89,7 +91,27 @@ export default function UpdatePostProfile(userName: any) {
 
   return (
     <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60">
-      <div className="w-[500px] h-fit bg-white rounded-md p-4 flex justify-start items-center flex-col relative">
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 50,
+          scale: 0.8,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          scale: 1,
+        }}
+        exit={{
+          opacity: 0,
+          scale: 0.8,
+        }}
+        transition={{
+          duration: 0.2,
+          delay: 0,
+        }}
+        className="w-[500px] h-fit bg-white rounded-md p-4 flex justify-start items-center flex-col relative"
+      >
         {showModal === true && <Modal text={text} status={status} />}
         <div className="w-full absolute h-10 flex justify-end pr-4 flex just">
           <button
@@ -153,7 +175,7 @@ export default function UpdatePostProfile(userName: any) {
             </button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }

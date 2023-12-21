@@ -1,4 +1,7 @@
 import * as z from "zod";
+
+import { motion, AnimatePresence } from "framer-motion";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -172,7 +175,22 @@ export const Post = ({ _id }: PostID) => {
   }, [post]);
 
   return (
-    <div className="relative w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300">
+    <motion.div
+      whileInView={"visible"}
+      initial={{
+        opacity: 0,
+      }}
+      variants={{
+        visible: {
+          opacity: 1,
+          transition: {
+            duration: 1,
+            delay: 0,
+          },
+        },
+      }}
+      className="relative w-full h-fit rounded-md flex items-center flex-col hover:bg-zinc-200/30 py-6 text-zinc-800 border border-slate-300"
+    >
       {load === true && post ? (
         <>
           {loadContent === true && currentPostUpdatingId === _id ? (
@@ -267,7 +285,7 @@ export const Post = ({ _id }: PostID) => {
       ) : (
         <Spinner />
       )}
-    </div>
+    </motion.div>
   );
 };
 

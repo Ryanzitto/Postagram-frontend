@@ -11,6 +11,7 @@
     "@hookform/resolvers": "^3.3.2",
     "autoprefixer": "10.4.15",
     "axios": "^1.5.1",
+    "framer-motion": "^10.16.16",
     "next": "latest",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
