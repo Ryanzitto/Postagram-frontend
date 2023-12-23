@@ -46,7 +46,7 @@ export default function UpdatePostProfile(userName: any) {
   });
 
   async function onSubmit(data: FormData) {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
 
     if (data.text && data.title) {
       axios
@@ -124,7 +124,7 @@ export default function UpdatePostProfile(userName: any) {
         <div className="w-16 h-16 rounded-full bg-zinc-800 flex ">
           <img
             className="rounded-full object-cover"
-            src={`http://localhost:3000/${user.avatar.src}`}
+            src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
           />
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] h-fit p-4">

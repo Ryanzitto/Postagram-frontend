@@ -5,4 +5,4 @@ export const updatePostSchema = z.object({
   text: z.string().min(1),
 });
 
-export type User = z.infer<typeof updatePostSchema>;
+export type UpdatePost = z.infer<typeof updatePostSchema>;

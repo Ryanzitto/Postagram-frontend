@@ -86,8 +86,10 @@ export const Post = ({ _id }: PostID) => {
 
   useEffect(() => {
     if (post) {
-      setUrlFormated("http://localhost:3000/" + post?.banner.src);
-      setUrlAvatar("http://localhost:3000/" + post.user.avatar.src);
+      setUrlFormated("https://postagram-p8hh.onrender.com/" + post?.banner.src);
+      setUrlAvatar(
+        "https://postagram-p8hh.onrender.com/" + post.user.avatar.src
+      );
     }
   }, [post]);
 
@@ -108,7 +110,7 @@ export const Post = ({ _id }: PostID) => {
 
   const like = () => {
     if (post) {
-      const baseUrl = "http://localhost:3000";
+      const baseUrl = "https://postagram-p8hh.onrender.com";
       axios
         .patch(
           `${baseUrl}/post/like/${post._id}`,
@@ -130,7 +132,7 @@ export const Post = ({ _id }: PostID) => {
   };
 
   const fetchPost = () => {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
     axios
       .get(`${baseUrl}/post/${_id}`, {
         headers: {
@@ -203,7 +205,7 @@ export const Post = ({ _id }: PostID) => {
                     <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                       <img
                         className="rounded-full w-full h-full object-cover"
-                        src={`http://localhost:3000/${post.user.avatar.src}`}
+                        src={`https://postagram-p8hh.onrender.com/${post.user.avatar.src}`}
                       />
                     </div>
                   </div>
@@ -311,7 +313,7 @@ const CreateComment = ({ post }: Props) => {
   });
 
   async function onSubmit(data: FormDataComment) {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
     setPostIsLoading(true);
     axios
       .patch(
@@ -333,7 +335,7 @@ const CreateComment = ({ post }: Props) => {
         setStatus("success");
         const timeout = setTimeout(() => {
           setShowModal(false);
-          fetchData("http://localhost:3000/post");
+          fetchData("https://postagram-p8hh.onrender.com/post");
         }, 1200);
 
         return () => clearTimeout(timeout);
@@ -363,7 +365,7 @@ const CreateComment = ({ post }: Props) => {
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
             className="rounded-full w-full h-full object-cover"
-            src={`http://localhost:3000/${user.avatar.src}`}
+            src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
           />
         </div>
       </div>

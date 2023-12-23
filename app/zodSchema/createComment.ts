@@ -4,4 +4,4 @@ export const createCommentSchema = z.object({
   comment: z.string().min(1),
 });
 
-export type User = z.infer<typeof createCommentSchema>;
+export type Comment = z.infer<typeof createCommentSchema>;

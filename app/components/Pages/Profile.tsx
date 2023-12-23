@@ -121,7 +121,7 @@ const Post = ({ post, userName }: Props) => {
   );
 
   const like = () => {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
     axios
       .patch(
         `${baseUrl}/post/like/${post._id}`,
@@ -139,7 +139,7 @@ const Post = ({ post, userName }: Props) => {
   };
 
   const deletePost = (_id: string | undefined, _idPicture: string) => {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
 
     const data = {
       idPicture: _idPicture,
@@ -178,7 +178,7 @@ const Post = ({ post, userName }: Props) => {
   };
 
   const fetchDataPost = (_id: string) => {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
     axios
       .get(`${baseUrl}/post/${_id}`, {
         headers: {
@@ -228,7 +228,7 @@ const Post = ({ post, userName }: Props) => {
               <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                 <img
                   className="rounded-full w-full h-full object-cover"
-                  src={`http://localhost:3000/${user.avatar.src}`}
+                  src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
                 />
               </div>
             </div>
@@ -250,7 +250,7 @@ const Post = ({ post, userName }: Props) => {
             <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
               <img
                 className="rounded-md"
-                src={"http://localhost:3000/" + dataPost.banner.src}
+                src={"https://postagram-p8hh.onrender.com/" + dataPost.banner.src}
               />
             </div>
           </div>
@@ -397,7 +397,7 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
   });
 
   async function onSubmit(dataPost: FormData) {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
 
     axios
       .put(`${baseUrl}/user/${user?._id}`, dataPost, {
@@ -407,7 +407,7 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
       })
       .then((response) => {
         setUserName(userName);
-        const baseUrl = "http://localhost:3000";
+        const baseUrl = "https://postagram-p8hh.onrender.com";
         axios
           .get(`${baseUrl}/user/${userName}`)
           .then((response) => {
@@ -427,7 +427,7 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
 
   useEffect(() => {
     setUserName(userName);
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
     axios
       .get(`${baseUrl}/user/${userName}`)
       .then((response) => {
@@ -489,7 +489,7 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
                   <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                     <img
                       className="rounded-full w-full h-full object-cover"
-                      src={`http://localhost:3000/${userProfile?.avatar.src}`}
+                      src={`https://postagram-p8hh.onrender.com/${userProfile?.avatar.src}`}
                     />
                   </div>
                 </div>

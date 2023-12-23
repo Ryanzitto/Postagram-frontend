@@ -62,7 +62,7 @@ export default function CreateCommentProfile({ post }: Props) {
   });
 
   async function onSubmit(data: FormData) {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
 
     axios
       .patch(
@@ -114,7 +114,7 @@ export default function CreateCommentProfile({ post }: Props) {
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
             className="rounded-full w-full h-full object-cover"
-            src={`http://localhost:3000/${user.avatar.src}`}
+            src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
           />
         </div>
       </div>

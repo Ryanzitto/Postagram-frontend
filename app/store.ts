@@ -111,7 +111,7 @@ export const useStore = create(
         try {
           set({ loading: true });
           const response = await axios.get(
-            `http://localhost:3000/post/byUserName/${payload}`
+            `https://postagram-p8hh.onrender.com/post/byUserName/${payload}`
           );
           set({ data: response.data });
           set({ loading: false });

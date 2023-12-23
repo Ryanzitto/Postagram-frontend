@@ -44,7 +44,7 @@ const PostsList = () => {
 
   const next = () => {
     if (nextUrl !== null) {
-      fetchData("http://localhost:3000" + nextUrl);
+      fetchData("https://postagram-p8hh.onrender.com" + nextUrl);
       //@ts-ignore
       if (currentPage < numeroDePáginas) {
         setCurrentPage((numeroDePáginas) => numeroDePáginas + 1);
@@ -54,7 +54,7 @@ const PostsList = () => {
 
   const prev = () => {
     if (previousUrl !== null) {
-      fetchData("http://localhost:3000" + previousUrl);
+      fetchData("https://postagram-p8hh.onrender.com" + previousUrl);
       if (currentPage === 1) {
         return;
       } else {
@@ -108,7 +108,7 @@ export default function Home() {
   const [load, setLoad] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchData("http://localhost:3000/post");
+    fetchData("https://postagram-p8hh.onrender.com/post");
   }, []);
 
   useEffect(() => {
@@ -152,7 +152,7 @@ export default function Home() {
                 <div className="rounded-full w-16 h-16 bg-zinc-800 flex justify-center items-center">
                   <img
                     className="rounded-full w-[90%] h-[90%] object-cover"
-                    src={`http://localhost:3000/${user.avatar.src}`}
+                    src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
                   />
                 </div>
               </div>

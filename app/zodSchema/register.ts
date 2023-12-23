@@ -14,4 +14,4 @@ export const registerSchema = z
     path: ["password"],
   });
 
-export type User = z.infer<typeof registerSchema>;
+export type Register = z.infer<typeof registerSchema>;

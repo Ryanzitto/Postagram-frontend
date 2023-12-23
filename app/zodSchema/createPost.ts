@@ -6,4 +6,4 @@ export const createPostSchema = z.object({
   file: z.instanceof(FileList),
 });
 
-export type User = z.infer<typeof createPostSchema>;
+export type POst = z.infer<typeof createPostSchema>;

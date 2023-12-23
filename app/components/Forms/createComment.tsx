@@ -49,7 +49,7 @@ export default function CreateComment({ post }: Props) {
   });
 
   async function onSubmit(data: FormData) {
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
 
     axios
       .patch(
@@ -72,7 +72,7 @@ export default function CreateComment({ post }: Props) {
 
         const timeout = setTimeout(() => {
           setShowModal(false);
-          fetchData("http://localhost:3000/post");
+          fetchData("https://postagram-p8hh.onrender.com/post");
         }, 1200);
 
         return () => clearTimeout(timeout);

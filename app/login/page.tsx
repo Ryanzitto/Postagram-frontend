@@ -38,7 +38,7 @@ const Login = ({ func }: Props) => {
 
   async function onSubmit(data: FormData) {
     setErrorMessage("");
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
 
     axios
       .post(`${baseUrl}/auth/`, { email: data.email, password: data.password })
@@ -205,7 +205,7 @@ const Cadastro = ({ func }: Props) => {
     formData.append("password", data.password);
     formData.append("file", data.file[0]);
 
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
 
     axios
       .post(`${baseUrl}/user/`, formData)
@@ -237,6 +237,7 @@ const Cadastro = ({ func }: Props) => {
 
   const [erroMessageFile, setErroMessageFile] = useState<string>("");
 
+  //@ts-ignore
   const onChange = (e) => {
     if (e.target.files[0]) {
       setHasfile(true);

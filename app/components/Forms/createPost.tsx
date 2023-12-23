@@ -64,7 +64,7 @@ export default function CreatePost() {
       },
     };
 
-    const baseUrl = "http://localhost:3000";
+    const baseUrl = "https://postagram-p8hh.onrender.com";
 
     axios
       .post(`${baseUrl}/post/`, formData, config)
@@ -77,7 +77,7 @@ export default function CreatePost() {
         const timeout = setTimeout(() => {
           setCreateIsOpen(false);
           setShowModal(false);
-          fetchData("http://localhost:3000/post");
+          fetchData("https://postagram-p8hh.onrender.com/post");
         }, 1200);
 
         return () => clearTimeout(timeout);
@@ -148,7 +148,7 @@ export default function CreatePost() {
         <div className="w-16 h-16 rounded-full bg-zinc-800 flex ">
           <img
             className="rounded-full object-cover"
-            src={`http://localhost:3000/${user.avatar.src}`}
+            src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
           />
         </div>
         <form

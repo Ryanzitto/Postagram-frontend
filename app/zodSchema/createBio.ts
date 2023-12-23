@@ -4,4 +4,4 @@ export const createBioSchema = z.object({
   bio: z.string().min(1),
 });
 
-export type User = z.infer<typeof createBioSchema>;
+export type Bio = z.infer<typeof createBioSchema>;
