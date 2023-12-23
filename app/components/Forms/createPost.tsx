@@ -47,7 +47,7 @@ export default function CreatePost() {
   const router = useRouter();
 
   async function onSubmit(data: FormData) {
-    if (data.file.length === 0) {
+    if (!data.file) {
       setErroMessageFile("Selecione um arquivo para continuar!");
       return;
     }
@@ -55,7 +55,7 @@ export default function CreatePost() {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("text", data.text);
-    formData.append("file", data.file[0]);
+    formData.append("file", data.file);
 
     const config = {
       headers: {

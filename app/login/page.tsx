@@ -191,7 +191,7 @@ const Cadastro = ({ func }: Props) => {
   });
 
   async function onSubmit(data: FormData) {
-    if (data.file.length === 0) {
+    if (!data.file) {
       setErroMessageFile("Selecione um arquivo para continuar!");
       return;
     }
@@ -203,7 +203,7 @@ const Cadastro = ({ func }: Props) => {
     formData.append("userName", data.userName);
     formData.append("email", data.email);
     formData.append("password", data.password);
-    formData.append("file", data.file[0]);
+    formData.append("file", data.file);
 
     const baseUrl = "https://postagram-p8hh.onrender.com";
 
