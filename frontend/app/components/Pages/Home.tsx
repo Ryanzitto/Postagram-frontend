@@ -149,13 +149,11 @@ export default function Home() {
           >
             <div className="w-full py-4 h-fit border border-slate-300 rounded-md flex">
               <div className="w-[20%] flex justify-center items-center">
-                <div className="rounded-full w-16 h-16 bg-zinc-800 flex justify-center items-center">
-                  <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
-                    <img
-                      className="rounded-full w-full h-full object-cover"
-                      src={`http://localhost:3000/${user.avatar.src}`}
-                    />
-                  </div>
+                <div className="rounded-full w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 flex justify-center items-center">
+                  <img
+                    className="rounded-full w-[90%] h-[90%] object-cover"
+                    src={`http://localhost:3000/${user.avatar.src}`}
+                  />
                 </div>
               </div>
 

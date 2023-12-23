@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { registerSchema } from "../zodSchema/register";
 import { loginSchema } from "../zodSchema/login";
 import { useStore } from "app/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { FileIcon } from "public/icons/fileIcon";
 
@@ -70,18 +70,22 @@ const Login = ({ func }: Props) => {
       {status === "success" && (
         <Modal text="Logged with success" status={status} />
       )}
-      <div className="w-full lg:w-1/2 sm:rounded-md h-full lg:rounded-r-none bg-white flex flex-col items-center">
-        <div className="w-full h-28 flex flex-col justify-center items-start px-2 sm:pl-12 lg:pl-8 pt-6 gap-2">
+      <div className="w-full lg:w-1/2 rounded-md h-full lg:rounded-r-none bg-white flex flex-col items-center justify-center">
+        <div className="w-full h-28 flex flex-col justify-center items-start px-2 pl-6 sm:pl-12 lg:pl-8 pt-10 gap-2">
           <div className="flex flex-col">
-            <span className="text-2xl font-black text-zinc-600/60">We are</span>
+            <span className="text-xl sm:text-2xl font-black text-zinc-600/60">
+              We are
+            </span>
             <div className="flex">
-              <span className="text-4xl font-black text-zinc-700">POST</span>
-              <span className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
+              <span className="text-2xl sm:text-4xl font-black text-zinc-700">
+                POST
+              </span>
+              <span className="text-2xl sm:text-4xl  font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
                 AGRAM
               </span>
             </div>
           </div>
-          <p className="text-sm font-medium text-zinc-800/80 pb-6">
+          <p className="text-xs sm:text-sm font-medium text-zinc-800/80 pb-6">
             Welcome back, please login to your account
           </p>
         </div>
@@ -159,7 +163,7 @@ const Login = ({ func }: Props) => {
               )}
             </button>
           </div>
-          <div className="w-[80%] flex justify-center items-center text-xs gap-2">
+          <div className="w-[80%] flex flex-col md:flex-row gap-2 justify-center items-center text-xs gap-2">
             <p className="font-medium">Don't have an account? </p>
             <a
               onClick={() => func("REGISTER")}
@@ -189,17 +193,24 @@ const Cadastro = ({ func }: Props) => {
   });
 
   async function onSubmit(data: FormData) {
+    if (data.file.length === 0) {
+      setErroMessageFile("Selecione um arquivo para continuar!");
+      return;
+    }
+
     setErrorMessage(null);
+
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("userName", data.userName);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("file", data.file[0]);
 
     const baseUrl = "http://localhost:3000";
 
     axios
-      .post(`${baseUrl}/user/`, {
-        name: data.name,
-        userName: data.userName,
-        email: data.email,
-        password: data.password,
-      })
+      .post(`${baseUrl}/user/`, formData)
       .then((response) => {
         console.log(response);
         setStatus("success");
@@ -219,8 +230,6 @@ const Cadastro = ({ func }: Props) => {
   const changeToLogin = () => {
     func("LOGIN");
   };
-
-  const [showModal, setShowModal] = useState<boolean | null>(null);
 
   const [hasFile, setHasfile] = useState<boolean>(false);
 
@@ -245,6 +254,9 @@ const Cadastro = ({ func }: Props) => {
     }
   };
 
+  useEffect(() => {
+    console.log(erroMessageFile);
+  }, [erroMessageFile]);
   return (
     <>
       <div className="w-full h-fit rounded-md bg-white shadow-2xl pb-6 flex justify-center items-center flex flex-col">
@@ -253,21 +265,21 @@ const Cadastro = ({ func }: Props) => {
         ) : null}
         <div className="w-full h-28 flex flex-col justify-center items-center gap-2 bg-zinc-800 rounded-t-md">
           <div className="flex flex-col">
-            <span className="text-2xl font-black text-white/80">We are</span>
-            <span className="text-4xl font-black text-white">POSTAGRAM</span>
+            <span className="text-xl font-black text-white/80">We are</span>
+            <span className="text-2xl font-black text-white">POSTAGRAM</span>
           </div>
-          <p className="text-sm font-medium text-white/80">
+          <p className="text-xs font-medium text-white/80">
             Hi, create an account to continue
           </p>
         </div>
         <div className="flex w-full justify-center items-center pt-4">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-[80%] border border-zinc-300 rounded-md h-fit p-8 flex flex flex-col"
+            className="w-[80%] border border-zinc-300 rounded-md h-fit p-2 lg:p-8 flex flex-col"
           >
             <div className="w-full flex flex-col justify-center items-center">
-              <div className="flex w-full">
-                <div className="w-1/2 flex flex-col items-center justify-center gap-2">
+              <div className="flex flex-col lg:flex-row w-full">
+                <div className="w-full lg:w-1/2 flex flex-col items-center justify-center gap-2">
                   <div className="w-[90%] flex flex-col gap-1 ">
                     <label
                       htmlFor="name"
@@ -338,7 +350,7 @@ const Cadastro = ({ func }: Props) => {
                     )}
                   </div>
                 </div>
-                <div className="w-1/2 flex flex-col items-center justify-center gap-2">
+                <div className="w-full lg:w-1/2 flex flex-col items-center justify-center gap-2">
                   <div className="w-[90%] flex flex-col gap-1 ">
                     <label
                       htmlFor="password"
@@ -408,7 +420,9 @@ const Cadastro = ({ func }: Props) => {
                         className="absolute inset-0 h-10 opacity-0 cursor-pointer"
                       />
                       {hasFile === false && (
-                        <span className="text-gray-500">Escolher arquivo</span>
+                        <span className="text-red-500 text-xs">
+                          no file selected, click to select.
+                        </span>
                       )}
                       {hasFile === true && (
                         <div className="flex gap-2 justify-start items-start">
@@ -416,12 +430,12 @@ const Cadastro = ({ func }: Props) => {
                             <img
                               src={previewImage}
                               alt="Preview"
-                              className="w-12 h-12 rounded-full object-cover border border-zinc-300"
+                              className="w-12 h-12 rounded-full absolute object-cover border border-zinc-300"
                             />
                           )}
-                          <div className="flex flex-col justify-start items-start gap-1">
-                            <span className="text-gray-500 text-xs">
-                              {fileName}
+                          <div className="pl-14 flex flex-col justify-start items-start gap-1">
+                            <span className="text-green-500 text-xs">
+                              selected: {fileName}
                             </span>
                             <span className="text-zinc-600 rounded-md p-1 text-xs">
                               Click to change
@@ -434,13 +448,11 @@ const Cadastro = ({ func }: Props) => {
                           {errors?.file?.message}
                         </p>
                       )}
-                      {erroMessageFile !== "" && (
-                        <p className="text-red-600 text-xs">
-                          {erroMessageFile}
-                        </p>
-                      )}
                     </div>
                   </div>
+                  {erroMessageFile !== "" && (
+                    <p className="text-red-600 text-xs">{erroMessageFile}</p>
+                  )}
                 </div>
               </div>
               {errorMessage !== null ? (
@@ -494,7 +506,7 @@ export default function Page() {
   const [form, setForm] = useState<string>("LOGIN");
   return (
     <main className="flex w-screen min-h-screen h-screen bg-gradient-to-r from-purple-500 to-pink-500 justify-center items-center">
-      <div className="w-[60%] h-[85%] flex justify-center items-center">
+      <div className="w-[90%] sm:w-[60%] h-[85%] flex justify-center items-center">
         {form === "LOGIN" ? (
           <Login func={setForm} />
         ) : (
