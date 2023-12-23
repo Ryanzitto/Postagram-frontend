@@ -97,8 +97,7 @@ export default function CreatePost() {
       });
   }
 
-  //@ts-ignore
-  const onChange = (e) => {
+  const onChange = (e: any) => {
     if (e.target.files[0]) {
       setHasfile(true);
       setFileName(e.target.files[0].name);
@@ -198,7 +197,7 @@ export default function CreatePost() {
               Image:
             </label>
             <div
-              onChange={(e) => onChange(e)}
+              onChange={(e: any) => onChange(e)}
               className="relative p-4 border border-gray-300 bg-gray-100 rounded-md flex items-center justify-center"
             >
               <input

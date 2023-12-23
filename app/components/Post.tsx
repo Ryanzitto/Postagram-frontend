@@ -371,8 +371,7 @@ const CreateComment = ({ post }: Props) => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] flex flex-col">
         <div
-          //@ts-ignore
-          onChange={(e) => setInputText(e.target.value)}
+          onChange={(e: any) => setInputText(e.target.value)}
           className="flex gap-4"
         >
           <input

@@ -237,8 +237,7 @@ const Cadastro = ({ func }: Props) => {
 
   const [erroMessageFile, setErroMessageFile] = useState<string>("");
 
-  //@ts-ignore
-  const onChange = (e) => {
+  const onChange = (e: any) => {
     if (e.target.files[0]) {
       setHasfile(true);
       setFileName(e.target.files[0].name);
