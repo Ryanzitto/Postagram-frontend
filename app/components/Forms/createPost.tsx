@@ -97,8 +97,8 @@ export default function CreatePost() {
       });
   }
 
-  const onChange = (e: any) => {
-    if (e.target.files[0]) {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
       setHasfile(true);
       setFileName(e.target.files[0].name);
       setErroMessageFile("");
