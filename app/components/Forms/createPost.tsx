@@ -97,6 +97,7 @@ export default function CreatePost() {
       });
   }
 
+  //@ts-ignore
   const onChange = (e) => {
     if (e.target.files[0]) {
       setHasfile(true);
