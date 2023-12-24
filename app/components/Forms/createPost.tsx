@@ -166,7 +166,8 @@ export default function CreatePost() {
               placeholder="Post title here"
               autoComplete="off"
               type="text"
-              className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
+              disabled={true}
+              className="overflow-hidden border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
             ></input>
             {errors?.title && (
               <p className="text-red-600 text-xs">{errors?.title?.message}</p>

@@ -84,6 +84,9 @@ export const Post = ({ _id }: PostID) => {
 
   const [urlAvatar, setUrlAvatar] = useState<string | undefined>(undefined);
 
+  const [likeButtonIsHovered, setLikeButtonIsHovered] =
+    useState<boolean>(false);
+
   useEffect(() => {
     if (post) {
       setUrlFormated("https://postagram-p8hh.onrender.com/" + post?.banner.src);
@@ -229,21 +232,55 @@ export const Post = ({ _id }: PostID) => {
               </div>
               <div className="w-full h-fit flex justify-center items-center">
                 <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
-                  <img className="rounded-md" src={urlFormated} />
+                  <img
+                    className="rounded-md max-w-[580px] max-h-[1000px]"
+                    src={urlFormated}
+                  />
                 </div>
               </div>
               <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
                 <div className="flex justify-center items-center gap-1">
                   <span>{post.likes.length}</span>
-                  <img
-                    onClick={like}
-                    className="cursor-pointer h-6 w-6"
-                    src={
-                      userHasLiked
-                        ? "https://cdn-icons-png.flaticon.com/128/2589/2589175.png"
-                        : "https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
-                    }
-                  />
+                  <div className="relative flex justify-center items-center">
+                    <img
+                      onMouseEnter={() => setLikeButtonIsHovered(true)}
+                      onMouseLeave={() => setLikeButtonIsHovered(false)}
+                      onClick={like}
+                      className="cursor-pointer h-6 w-6"
+                      src={
+                        userHasLiked
+                          ? "https://cdn-icons-png.flaticon.com/128/2589/2589175.png"
+                          : "https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
+                      }
+                    />
+                    <AnimatePresence>
+                      {likeButtonIsHovered && (
+                        <motion.div
+                          initial={{
+                            opacity: 0,
+                            scale: 0.8,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            scale: 1,
+                          }}
+                          exit={{
+                            opacity: 0,
+                            scale: 0.8,
+                          }}
+                          transition={{
+                            duration: 0.2,
+                            delay: 0,
+                          }}
+                          className="px-2 py-1 absolute flex justify-center items-center mb-16 rounded-sm bg-white border border-slate-300 shadow-md"
+                        >
+                          <span className="text-zinc-600 font-semibold">
+                            LIKE
+                          </span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
               <CreateComment post={post} />

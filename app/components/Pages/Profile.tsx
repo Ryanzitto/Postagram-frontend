@@ -120,6 +120,15 @@ const Post = ({ post, userName }: Props) => {
     post.likes.some((obj) => obj.userId === user._id)
   );
 
+  const [likeButtonIsHovered, setLikeButtonIsHovered] =
+    useState<boolean>(false);
+
+  const [updateButtonIsHovered, setUpdateButtonIsHovered] =
+    useState<boolean>(false);
+
+  const [deleteButtonIsHovered, setDeleteButtonIsHovered] =
+    useState<boolean>(false);
+
   const like = () => {
     const baseUrl = "https://postagram-p8hh.onrender.com";
     axios
@@ -249,8 +258,10 @@ const Post = ({ post, userName }: Props) => {
           <div className="w-full h-fit flex justify-center items-center">
             <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
               <img
-                className="rounded-md"
-                src={"https://postagram-p8hh.onrender.com/" + dataPost.banner.src}
+                className="rounded-md max-w-[580px] max-h-[1000px]"
+                src={
+                  "https://postagram-p8hh.onrender.com/" + dataPost.banner.src
+                }
               />
             </div>
           </div>
@@ -305,30 +316,119 @@ const Post = ({ post, userName }: Props) => {
               <div className="w-[90%] flex justify-end items-center gap-6 h-16 pr-2 py-1">
                 {user?._id === dataPost?.user?._id && (
                   <>
-                    <img
-                      onClick={() => setShowModal(true)}
-                      className="cursor-pointer h-5 w-5 transition-colors transition-colors hover:opacity-80"
-                      src="https://cdn-icons-png.flaticon.com/128/6590/6590956.png"
-                    />
-                    <img
-                      onClick={handleClickUpdate}
-                      className="cursor-pointer h-4 w-4 transition-colors transition-colors hover:opacity-80"
-                      src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
-                    />
+                    <div className="relative flex justify-center items-center">
+                      <img
+                        onMouseEnter={() => setDeleteButtonIsHovered(true)}
+                        onMouseLeave={() => setDeleteButtonIsHovered(false)}
+                        onClick={() => setShowModal(true)}
+                        className="cursor-pointer w-8 transition-colors transition-colors hover:opacity-80"
+                        src="https://cdn-icons-png.flaticon.com/128/6590/6590956.png"
+                      />
+                      <AnimatePresence>
+                        {deleteButtonIsHovered && (
+                          <motion.div
+                            initial={{
+                              opacity: 0,
+                              scale: 0.8,
+                            }}
+                            animate={{
+                              opacity: 1,
+                              scale: 1,
+                            }}
+                            exit={{
+                              opacity: 0,
+                              scale: 0.8,
+                            }}
+                            transition={{
+                              duration: 0.2,
+                              delay: 0,
+                            }}
+                            className="px-2 py-1 absolute flex justify-center items-center mb-16 rounded-sm bg-white border border-slate-300 shadow-md"
+                          >
+                            <span className="text-zinc-600 font-semibold">
+                              DELETE
+                            </span>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <div className="relative flex justify-center items-center">
+                      <img
+                        onMouseEnter={() => setUpdateButtonIsHovered(true)}
+                        onMouseLeave={() => setUpdateButtonIsHovered(false)}
+                        onClick={handleClickUpdate}
+                        className="cursor-pointer w-6 flex transition-colors transition-colors hover:opacity-80"
+                        src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
+                      />
+                      <AnimatePresence>
+                        {updateButtonIsHovered && (
+                          <motion.div
+                            initial={{
+                              opacity: 0,
+                              scale: 0.8,
+                            }}
+                            animate={{
+                              opacity: 1,
+                              scale: 1,
+                            }}
+                            exit={{
+                              opacity: 0,
+                              scale: 0.8,
+                            }}
+                            transition={{
+                              duration: 0.2,
+                              delay: 0,
+                            }}
+                            className="px-2 py-1 absolute flex justify-center items-center mb-16 rounded-sm bg-white border border-slate-300 shadow-md"
+                          >
+                            <span className="text-zinc-600 font-semibold">
+                              UPDATE
+                            </span>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </>
                 )}
-
-                <div className="flex justify-center items-center gap-1">
-                  <span>{dataPost.likes.length}</span>
+                <div className="relative flex justify-center items-center">
                   <img
+                    onMouseEnter={() => setLikeButtonIsHovered(true)}
+                    onMouseLeave={() => setLikeButtonIsHovered(false)}
                     onClick={like}
-                    className="cursor-pointer h-6 w-6"
+                    className="cursor-pointer w-9 flex"
                     src={
-                      userHasLiked === true
+                      userHasLiked
                         ? "https://cdn-icons-png.flaticon.com/128/2589/2589175.png"
                         : "https://cdn-icons-png.flaticon.com/128/2589/2589197.png"
                     }
                   />
+                  <AnimatePresence>
+                    {likeButtonIsHovered && (
+                      <motion.div
+                        initial={{
+                          opacity: 0,
+                          scale: 0.8,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          scale: 1,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          scale: 0.8,
+                        }}
+                        transition={{
+                          duration: 0.2,
+                          delay: 0,
+                        }}
+                        className="px-2 py-1 absolute flex justify-center items-center mb-16 rounded-sm bg-white border border-slate-300 shadow-md"
+                      >
+                        <span className="text-zinc-600 font-semibold">
+                          LIKE
+                        </span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
@@ -566,11 +666,13 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
                 <span className="text-zinc-800/80 font-medium">
                   {userProfile?.bio}
                 </span>
-                <img
-                  onClick={() => setShowBioForm(true)}
-                  className="w-3 h-3 transition-colors hover:opacity-60 cursor-pointer"
-                  src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
-                />
+                {userProfile?._id === user._id && (
+                  <img
+                    onClick={() => setShowBioForm(true)}
+                    className="w-3 h-3 transition-colors hover:opacity-60 cursor-pointer"
+                    src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
+                  />
+                )}
               </div>
             )}
           </div>
