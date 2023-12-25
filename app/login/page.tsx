@@ -18,7 +18,9 @@ interface Props {
 type FormData = z.infer<typeof registerSchema>;
 
 const Login = ({ func }: Props) => {
-  const { user, login, saveToken, logout } = useStore();
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
+
+  const { login, saveToken } = useStore();
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -38,10 +40,9 @@ const Login = ({ func }: Props) => {
 
   async function onSubmit(data: FormData) {
     setErrorMessage("");
-    const baseUrl = "https://postagram-p8hh.onrender.com";
 
     axios
-      .post(`${baseUrl}/auth/`, { email: data.email, password: data.password })
+      .post(`${URL}/auth/`, { email: data.email, password: data.password })
       .then((response) => {
         console.log(response);
         setStatus("success");
@@ -178,6 +179,8 @@ const Login = ({ func }: Props) => {
 };
 
 const Cadastro = ({ func }: Props) => {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [status, setStatus] = useState<string | null>(null);
@@ -205,10 +208,8 @@ const Cadastro = ({ func }: Props) => {
     formData.append("password", data.password);
     formData.append("file", data.file[0]);
 
-    const baseUrl = "https://postagram-p8hh.onrender.com";
-
     axios
-      .post(`${baseUrl}/user/`, formData)
+      .post(`${URL}/user/`, formData)
       .then((response) => {
         console.log(response);
         setStatus("success");

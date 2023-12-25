@@ -32,9 +32,9 @@ interface Post {
 }
 
 const PostsList = () => {
-  const { nextUrl, previousUrl, data, totalPosts, fetchData } = useStore();
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
 
-  const [posts, setPosts] = useState(data);
+  const { nextUrl, previousUrl, data, totalPosts, fetchData } = useStore();
 
   const postsPorPagina = 5;
 
@@ -44,7 +44,7 @@ const PostsList = () => {
 
   const next = () => {
     if (nextUrl !== null) {
-      fetchData("https://postagram-p8hh.onrender.com" + nextUrl);
+      fetchData(URL + nextUrl);
       //@ts-ignore
       if (currentPage < numeroDePáginas) {
         setCurrentPage((numeroDePáginas) => numeroDePáginas + 1);
@@ -54,7 +54,7 @@ const PostsList = () => {
 
   const prev = () => {
     if (previousUrl !== null) {
-      fetchData("https://postagram-p8hh.onrender.com" + previousUrl);
+      fetchData(URL + previousUrl);
       if (currentPage === 1) {
         return;
       } else {
@@ -93,6 +93,8 @@ const PostsList = () => {
 };
 
 export default function Home() {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const {
     user,
     data,
@@ -108,7 +110,7 @@ export default function Home() {
   const [load, setLoad] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchData("https://postagram-p8hh.onrender.com/post");
+    fetchData(`${URL}/post`);
   }, []);
 
   useEffect(() => {
@@ -152,7 +154,7 @@ export default function Home() {
                 <div className="rounded-full w-16 h-16 bg-zinc-800 flex justify-center items-center">
                   <img
                     className="rounded-full w-[90%] h-[90%] object-cover"
-                    src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
+                    src={`${URL}/${user.avatar.src}`}
                   />
                 </div>
               </div>

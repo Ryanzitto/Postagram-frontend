@@ -68,6 +68,8 @@ interface PostID {
 type FormDataComment = z.infer<typeof createCommentSchema>;
 
 export const Post = ({ _id }: PostID) => {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const { user, currentPostUpdatingId, postIsLoading, logout } = useStore();
 
   const [load, setLoad] = useState<boolean>(false);
@@ -89,10 +91,8 @@ export const Post = ({ _id }: PostID) => {
 
   useEffect(() => {
     if (post) {
-      setUrlFormated("https://postagram-p8hh.onrender.com/" + post?.banner.src);
-      setUrlAvatar(
-        "https://postagram-p8hh.onrender.com/" + post.user.avatar.src
-      );
+      setUrlFormated(URL + "/" + post?.banner.src);
+      setUrlAvatar(URL + "/" + post.user.avatar.src);
     }
   }, [post]);
 
@@ -113,10 +113,9 @@ export const Post = ({ _id }: PostID) => {
 
   const like = () => {
     if (post) {
-      const baseUrl = "https://postagram-p8hh.onrender.com";
       axios
         .patch(
-          `${baseUrl}/post/like/${post._id}`,
+          `${URL}/post/like/${post._id}`,
           {},
           {
             headers: {
@@ -135,9 +134,8 @@ export const Post = ({ _id }: PostID) => {
   };
 
   const fetchPost = () => {
-    const baseUrl = "https://postagram-p8hh.onrender.com";
     axios
-      .get(`${baseUrl}/post/${_id}`, {
+      .get(`${URL}/post/${_id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -208,7 +206,7 @@ export const Post = ({ _id }: PostID) => {
                     <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                       <img
                         className="rounded-full w-full h-full object-cover"
-                        src={`https://postagram-p8hh.onrender.com/${post.user.avatar.src}`}
+                        src={`${URL}/${post.user.avatar.src}`}
                       />
                     </div>
                   </div>
@@ -233,7 +231,7 @@ export const Post = ({ _id }: PostID) => {
               <div className="w-full h-fit flex justify-center items-center">
                 <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
                   <img
-                    className="rounded-md max-w-[580px] max-h-[1000px]"
+                    className="rounded-md w-full h-full max-w-[580px] max-h-[600px]"
                     src={urlFormated}
                   />
                 </div>
@@ -329,6 +327,7 @@ export const Post = ({ _id }: PostID) => {
 };
 
 const CreateComment = ({ post }: Props) => {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
   const { user, logout, setPostIsLoading, fetchData } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
@@ -350,11 +349,10 @@ const CreateComment = ({ post }: Props) => {
   });
 
   async function onSubmit(data: FormDataComment) {
-    const baseUrl = "https://postagram-p8hh.onrender.com";
     setPostIsLoading(true);
     axios
       .patch(
-        `${baseUrl}/post/comment/${post._id}`,
+        `${URL}/post/comment/${post._id}`,
         {
           comment: data.comment,
           userName: user.userName,
@@ -372,7 +370,7 @@ const CreateComment = ({ post }: Props) => {
         setStatus("success");
         const timeout = setTimeout(() => {
           setShowModal(false);
-          fetchData("https://postagram-p8hh.onrender.com/post");
+          fetchData(`${URL}/post`);
         }, 1200);
 
         return () => clearTimeout(timeout);
@@ -402,7 +400,7 @@ const CreateComment = ({ post }: Props) => {
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
             className="rounded-full w-full h-full object-cover"
-            src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
+            src={`${URL}/${user.avatar.src}`}
           />
         </div>
       </div>

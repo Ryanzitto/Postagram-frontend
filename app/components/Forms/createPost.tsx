@@ -20,6 +20,8 @@ import { FileIcon } from "public/icons/fileIcon";
 type FormData = z.infer<typeof createPostSchema>;
 
 export default function CreatePost() {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const { setCreateIsOpen, user, fetchData, logout } = useStore();
 
   const [erroMessageFile, setErroMessageFile] = useState<string>("");
@@ -64,10 +66,8 @@ export default function CreatePost() {
       },
     };
 
-    const baseUrl = "https://postagram-p8hh.onrender.com";
-
     axios
-      .post(`${baseUrl}/post/`, formData, config)
+      .post(`${URL}/post/`, formData, config)
 
       .then((response) => {
         console.log(response);
@@ -148,7 +148,7 @@ export default function CreatePost() {
         <div className="w-16 h-16 rounded-full bg-zinc-800 flex ">
           <img
             className="rounded-full object-cover"
-            src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
+            src={`${URL}/${user.avatar.src}`}
           />
         </div>
         <form
@@ -166,7 +166,6 @@ export default function CreatePost() {
               placeholder="Post title here"
               autoComplete="off"
               type="text"
-              disabled={true}
               className="overflow-hidden border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
             ></input>
             {errors?.title && (
@@ -206,6 +205,7 @@ export default function CreatePost() {
                 id="file"
                 name="file"
                 type="file"
+                accept="image/png, image/jpeg"
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
               {hasFile === false && (

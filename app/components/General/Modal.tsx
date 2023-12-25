@@ -1,6 +1,5 @@
 import { ErroSVG } from "public/icons/ErroSVG";
 import { OkaySVG } from "public/icons/OkaySVG";
-import { useEffect } from "react";
 
 export const Modal = (props: { text: string; status: string }) => {
   const { text, status } = props;

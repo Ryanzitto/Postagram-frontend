@@ -18,7 +18,9 @@ import { Modal } from "../General/Modal";
 type FormData = z.infer<typeof updatePostSchema>;
 
 export default function UpdatePostProfile(userName: any) {
-  const porra = userName.userName;
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
+
+  const username = userName.userName;
 
   const {
     user,
@@ -46,11 +48,9 @@ export default function UpdatePostProfile(userName: any) {
   });
 
   async function onSubmit(data: FormData) {
-    const baseUrl = "https://postagram-p8hh.onrender.com";
-
     if (data.text && data.title) {
       axios
-        .patch(`${baseUrl}/post/${currentPostUpdatingId}`, data, {
+        .patch(`${URL}/post/${currentPostUpdatingId}`, data, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
@@ -63,7 +63,7 @@ export default function UpdatePostProfile(userName: any) {
           const timeout = setTimeout(() => {
             setShowModal(false);
             setUpdateIsOpen(false);
-            fetchDataProfile(porra);
+            fetchDataProfile(username);
           }, 1200);
 
           return () => clearTimeout(timeout);
@@ -124,7 +124,7 @@ export default function UpdatePostProfile(userName: any) {
         <div className="w-16 h-16 rounded-full bg-zinc-800 flex ">
           <img
             className="rounded-full object-cover"
-            src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
+            src={`${URL}/${user.avatar.src}`}
           />
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] h-fit p-4">

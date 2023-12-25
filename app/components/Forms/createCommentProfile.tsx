@@ -41,6 +41,7 @@ interface Props {
 }
 
 export default function CreateCommentProfile({ post }: Props) {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
   const { user, fetchDataProfile, logout } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
@@ -62,11 +63,9 @@ export default function CreateCommentProfile({ post }: Props) {
   });
 
   async function onSubmit(data: FormData) {
-    const baseUrl = "https://postagram-p8hh.onrender.com";
-
     axios
       .patch(
-        `${baseUrl}/post/comment/${post._id}`,
+        `${URL}/post/comment/${post._id}`,
         {
           comment: data.comment,
           userName: user.userName,
@@ -114,7 +113,7 @@ export default function CreateCommentProfile({ post }: Props) {
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
             className="rounded-full w-full h-full object-cover"
-            src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
+            src={`${URL}/${user.avatar.src}`}
           />
         </div>
       </div>

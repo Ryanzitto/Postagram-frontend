@@ -28,6 +28,7 @@ interface Props {
 }
 
 export default function CreateComment({ post }: Props) {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
   const { user, fetchData, logout } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
@@ -49,11 +50,9 @@ export default function CreateComment({ post }: Props) {
   });
 
   async function onSubmit(data: FormData) {
-    const baseUrl = "https://postagram-p8hh.onrender.com";
-
     axios
       .patch(
-        `${baseUrl}/post/comment/${post._id}`,
+        `${URL}/post/comment/${post._id}`,
         {
           comment: data.comment,
           userName: user.userName,
@@ -72,7 +71,7 @@ export default function CreateComment({ post }: Props) {
 
         const timeout = setTimeout(() => {
           setShowModal(false);
-          fetchData("https://postagram-p8hh.onrender.com/post");
+          fetchData(`${URL}/post`);
         }, 1200);
 
         return () => clearTimeout(timeout);

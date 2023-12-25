@@ -28,7 +28,7 @@ interface User {
   email: string;
   name: string;
   userName: string;
-  id: string;
+  _id: string;
   bio: string;
 }
 
@@ -99,12 +99,13 @@ interface Props {
 type FormData = z.infer<typeof createBioSchema>;
 
 const Post = ({ post, userName }: Props) => {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const {
     user,
     loading,
     fetchDataProfile,
     setUpdateIsOpen,
-    updateIsOpen,
     setCurrentPostUpdatingId,
   } = useStore();
 
@@ -130,10 +131,9 @@ const Post = ({ post, userName }: Props) => {
     useState<boolean>(false);
 
   const like = () => {
-    const baseUrl = "https://postagram-p8hh.onrender.com";
     axios
       .patch(
-        `${baseUrl}/post/like/${post._id}`,
+        `${URL}/post/like/${post._id}`,
         {},
         {
           headers: {
@@ -148,13 +148,11 @@ const Post = ({ post, userName }: Props) => {
   };
 
   const deletePost = (_id: string | undefined, _idPicture: string) => {
-    const baseUrl = "https://postagram-p8hh.onrender.com";
-
     const data = {
       idPicture: _idPicture,
     };
     axios
-      .delete(`${baseUrl}/post/${_id}`, {
+      .delete(`${URL}/post/${_id}`, {
         data,
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -187,9 +185,8 @@ const Post = ({ post, userName }: Props) => {
   };
 
   const fetchDataPost = (_id: string) => {
-    const baseUrl = "https://postagram-p8hh.onrender.com";
     axios
-      .get(`${baseUrl}/post/${_id}`, {
+      .get(`${URL}/post/${_id}`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -237,7 +234,7 @@ const Post = ({ post, userName }: Props) => {
               <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                 <img
                   className="rounded-full w-full h-full object-cover"
-                  src={`https://postagram-p8hh.onrender.com/${user.avatar.src}`}
+                  src={`${URL}/${user.avatar.src}`}
                 />
               </div>
             </div>
@@ -258,13 +255,12 @@ const Post = ({ post, userName }: Props) => {
           <div className="w-full h-fit flex justify-center items-center">
             <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
               <img
-                className="rounded-md max-w-[580px] max-h-[1000px]"
-                src={
-                  "https://postagram-p8hh.onrender.com/" + dataPost.banner.src
-                }
+                className="rounded-md w-full h-full max-w-[580px] max-h-[600px]"
+                src={URL + "/" + dataPost.banner.src}
               />
             </div>
           </div>
+
           <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
             <div className="rounded-full p-2 transition-colors cursor-pointer relative flex justify-center items-center">
               <AnimatePresence>
@@ -312,7 +308,6 @@ const Post = ({ post, userName }: Props) => {
                   </motion.div>
                 )}
               </AnimatePresence>
-
               <div className="w-[90%] flex justify-end items-center gap-6 h-16 pr-2 py-1">
                 {user?._id === dataPost?.user?._id && (
                   <>
@@ -390,12 +385,13 @@ const Post = ({ post, userName }: Props) => {
                     </div>
                   </>
                 )}
-                <div className="relative flex justify-center items-center">
+                <div className="relative flex justify-center items-center gap-1">
+                  <span className="text-lg">{dataPost.likes.length}</span>
                   <img
                     onMouseEnter={() => setLikeButtonIsHovered(true)}
                     onMouseLeave={() => setLikeButtonIsHovered(false)}
                     onClick={like}
-                    className="cursor-pointer w-9 flex"
+                    className="cursor-pointer w-7 flex"
                     src={
                       userHasLiked
                         ? "https://cdn-icons-png.flaticon.com/128/2589/2589175.png"
@@ -476,6 +472,8 @@ const Post = ({ post, userName }: Props) => {
 };
 
 export default function Profile({ userNameProp }: { userNameProp: string }) {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const { data, loading, fetchDataProfile, updateIsOpen, user } = useStore();
 
   const [userName, setUserName] = useState<string>(userNameProp);
@@ -485,6 +483,24 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
   const [load, setLoad] = useState<boolean>(false);
 
   const [showBioForm, setShowBioForm] = useState<boolean>(false);
+
+  const [totalPosts, setTotalPosts] = useState<number>(0);
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/post/byUserName/${userNameProp}`, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setTotalPosts(response.data.length);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const router = useRouter();
 
@@ -497,19 +513,16 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
   });
 
   async function onSubmit(dataPost: FormData) {
-    const baseUrl = "https://postagram-p8hh.onrender.com";
-
     axios
-      .put(`${baseUrl}/user/${user?._id}`, dataPost, {
+      .put(`${URL}/user/${user?._id}`, dataPost, {
         headers: {
           Authorization: `Bearer ${user?.token}`,
         },
       })
       .then((response) => {
         setUserName(userName);
-        const baseUrl = "https://postagram-p8hh.onrender.com";
         axios
-          .get(`${baseUrl}/user/${userName}`)
+          .get(`${URL}/user/${userName}`)
           .then((response) => {
             console.log(response);
             setUserProfile(response.data);
@@ -527,9 +540,8 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
 
   useEffect(() => {
     setUserName(userName);
-    const baseUrl = "https://postagram-p8hh.onrender.com";
     axios
-      .get(`${baseUrl}/user/${userName}`)
+      .get(`${URL}/user/${userName}`)
       .then((response) => {
         console.log(response);
         setUserProfile(response.data);
@@ -560,143 +572,164 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
       } bg-white justify-start items-center`}
     >
       {load === true && (
-        <div className="sm:w-[80%] md:w-[50%] relative h-full flex flex-col justify-center items-center gap-4">
-          <div
-            className="bg-blue-500 w-full h-[200px] relative flex justify-start relative rounded-sm"
-            style={{
-              backgroundImage:
-                "url('https://www.pixground.com/clouds-meet-the-sea-ai-generated-4k-wallpaper/?download-img=hd')",
-              backgroundSize: "cover",
-            }}
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="sm:w-[80%] md:w-[50%] relative h-full flex flex-col justify-center items-center gap-4"
           >
-            <div className="w-full h-10 absolute flex justify-end items-center pr-4 pt-4">
-              <div className="w-8 h-8 bg-white/60 rounded-full flex justify-center items-center cursor-pointer hover:bg-white/90">
-                <img
-                  className="w-4 h-4"
-                  src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
-                />
+            <div className="w-full h-[200px] relative flex justify-start rounded-sm">
+              <div className="w-full h-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate absolute">
+                <div className="flex flex-col w-full h-full pt-8 pl-10 gap-2">
+                  <motion.span
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-4xl text-white/60 tracking-wide font-bold duration-[1500ms] cursor-default transition-colors hover:text-white"
+                  >
+                    {userProfile?.name}
+                  </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-xl text-white/60 tracking-wide font-bold duration-[1500ms] cursor-default transition-colors hover:text-white"
+                  >
+                    Posts: {totalPosts}
+                  </motion.span>
+                </div>
               </div>
-            </div>
-            <div className="flex">
-              <div className="absolute mt-32 ml-20 bg-zinc-800 rounded-full border-4 border-zinc-800 justify-center items-center">
-                <div
-                  className="w-32 h-32 rounded-full flex justify-center items-center"
-                  style={{
-                    backgroundImage: `url(${userProfile?.avatar})`,
-                    backgroundSize: "cover",
-                  }}
-                >
-                  <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
-                    <img
-                      className="rounded-full w-full h-full object-cover"
-                      src={`https://postagram-p8hh.onrender.com/${userProfile?.avatar.src}`}
-                    />
+              <div className="flex">
+                <div className="absolute mt-32 ml-20 bg-white rounded-full border-4 border-white justify-center items-center">
+                  <div className="w-32 h-32 rounded-full flex justify-center items-center">
+                    <motion.div
+                      initial={{ opacity: 0, y: 50 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="rounded-full w-[95%] h-[95%] flex justify-center items-center"
+                    >
+                      <img
+                        className="rounded-full w-full h-full object-cover"
+                        src={`${URL}/${userProfile?.avatar.src}`}
+                      />
+                    </motion.div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="w-full mt-20 mb-10 flex flex-col justify-center items-center">
-            <div className="w-[80%] flex flex-col gap-2 pl-6">
-              <h1 className="text-3xl font-bold text-zinc-800">
-                {userProfile?.name}
-              </h1>
-              <h2 className="text-md font-medium text-zinc-800/80">
-                @{userProfile?.userName}
-              </h2>
-            </div>
 
-            <AnimatePresence>
-              {showBioForm === true && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    y: 50,
-                    scale: 0.8,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    scale: 0.8,
-                  }}
-                  transition={{
-                    duration: 0.2,
-                    delay: 0,
-                  }}
-                  className="w-[80%] pl-6 flex pt-4 items-center"
+            <div className="w-full mt-20 mb-10 flex flex-col justify-center items-center">
+              <div className="w-[80%] flex flex-col gap-2 pl-6">
+                <motion.h1
+                  initial={{ opacity: 0, x: -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-3xl font-bold text-zinc-800"
                 >
-                  <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="flex flex-col gap-4"
-                  >
-                    <label className="font-bold text-zinc-800/60 tracking-wide">
-                      Write a new Bio:
-                    </label>
-                    <input
-                      {...register("bio", { required: true })}
-                      id="bio"
-                      name="bio"
-                      placeholder="Tell about you"
-                      autoComplete="off"
-                      type="text"
-                      className="border border-transparent border-b-slate-300 focus:outline-none text-zinc-800 font-medium"
-                    ></input>
-                    <button
-                      type="submit"
-                      className="px-4 py-1 bg-zinc-800 text-white rounded-md transition-colors hover:bg-zinc-600"
-                    >
-                      Send
-                    </button>
-                    {errors?.bio && (
-                      <p className="text-red-600 text-xs pt-2">
-                        {errors?.bio?.message}
-                      </p>
-                    )}
-                  </form>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {showBioForm === false && (
-              <div className="w-[80%] flex gap-2 items-center pl-6 rounded-md text-sm pt-8">
-                <span className="text-zinc-800/80 font-medium">
-                  {userProfile?.bio}
-                </span>
-                {userProfile?._id === user._id && (
-                  <img
-                    onClick={() => setShowBioForm(true)}
-                    className="w-3 h-3 transition-colors hover:opacity-60 cursor-pointer"
-                    src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
-                  />
-                )}
+                  {userProfile?.name}
+                </motion.h1>
+                <motion.h2
+                  initial={{ opacity: 0, x: -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-md font-medium text-zinc-800/80"
+                >
+                  @{userProfile?.userName}
+                </motion.h2>
               </div>
-            )}
-          </div>
-          {data?.map((post) => {
-            return (
-              <Post
-                post={post}
-                userName={userName}
-                key={Math.random() * Math.random()}
+
+              <AnimatePresence>
+                {showBioForm === true && (
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      y: 50,
+                      scale: 0.8,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      scale: 0.8,
+                    }}
+                    transition={{
+                      duration: 0.2,
+                      delay: 0,
+                    }}
+                    className="w-[80%] pl-6 flex pt-4 items-center"
+                  >
+                    <form
+                      onSubmit={handleSubmit(onSubmit)}
+                      className="flex flex-col gap-4"
+                    >
+                      <label className="font-bold text-zinc-800/60 tracking-wide">
+                        Write a new Bio:
+                      </label>
+                      <input
+                        {...register("bio", { required: true })}
+                        id="bio"
+                        name="bio"
+                        placeholder="Tell about you"
+                        autoComplete="off"
+                        type="text"
+                        className="border border-transparent border-b-slate-300 focus:outline-none text-zinc-800 font-medium"
+                      ></input>
+                      <button
+                        type="submit"
+                        className="px-4 py-1 bg-zinc-800 text-white rounded-md transition-colors hover:bg-zinc-600"
+                      >
+                        Send
+                      </button>
+                      {errors?.bio && (
+                        <p className="text-red-600 text-xs pt-2">
+                          {errors?.bio?.message}
+                        </p>
+                      )}
+                    </form>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {showBioForm === false && (
+                <div className="w-[80%] flex gap-2 items-center pl-6 rounded-md text-sm pt-8">
+                  <span className="text-zinc-800/80 font-medium">
+                    {userProfile?.bio}
+                  </span>
+                  {userProfile?._id === user._id && (
+                    <img
+                      onClick={() => setShowBioForm(true)}
+                      className="w-3 h-3 transition-colors hover:opacity-60 cursor-pointer"
+                      src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+            {data?.map((post) => {
+              return (
+                <Post
+                  post={post}
+                  userName={userName}
+                  key={Math.random() * Math.random()}
+                />
+              );
+            })}
+          </motion.div>
+          <AnimatePresence>
+            {updateIsOpen && <UpdatePostProfile userName={userName} />}
+          </AnimatePresence>
+          {user.token === null && (
+            <div className="fixed w-full h-full">
+              <Modal
+                text="OPS, você não está conectado, você será redirecionado."
+                status="error"
               />
-            );
-          })}
-        </div>
-      )}
-      <AnimatePresence>
-        {updateIsOpen && <UpdatePostProfile userName={userName} />}
-      </AnimatePresence>
-      {user.token === null && (
-        <div className="fixed w-full h-full">
-          <Modal
-            text="OPS, você não está conectado, você será redirecionado."
-            status="error"
-          />
-        </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
