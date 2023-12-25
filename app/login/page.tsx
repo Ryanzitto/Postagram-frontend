@@ -416,6 +416,7 @@ const Cadastro = ({ func }: Props) => {
                         id="file"
                         name="file"
                         type="file"
+                        accept="image/png, image/jpeg"
                         className="absolute inset-0 h-10 opacity-0 cursor-pointer"
                       />
                       {hasFile === false && (
