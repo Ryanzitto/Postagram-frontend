@@ -1,16 +1,14 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "../../store";
+
 import { Post } from "../Post";
-
-import Spinner from "../Spinner";
-
-import CreatePost from "../Forms/createPost";
 import { Modal } from "../General/Modal";
+import Spinner from "../Spinner";
+import CreatePost from "../Forms/createPost";
 
 interface Post {
   avatar: {
@@ -162,9 +160,9 @@ export default function Home() {
               <div className="flex flex-col w-[80%] justify-start items-start">
                 <div
                   onClick={() => setCreateIsOpen(true)}
-                  className="cursor-pointer w-[90%] border border-slate-300 bg-zinc-100 h-10 rounded-md flex items-center pl-4 transition-colors hover:bg-zinc-200"
+                  className="cursor-pointer w-[90%] border border-slate-300 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate h-10 rounded-md flex items-center pl-4 transition-colors hover:opacity-80 shadow-md"
                 >
-                  <span className="font-medium text-zinc-600 text-sm">
+                  <span className="font-medium text-white text-sm">
                     Criar publicação
                   </span>
                 </div>

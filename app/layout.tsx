@@ -20,11 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const [menuOpened, setMenuOpened] = useState(false);
+
   const { user } = useStore();
+
+  useEffect(() => {
+    console.log(user);
+  }, []);
+
   return (
     <html lang="en">
       <body className={inter.className}>
-        {user.token && (
+        {user.token != null && (
           <Menu menuOpened={menuOpened} setMenuOpened={setMenuOpened} />
         )}
         {children}

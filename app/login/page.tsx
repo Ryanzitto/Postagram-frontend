@@ -11,6 +11,8 @@ import { loginSchema } from "../zodSchema/login";
 import { useStore } from "app/store";
 import { useEffect, useState } from "react";
 
+import { motion } from "framer-motion";
+
 interface Props {
   func: (newForm: string) => void;
 }
@@ -44,7 +46,6 @@ const Login = ({ func }: Props) => {
     axios
       .post(`${URL}/auth/`, { email: data.email, password: data.password })
       .then((response) => {
-        console.log(response);
         setStatus("success");
         setShowModal(true);
         login(response.data.user);
@@ -58,7 +59,6 @@ const Login = ({ func }: Props) => {
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
-        console.log(error);
         setStatus("error");
         setErrorMessage(error.response.data.message);
       });
@@ -79,7 +79,7 @@ const Login = ({ func }: Props) => {
               <span className="text-2xl sm:text-4xl font-black text-zinc-700">
                 POST
               </span>
-              <span className="text-2xl sm:text-4xl  font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
+              <span className="text-2xl sm:text-4xl  font-black bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate">
                 AGRAM
               </span>
             </div>
@@ -140,10 +140,15 @@ const Login = ({ func }: Props) => {
             </div>
           ) : null}
           <div className="w-[80%] flex justify-center items-center pt-4">
-            <button
+            <motion.button
+              whileHover={{
+                y: -5,
+                scale: 1.02,
+                transition: { duration: 0.5 },
+              }}
+              whileTap={{ scale: 0.9 }}
               type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500  rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors hover:opacity-80Z"
+              className="bg-zinc-800 w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors hover:opacity-80Z"
             >
               {isSubmitting ? (
                 <div role="status">
@@ -160,7 +165,7 @@ const Login = ({ func }: Props) => {
               ) : (
                 "Sign In"
               )}
-            </button>
+            </motion.button>
           </div>
           <div className="w-[80%] flex flex-col md:flex-row gap-2 justify-center items-center text-xs gap-2">
             <p className="font-medium">Don't have an account? </p>
@@ -196,6 +201,21 @@ const Cadastro = ({ func }: Props) => {
   async function onSubmit(data: FormData) {
     if (data.file.length === 0) {
       setErroMessageFile("Selecione um arquivo para continuar!");
+      return;
+    }
+
+    const isImageType = (file: File): boolean => {
+      const allowedTypes = ["image/jpeg", "image/png"];
+      return allowedTypes.includes(file.type);
+    };
+
+    if (data.file instanceof FileList && !isImageType(data.file[0])) {
+      setErroMessageFile("Este tipo de arquivo não é aceito!");
+      return;
+    }
+
+    if (data.file instanceof FileList && data.file[0].size > 5 * 1024 * 1024) {
+      setErroMessageFile("O arquivo selecionado é muito grande!");
       return;
     }
 
@@ -252,10 +272,6 @@ const Cadastro = ({ func }: Props) => {
       reader.readAsDataURL(e.target.files[0]);
     }
   };
-
-  useEffect(() => {
-    console.log(erroMessageFile);
-  }, [erroMessageFile]);
   return (
     <>
       <div className="w-full h-fit rounded-md bg-white shadow-2xl pb-6 flex justify-center items-center flex flex-col">
@@ -463,10 +479,15 @@ const Cadastro = ({ func }: Props) => {
                 </div>
               ) : null}
               <div className="w-full flex flex-col justify-center items-center pt-6">
-                <button
+                <motion.button
+                  whileHover={{
+                    y: -5,
+                    scale: 1.02,
+                    transition: { duration: 0.5 },
+                  }}
+                  whileTap={{ scale: 0.9 }}
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-[50%] bg-gradient-to-r from-purple-500 to-pink-500  rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors hover:opacity-80"
+                  className="w-[50%] h-10 rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate text-white font-bold tracking-wide tracking-wide transition-colors"
                 >
                   {isSubmitting ? (
                     <div role="status">
@@ -483,7 +504,7 @@ const Cadastro = ({ func }: Props) => {
                   ) : (
                     "Register"
                   )}
-                </button>
+                </motion.button>
                 <div className="w-[80%] flex justify-center items-center text-xs gap-2 pt-4">
                   <p className="font-medium">have a account? </p>
                   <a
@@ -505,7 +526,7 @@ const Cadastro = ({ func }: Props) => {
 export default function Page() {
   const [form, setForm] = useState<string>("LOGIN");
   return (
-    <main className="flex w-screen min-h-screen h-screen bg-gradient-to-r from-purple-500 to-pink-500 justify-center items-center">
+    <main className="flex w-screen min-h-screen h-screen bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate justify-center items-center">
       <div className="w-[90%] sm:w-[60%] h-[85%] flex justify-center items-center">
         {form === "LOGIN" ? (
           <Login func={setForm} />

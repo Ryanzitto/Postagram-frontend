@@ -45,7 +45,7 @@ export const Menu = (props: MenuProps) => {
           <button
             ref={ref}
             onClick={() => setMenuOpened(!menuOpened)}
-            className="z-20 fixed top-12 right-6 lg:right-12 p-3 w-11 h-11 rounded-md bg-zinc-800"
+            className="border border-white border-2 z-20 fixed top-12 right-6 lg:right-12 p-3 w-11 h-11 rounded-md bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate"
           >
             <div
               className={`bg-white h-0.5 rounded-md w-full transition-all ${
@@ -73,7 +73,7 @@ export const Menu = (props: MenuProps) => {
                   <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                     <img
                       className="rounded-full w-full h-full object-cover"
-                      src={`${URL}/${user.avatar.src}`}
+                      src={`${URL}/${user?.avatar?.src}`}
                     />
                   </div>
                 </div>

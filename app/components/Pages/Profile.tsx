@@ -1,5 +1,6 @@
 "use client";
 
+import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useRouter } from "next/navigation";
@@ -7,18 +8,12 @@ import { Modal } from "../General/Modal";
 
 import { useEffect, useState } from "react";
 import { useStore } from "app/store";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import * as z from "zod";
 import axios from "axios";
 import Link from "next/link";
 
 import UpdatePostProfile from "app/components/Forms/updatePostProfile";
 import Spinner from "app/components/Spinner";
 import CreateCommentProfile from "../Forms/createCommentProfile";
-
-import { createBioSchema } from "../../zodSchema/createBio";
 
 interface User {
   avatar: {
@@ -96,8 +91,6 @@ interface Props {
   userName: string;
 }
 
-type FormData = z.infer<typeof createBioSchema>;
-
 const Post = ({ post, userName }: Props) => {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
@@ -159,16 +152,13 @@ const Post = ({ post, userName }: Props) => {
         },
       })
       .then((response) => {
-        console.log(response);
         setShowModal(false);
         const timeout = setTimeout(() => {
           fetchDataProfile(userName);
         }, 1200);
         return () => clearTimeout(timeout);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const dateFormated = (date: string) => {
@@ -192,13 +182,10 @@ const Post = ({ post, userName }: Props) => {
         },
       })
       .then((response) => {
-        console.log(response);
         setDataPost(response.data.posts);
         setUserHasLiked(!userHasLiked);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const handleClickUpdate = () => {
@@ -234,7 +221,7 @@ const Post = ({ post, userName }: Props) => {
               <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                 <img
                   className="rounded-full w-full h-full object-cover"
-                  src={`${URL}/${user.avatar.src}`}
+                  src={`${URL}/${dataPost.user.avatar.src}`}
                 />
               </div>
             </div>
@@ -284,7 +271,7 @@ const Post = ({ post, userName }: Props) => {
                       duration: 0.2,
                       delay: 0,
                     }}
-                    className="gap-4 absolute w-[250px] h-fit py-4 px-2 rounded-md border border-slate-300 flex flex-col bg-white text-center"
+                    className="gap-4 z-40 absolute w-[250px] h-fit py-4 px-2 rounded-md border border-slate-300 flex flex-col bg-white text-center"
                   >
                     <span className="text-xs font-bold">
                       Are you sure to delete this post?
@@ -482,8 +469,6 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
 
   const [load, setLoad] = useState<boolean>(false);
 
-  const [showBioForm, setShowBioForm] = useState<boolean>(false);
-
   const [totalPosts, setTotalPosts] = useState<number>(0);
 
   useEffect(() => {
@@ -494,65 +479,24 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
         },
       })
       .then((response) => {
-        console.log(response);
         setTotalPosts(response.data.length);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, []);
 
   const router = useRouter();
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
-    resolver: zodResolver(createBioSchema),
-  });
-
-  async function onSubmit(dataPost: FormData) {
-    axios
-      .put(`${URL}/user/${user?._id}`, dataPost, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      })
-      .then((response) => {
-        setUserName(userName);
-        axios
-          .get(`${URL}/user/${userName}`)
-          .then((response) => {
-            console.log(response);
-            setUserProfile(response.data);
-          })
-          .catch((error) => console.log(error));
-
-        fetchDataProfile(userName);
-        setShowBioForm(false);
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
   useEffect(() => {
+    setLoad(true);
     setUserName(userName);
     axios
       .get(`${URL}/user/${userName}`)
       .then((response) => {
-        console.log(response);
         setUserProfile(response.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {});
 
     fetchDataProfile(userName);
-  }, []);
-
-  useEffect(() => {
-    setLoad(true);
   }, []);
 
   useEffect(() => {
@@ -617,7 +561,6 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
                 </div>
               </div>
             </div>
-
             <div className="w-full mt-20 mb-10 flex flex-col justify-center items-center">
               <div className="w-[80%] flex flex-col gap-2 pl-6">
                 <motion.h1
@@ -637,77 +580,8 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
                   @{userProfile?.userName}
                 </motion.h2>
               </div>
-
-              <AnimatePresence>
-                {showBioForm === true && (
-                  <motion.div
-                    initial={{
-                      opacity: 0,
-                      y: 50,
-                      scale: 0.8,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                      scale: 1,
-                    }}
-                    exit={{
-                      opacity: 0,
-                      scale: 0.8,
-                    }}
-                    transition={{
-                      duration: 0.2,
-                      delay: 0,
-                    }}
-                    className="w-[80%] pl-6 flex pt-4 items-center"
-                  >
-                    <form
-                      onSubmit={handleSubmit(onSubmit)}
-                      className="flex flex-col gap-4"
-                    >
-                      <label className="font-bold text-zinc-800/60 tracking-wide">
-                        Write a new Bio:
-                      </label>
-                      <input
-                        {...register("bio", { required: true })}
-                        id="bio"
-                        name="bio"
-                        placeholder="Tell about you"
-                        autoComplete="off"
-                        type="text"
-                        className="border border-transparent border-b-slate-300 focus:outline-none text-zinc-800 font-medium"
-                      ></input>
-                      <button
-                        type="submit"
-                        className="px-4 py-1 bg-zinc-800 text-white rounded-md transition-colors hover:bg-zinc-600"
-                      >
-                        Send
-                      </button>
-                      {errors?.bio && (
-                        <p className="text-red-600 text-xs pt-2">
-                          {errors?.bio?.message}
-                        </p>
-                      )}
-                    </form>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {showBioForm === false && (
-                <div className="w-[80%] flex gap-2 items-center pl-6 rounded-md text-sm pt-8">
-                  <span className="text-zinc-800/80 font-medium">
-                    {userProfile?.bio}
-                  </span>
-                  {userProfile?._id === user._id && (
-                    <img
-                      onClick={() => setShowBioForm(true)}
-                      className="w-3 h-3 transition-colors hover:opacity-60 cursor-pointer"
-                      src="https://cdn-icons-png.flaticon.com/128/84/84380.png"
-                    />
-                  )}
-                </div>
-              )}
             </div>
+
             {data?.map((post) => {
               return (
                 <Post

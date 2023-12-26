@@ -1,5 +1,6 @@
 "use client";
 
+import * as z from "zod";
 import axios from "axios";
 import { useState } from "react";
 import { useStore } from "app/store";
@@ -8,10 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
 import { createCommentSchema } from "../../zodSchema/createComment";
-
 import { Modal } from "../General/Modal";
-
-import * as z from "zod";
 
 type FormData = z.infer<typeof createCommentSchema>;
 
@@ -42,6 +40,7 @@ interface Props {
 
 export default function CreateCommentProfile({ post }: Props) {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const { user, fetchDataProfile, logout } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
@@ -77,7 +76,6 @@ export default function CreateCommentProfile({ post }: Props) {
         }
       )
       .then((response) => {
-        console.log(response);
         setShowModal(true);
         setText("Comment created.");
         setStatus("success");
@@ -89,7 +87,6 @@ export default function CreateCommentProfile({ post }: Props) {
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
-        console.log(error);
         setShowModal(true);
         setText("Error.");
         setStatus("error");

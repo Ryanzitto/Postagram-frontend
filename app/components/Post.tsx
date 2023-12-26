@@ -1,19 +1,15 @@
 import * as z from "zod";
-
+import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import axios from "axios";
-
-import { useStore } from "../store";
-import { createCommentSchema } from "../zodSchema/createComment";
 
 import Spinner from "./Spinner";
-
+import { useStore } from "../store";
+import { createCommentSchema } from "../zodSchema/createComment";
 import { Modal } from "./General/Modal";
 
 interface DateFormatOptions {
@@ -124,12 +120,9 @@ export const Post = ({ _id }: PostID) => {
           }
         )
         .then((response) => {
-          console.log(response);
           fetchPost();
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => {});
     }
   };
 
@@ -144,7 +137,6 @@ export const Post = ({ _id }: PostID) => {
         setPost(response.data.posts);
       })
       .catch((error) => {
-        console.log(error);
         if (error.response.data.message === "Token has expired") {
           const timeout = setTimeout(() => {
             router.push("/login");
@@ -174,7 +166,6 @@ export const Post = ({ _id }: PostID) => {
     if (post) {
       setUserHasLiked(post.likes.some((obj) => obj.userId === user._id));
     }
-    console.log(post);
   }, [post]);
 
   return (
@@ -328,6 +319,7 @@ export const Post = ({ _id }: PostID) => {
 
 const CreateComment = ({ post }: Props) => {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const { user, logout, setPostIsLoading, fetchData } = useStore();
 
   const [inputText, setInputText] = useState<string | null>(null);
@@ -364,7 +356,6 @@ const CreateComment = ({ post }: Props) => {
         }
       )
       .then((response) => {
-        console.log(response);
         setShowModal(true);
         setText("Comment created.");
         setStatus("success");
@@ -376,7 +367,6 @@ const CreateComment = ({ post }: Props) => {
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
-        console.log(error);
         setShowModal(true);
         setText("Error.");
         setStatus("error");

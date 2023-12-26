@@ -1,20 +1,16 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-
+import * as z from "zod";
 import axios from "axios";
-import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "../../store";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import * as z from "zod";
-
 import { createPostSchema } from "../../zodSchema/createPost";
-
 import { Modal } from "../General/Modal";
-
 import { FileIcon } from "public/icons/fileIcon";
 
 type FormData = z.infer<typeof createPostSchema>;
@@ -54,6 +50,21 @@ export default function CreatePost() {
       return;
     }
 
+    const isImageType = (file: File): boolean => {
+      const allowedTypes = ["image/jpeg", "image/png"];
+      return allowedTypes.includes(file.type);
+    };
+
+    if (data.file instanceof FileList && !isImageType(data.file[0])) {
+      setErroMessageFile("Este tipo de arquivo não é aceito!");
+      return;
+    }
+
+    if (data.file instanceof FileList && data.file[0].size > 5 * 1024 * 1024) {
+      setErroMessageFile("O arquivo selecionado é muito grande!");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("text", data.text);
@@ -70,7 +81,6 @@ export default function CreatePost() {
       .post(`${URL}/post/`, formData, config)
 
       .then((response) => {
-        console.log(response);
         setShowModal(true);
         setText("Post created.");
         setStatus("success");
@@ -83,7 +93,6 @@ export default function CreatePost() {
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
-        console.log(error);
         setShowModal(true);
         setText("Error.");
         setStatus("error");
@@ -235,12 +244,18 @@ export default function CreatePost() {
             )}
           </div>
           <div className="flex flex-col gap-2 pt-8">
-            <button
+            <motion.button
+              whileHover={{
+                y: -5,
+                scale: 1.02,
+                transition: { duration: 0.5 },
+              }}
+              whileTap={{ scale: 0.9 }}
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500  rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors"
+              className="w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors"
             >
               CREATE
-            </button>
+            </motion.button>
           </div>
         </form>
       </motion.div>

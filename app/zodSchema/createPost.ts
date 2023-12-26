@@ -1,8 +1,20 @@
 import z from "zod";
 
 export const createPostSchema = z.object({
-  title: z.string().min(1).max(20),
-  text: z.string().min(1).max(40),
+  title: z
+    .string()
+    .min(1)
+    .max(20)
+    .refine((value) => value.trim() !== "", {
+      message: "The title must not contain only white spaces.",
+    }),
+  text: z
+    .string()
+    .min(1)
+    .max(40)
+    .refine((value) => value.trim() !== "", {
+      message: "The title must not contain only white spaces.",
+    }),
   file: typeof FileList !== "undefined" ? z.instanceof(FileList) : z.string(), // Check if FileList is defined
 });
 

@@ -1,18 +1,15 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-
+import * as z from "zod";
 import axios from "axios";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "../../store";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import * as z from "zod";
-
 import { updatePostSchema } from "../../zodSchema/updtadePost";
-
 import { Modal } from "../General/Modal";
 
 type FormData = z.infer<typeof updatePostSchema>;
@@ -56,7 +53,6 @@ export default function UpdatePostProfile(userName: any) {
           },
         })
         .then((response) => {
-          console.log(response);
           setShowModal(true);
           setText("Post Updated.");
           setStatus("success");
@@ -69,7 +65,6 @@ export default function UpdatePostProfile(userName: any) {
           return () => clearTimeout(timeout);
         })
         .catch((error) => {
-          console.log(error);
           if (error.response.data.message === "Token has expired") {
             setShowModal(true);
             const timeout = setTimeout(() => {
@@ -163,12 +158,18 @@ export default function UpdatePostProfile(userName: any) {
             )}
           </div>
           <div className="flex flex-col gap-2 pt-8">
-            <button
+            <motion.button
+              whileHover={{
+                y: -5,
+                scale: 1.02,
+                transition: { duration: 0.5 },
+              }}
+              whileTap={{ scale: 0.9 }}
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500  rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors"
+              className="w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate  rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors"
             >
               Save Changes
-            </button>
+            </motion.button>
           </div>
         </form>
       </motion.div>
