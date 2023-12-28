@@ -53,6 +53,7 @@ export default function UpdatePostProfile(userName: any) {
           },
         })
         .then((response) => {
+          console.log(response);
           setShowModal(true);
           setText("Post Updated.");
           setStatus("success");
@@ -65,6 +66,7 @@ export default function UpdatePostProfile(userName: any) {
           return () => clearTimeout(timeout);
         })
         .catch((error) => {
+          console.log(error);
           if (error.response.data.message === "Token has expired") {
             setShowModal(true);
             const timeout = setTimeout(() => {

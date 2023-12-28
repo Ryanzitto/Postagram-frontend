@@ -120,9 +120,12 @@ export const Post = ({ _id }: PostID) => {
           }
         )
         .then((response) => {
+          console.log(response);
           fetchPost();
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
@@ -134,9 +137,11 @@ export const Post = ({ _id }: PostID) => {
         },
       })
       .then((response) => {
+        console.log(response);
         setPost(response.data.posts);
       })
       .catch((error) => {
+        console.log(error);
         if (error.response.data.message === "Token has expired") {
           const timeout = setTimeout(() => {
             router.push("/login");

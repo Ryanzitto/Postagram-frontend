@@ -46,6 +46,7 @@ const Login = ({ func }: Props) => {
     axios
       .post(`${URL}/auth/`, { email: data.email, password: data.password })
       .then((response) => {
+        console.log(response);
         setStatus("success");
         setShowModal(true);
         login(response.data.user);
@@ -59,6 +60,7 @@ const Login = ({ func }: Props) => {
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
+        console.log(error);
         setStatus("error");
         setErrorMessage(error.response.data.message);
       });

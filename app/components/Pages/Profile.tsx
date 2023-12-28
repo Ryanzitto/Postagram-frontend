@@ -479,9 +479,12 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
         },
       })
       .then((response) => {
+        console.log(response);
         setTotalPosts(response.data.length);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   const router = useRouter();
@@ -492,9 +495,12 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
     axios
       .get(`${URL}/user/${userName}`)
       .then((response) => {
+        console.log(response);
         setUserProfile(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log(error);
+      });
 
     fetchDataProfile(userName);
   }, []);

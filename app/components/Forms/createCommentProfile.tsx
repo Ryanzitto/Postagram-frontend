@@ -76,6 +76,7 @@ export default function CreateCommentProfile({ post }: Props) {
         }
       )
       .then((response) => {
+        console.log(response);
         setShowModal(true);
         setText("Comment created.");
         setStatus("success");
@@ -87,6 +88,7 @@ export default function CreateCommentProfile({ post }: Props) {
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
+        console.log(error);
         setShowModal(true);
         setText("Error.");
         setStatus("error");

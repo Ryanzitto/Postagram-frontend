@@ -81,6 +81,7 @@ export default function CreatePost() {
       .post(`${URL}/post/`, formData, config)
 
       .then((response) => {
+        console.log(response);
         setShowModal(true);
         setText("Post created.");
         setStatus("success");
@@ -93,6 +94,7 @@ export default function CreatePost() {
         return () => clearTimeout(timeout);
       })
       .catch((error) => {
+        console.log(error);
         setShowModal(true);
         setText("Error.");
         setStatus("error");

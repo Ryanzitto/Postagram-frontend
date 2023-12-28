@@ -152,7 +152,7 @@ export default function Home() {
                 <div className="rounded-full w-16 h-16 bg-zinc-800 flex justify-center items-center">
                   <img
                     className="rounded-full w-[90%] h-[90%] object-cover"
-                    src={`${URL}/${user.avatar.src}`}
+                    src={`${URL}/${user?.avatar?.src}`}
                   />
                 </div>
               </div>
