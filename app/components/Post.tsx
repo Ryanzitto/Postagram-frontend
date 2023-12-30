@@ -12,6 +12,8 @@ import { useStore } from "../store";
 import { createCommentSchema } from "../zodSchema/createComment";
 import { Modal } from "./General/Modal";
 
+import Image from "next/image";
+
 interface DateFormatOptions {
   year?: "numeric" | "2-digit";
   month?: "numeric" | "2-digit" | "long" | "short" | "narrow";
@@ -78,19 +80,10 @@ export const Post = ({ _id }: PostID) => {
 
   const [loadContent, setLoadContent] = useState<boolean>(postIsLoading);
 
-  const [urlFormated, setUrlFormated] = useState<string | undefined>(undefined);
-
   const [urlAvatar, setUrlAvatar] = useState<string | undefined>(undefined);
 
   const [likeButtonIsHovered, setLikeButtonIsHovered] =
     useState<boolean>(false);
-
-  useEffect(() => {
-    if (post) {
-      setUrlFormated(URL + "/" + post?.banner.src);
-      setUrlAvatar(URL + "/" + post.user.avatar.src);
-    }
-  }, [post]);
 
   const router = useRouter();
 
@@ -200,7 +193,10 @@ export const Post = ({ _id }: PostID) => {
                 <div className="w-[10%]">
                   <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
                     <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
-                      <img
+                      <Image
+                        width={0}
+                        height={0}
+                        alt="0"
                         className="rounded-full w-full h-full object-cover"
                         src={`${URL}/${post.user.avatar.src}`}
                       />
@@ -226,10 +222,15 @@ export const Post = ({ _id }: PostID) => {
               </div>
               <div className="w-full h-fit flex justify-center items-center">
                 <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
-                  <img
-                    className="rounded-md w-full h-full max-w-[580px] max-h-[600px]"
-                    src={urlFormated}
-                  />
+                  {post && (
+                    <Image
+                      width={0}
+                      height={0}
+                      alt="0"
+                      className="rounded-md w-full h-full max-w-[580px] max-h-[600px]"
+                      src={`${URL}/${post?.banner.src}`}
+                    />
+                  )}
                 </div>
               </div>
               <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
@@ -280,7 +281,6 @@ export const Post = ({ _id }: PostID) => {
               <CreateComment post={post} />
             </>
           )}
-
           {post.comments.length >= 1 && (
             <div
               className={`w-[90%]  overflow-hidden ${
@@ -393,8 +393,11 @@ const CreateComment = ({ post }: Props) => {
       </div>
       <div className="w-[10%] max-h-[10%] flex justify-center items-center">
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
-          <img
-            className="rounded-full w-full h-full object-cover"
+          <Image
+            width={0}
+            height={0}
+            alt="0"
+            className="rounded-full w-full h-full object-cover "
             src={`${URL}/${user.avatar.src}`}
           />
         </div>
