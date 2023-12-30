@@ -28,8 +28,6 @@ const Login = ({ func }: Props) => {
 
   const [status, setStatus] = useState<string | null>(null);
 
-  const [showModal, setShowModal] = useState<boolean | null>(null);
-
   const router = useRouter();
 
   const {
@@ -48,13 +46,11 @@ const Login = ({ func }: Props) => {
       .then((response) => {
         console.log(response);
         setStatus("success");
-        setShowModal(true);
         login(response.data.user);
         saveToken(response.data.token);
 
         const timeout = setTimeout(() => {
           setStatus(null);
-          setShowModal(false);
           router.push("/");
         }, 1200);
         return () => clearTimeout(timeout);
@@ -152,21 +148,7 @@ const Login = ({ func }: Props) => {
               type="submit"
               className="bg-zinc-800 w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors hover:opacity-80Z"
             >
-              {isSubmitting ? (
-                <div role="status">
-                  <svg
-                    aria-hidden="true"
-                    className="inline w-6 h-6 mr-2 text-white animate-spin fill-rose-600 opacity-100"
-                    viewBox="0 0 100 101"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    loading...
-                  </svg>
-                </div>
-              ) : (
-                "Sign In"
-              )}
+              Sign In
             </motion.button>
           </div>
           <div className="w-[80%] flex flex-col md:flex-row gap-2 justify-center items-center text-xs gap-2">

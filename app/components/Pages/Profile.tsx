@@ -242,7 +242,7 @@ const Post = ({ post, userName }: Props) => {
           <div className="w-full h-fit flex justify-center items-center">
             <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
               <img
-                className="rounded-md w-full h-full max-w-[580px] max-h-[600px]"
+                className="rounded-md w-full h-full max-w-[580px] max-h-[600px] object-cover"
                 src={URL + "/" + dataPost.banner.src}
               />
             </div>
@@ -517,16 +517,14 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
 
   return (
     <div
-      className={`flex flex-col min-h-screen h-fit ${
-        updateIsOpen ? "py-0" : "py-8"
-      } bg-white justify-start items-center`}
+      className={`py-0 md:py-8 flex flex-col min-h-screen h-fit bg-white justify-start items-center`}
     >
       {load === true && (
         <>
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="sm:w-[80%] md:w-[50%] relative h-full flex flex-col justify-center items-center gap-4"
+            className="w-[100%] md:w-[50%] relative h-full flex flex-col justify-center items-center gap-4"
           >
             <div className="w-full h-[200px] relative flex justify-start rounded-sm">
               <div className="w-full h-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate absolute">

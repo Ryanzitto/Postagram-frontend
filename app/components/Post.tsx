@@ -78,8 +78,6 @@ export const Post = ({ _id }: PostID) => {
 
   const [loadContent, setLoadContent] = useState<boolean>(postIsLoading);
 
-  const [urlAvatar, setUrlAvatar] = useState<string | undefined>(undefined);
-
   const [likeButtonIsHovered, setLikeButtonIsHovered] =
     useState<boolean>(false);
 
@@ -164,6 +162,9 @@ export const Post = ({ _id }: PostID) => {
     }
   }, [post]);
 
+  useEffect(() => {
+    console.log(_id);
+  }, [_id]);
   return (
     <motion.div
       whileInView={"visible"}
@@ -219,7 +220,7 @@ export const Post = ({ _id }: PostID) => {
                 <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
                   {post && (
                     <img
-                      className="rounded-md w-full h-full max-w-[580px] max-h-[600px]"
+                      className="rounded-md w-full h-full max-w-[580px] max-h-[600px] object-cover"
                       src={`${URL}/${post?.banner.src}`}
                     />
                   )}

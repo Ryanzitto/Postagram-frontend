@@ -127,6 +127,10 @@ export default function Home() {
     }
   }, [user]);
 
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   return (
     <main className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
       {load === true && (
@@ -145,7 +149,7 @@ export default function Home() {
                 },
               },
             }}
-            className="sm:w-[80%] md:w-[50%] h-full flex flex-col items-center gap-4 p-2 relative"
+            className="w-[100%] md:w-[50%] h-full flex flex-col items-center gap-4 p-2 relative"
           >
             <div className="w-full py-4 h-fit border border-slate-300 rounded-md flex">
               <div className="w-[20%] flex justify-center items-center">
