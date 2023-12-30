@@ -219,9 +219,6 @@ export const Post = ({ _id }: PostID) => {
                 <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
                   {post && (
                     <img
-                      width={0}
-                      height={0}
-                      alt="0"
                       className="rounded-md w-full h-full max-w-[580px] max-h-[600px]"
                       src={`${URL}/${post?.banner.src}`}
                     />
@@ -389,9 +386,6 @@ const CreateComment = ({ post }: Props) => {
       <div className="w-[10%] max-h-[10%] flex justify-center items-center">
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
-            width={0}
-            height={0}
-            alt="0"
             className="rounded-full w-full h-full object-cover "
             src={`${URL}/${user.avatar.src}`}
           />
