@@ -12,8 +12,6 @@ import { useStore } from "../store";
 import { createCommentSchema } from "../zodSchema/createComment";
 import { Modal } from "./General/Modal";
 
-import Image from "next/image";
-
 interface DateFormatOptions {
   year?: "numeric" | "2-digit";
   month?: "numeric" | "2-digit" | "long" | "short" | "narrow";
@@ -193,10 +191,7 @@ export const Post = ({ _id }: PostID) => {
                 <div className="w-[10%]">
                   <div className="w-16 h-16 rounded-full bg-zinc-800 flex justify-center items-center">
                     <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
-                      <Image
-                        width={0}
-                        height={0}
-                        alt="0"
+                      <img
                         className="rounded-full w-full h-full object-cover"
                         src={`${URL}/${post.user.avatar.src}`}
                       />
@@ -223,7 +218,7 @@ export const Post = ({ _id }: PostID) => {
               <div className="w-full h-fit flex justify-center items-center">
                 <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
                   {post && (
-                    <Image
+                    <img
                       width={0}
                       height={0}
                       alt="0"
@@ -393,7 +388,7 @@ const CreateComment = ({ post }: Props) => {
       </div>
       <div className="w-[10%] max-h-[10%] flex justify-center items-center">
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
-          <Image
+          <img
             width={0}
             height={0}
             alt="0"
