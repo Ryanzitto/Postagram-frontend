@@ -30,19 +30,20 @@ export const useStore = create(
         _id: "123",
         token: null,
       },
+
       login: (payload: User) => set(() => ({ user: payload })),
 
       logout: () =>
         set(() => ({
           user: {
-            name: "visitante",
+            name: "Guest",
             userName: "Guest" + Date.now(),
             email: null,
             avatar: {
               src: null,
               _id: null,
             },
-            id: null,
+            _id: "123",
             token: null,
           },
         })),

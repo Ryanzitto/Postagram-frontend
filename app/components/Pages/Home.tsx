@@ -2,13 +2,11 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useStore } from "../../store";
-
-import { Post } from "../Post";
 import { Modal } from "../General/Modal";
-import Spinner from "../Spinner";
+import { Post } from "../Post";
 import CreatePost from "../Forms/createPost";
+import Spinner from "../Spinner";
 
 interface Post {
   avatar: {
@@ -103,8 +101,6 @@ export default function Home() {
     setCurrentPostUpdatingId,
   } = useStore();
 
-  const router = useRouter();
-
   const [load, setLoad] = useState<boolean>(false);
 
   useEffect(() => {
@@ -116,20 +112,6 @@ export default function Home() {
     setCreateIsOpen(false);
     setCurrentPostUpdatingId("");
   }, []);
-
-  useEffect(() => {
-    if (user.token === null) {
-      const timeOut = setTimeout(() => {
-        router.push("/login");
-      }, 2000);
-
-      return () => clearTimeout(timeOut);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return (
     <main className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
@@ -154,10 +136,12 @@ export default function Home() {
             <div className="w-full py-4 h-fit border border-slate-300 rounded-md flex">
               <div className="w-[20%] flex justify-center items-center">
                 <div className="rounded-full w-16 h-16 bg-zinc-800 flex justify-center items-center">
-                  <img
-                    className="rounded-full w-[90%] h-[90%] object-cover"
-                    src={`${URL}/${user?.avatar?.src}`}
-                  />
+                  {user !== null && (
+                    <img
+                      className="rounded-full w-[90%] h-[90%] object-cover"
+                      src={`${URL}/${user?.avatar?.src}`}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -179,11 +163,17 @@ export default function Home() {
             ) : (
               <Spinner />
             )}
-            <PostsList />
+            {data.length === 0 && (
+              <div className="w-full h-[200px] flex justify-center items-start pt-16">
+                <span className="text-2xl text-zinc-800/80 font-bold transition-colors duration-[1500ms] hover:text-zinc-800/60">
+                  No post created, how about creating the first one? 😉
+                </span>
+              </div>
+            )}
+            {data.length !== 0 && <PostsList />}
           </motion.div>
           <AnimatePresence>{createIsOpen && <CreatePost />}</AnimatePresence>
-
-          {user.token === null && (
+          {user?.token === null && (
             <div className="fixed w-full h-full">
               <Modal
                 text="OPS, você não está conectado, você será redirecionado."

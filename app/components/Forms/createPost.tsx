@@ -73,7 +73,7 @@ export default function CreatePost() {
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${user?.token}`,
       },
     };
 
@@ -155,11 +155,10 @@ export default function CreatePost() {
             X
           </button>
         </div>
-
         <div className="w-16 h-16 rounded-full bg-zinc-800 flex ">
           <img
             className="rounded-full object-cover"
-            src={`${URL}/${user.avatar.src}`}
+            src={`${URL}/${user?.avatar.src}`}
           />
         </div>
         <form

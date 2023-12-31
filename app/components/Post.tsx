@@ -104,7 +104,7 @@ export const Post = ({ _id }: PostID) => {
           {},
           {
             headers: {
-              Authorization: `Bearer ${user.token}`,
+              Authorization: `Bearer ${user?.token}`,
             },
           }
         )
@@ -122,7 +122,7 @@ export const Post = ({ _id }: PostID) => {
     axios
       .get(`${URL}/post/${_id}`, {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       })
       .then((response) => {
@@ -158,13 +158,14 @@ export const Post = ({ _id }: PostID) => {
 
   useEffect(() => {
     if (post) {
-      setUserHasLiked(post.likes.some((obj) => obj.userId === user._id));
+      setUserHasLiked(post.likes.some((obj) => obj.userId === user?._id));
     }
   }, [post]);
 
   useEffect(() => {
-    console.log(_id);
-  }, [_id]);
+    console.log(user);
+  }, [user]);
+
   return (
     <motion.div
       whileInView={"visible"}
@@ -345,11 +346,11 @@ const CreateComment = ({ post }: Props) => {
         `${URL}/post/comment/${post._id}`,
         {
           comment: data.comment,
-          userName: user.userName,
+          userName: user?.userName,
         },
         {
           headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
         }
       )
@@ -388,7 +389,7 @@ const CreateComment = ({ post }: Props) => {
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
             className="rounded-full w-full h-full object-cover "
-            src={`${URL}/${user.avatar.src}`}
+            src={`${URL}/${user?.avatar.src}`}
           />
         </div>
       </div>

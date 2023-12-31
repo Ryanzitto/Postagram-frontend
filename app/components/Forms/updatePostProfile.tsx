@@ -24,7 +24,6 @@ export default function UpdatePostProfile(userName: any) {
     logout,
     setUpdateIsOpen,
     currentPostUpdatingId,
-    setCurrentPostUpdatingId,
     fetchDataProfile,
   } = useStore();
 
@@ -49,7 +48,7 @@ export default function UpdatePostProfile(userName: any) {
       axios
         .patch(`${URL}/post/${currentPostUpdatingId}`, data, {
           headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
         })
         .then((response) => {
@@ -87,7 +86,7 @@ export default function UpdatePostProfile(userName: any) {
   }
 
   return (
-    <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60">
+    <div className="z-20 fixed flex justify-center items-center w-full h-screen bg-zinc-800/60 -mt-8">
       <motion.div
         initial={{
           opacity: 0,
@@ -121,7 +120,7 @@ export default function UpdatePostProfile(userName: any) {
         <div className="w-16 h-16 rounded-full bg-zinc-800 flex ">
           <img
             className="rounded-full object-cover"
-            src={`${URL}/${user.avatar.src}`}
+            src={`${URL}/${user?.avatar.src}`}
           />
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] h-fit p-4">

@@ -25,6 +25,7 @@ interface User {
   userName: string;
   _id: string;
   bio: string;
+  token: string;
 }
 
 interface DateFormatOptions {
@@ -110,9 +111,7 @@ const Post = ({ post, userName }: Props) => {
 
   const [dataPost, setDataPost] = useState<Post>(post);
 
-  const [userHasLiked, setUserHasLiked] = useState<boolean>(
-    post.likes.some((obj) => obj.userId === user._id)
-  );
+  const [userHasLiked, setUserHasLiked] = useState<boolean>(false);
 
   const [likeButtonIsHovered, setLikeButtonIsHovered] =
     useState<boolean>(false);
@@ -130,7 +129,7 @@ const Post = ({ post, userName }: Props) => {
         {},
         {
           headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
         }
       )
@@ -148,7 +147,7 @@ const Post = ({ post, userName }: Props) => {
       .delete(`${URL}/post/${_id}`, {
         data,
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       })
       .then((response) => {
@@ -178,7 +177,7 @@ const Post = ({ post, userName }: Props) => {
     axios
       .get(`${URL}/post/${_id}`, {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       })
       .then((response) => {
@@ -196,6 +195,10 @@ const Post = ({ post, userName }: Props) => {
   useEffect(() => {
     setLoad(true);
   }, []);
+
+  useEffect(() => {
+    setUserHasLiked(post.likes.some((obj) => obj.userId === user?._id));
+  }, [user]);
 
   return (
     <motion.div
@@ -247,7 +250,6 @@ const Post = ({ post, userName }: Props) => {
               />
             </div>
           </div>
-
           <div className="w-[90%] flex justify-end items-center gap-4 h-16 pr-2 py-1">
             <div className="rounded-full p-2 transition-colors cursor-pointer relative flex justify-center items-center">
               <AnimatePresence>
@@ -471,22 +473,6 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
 
   const [totalPosts, setTotalPosts] = useState<number>(0);
 
-  useEffect(() => {
-    axios
-      .get(`${URL}/post/byUserName/${userNameProp}`, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        setTotalPosts(response.data.length);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
   const router = useRouter();
 
   useEffect(() => {
@@ -506,7 +492,23 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
   }, []);
 
   useEffect(() => {
-    if (user.token === null) {
+    axios
+      .get(`${URL}/post/byUserName/${userNameProp}`, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setTotalPosts(response.data.length);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (user?.token === null) {
       const timeOut = setTimeout(() => {
         router.push("/login");
       }, 2000);
@@ -599,7 +601,7 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
           <AnimatePresence>
             {updateIsOpen && <UpdatePostProfile userName={userName} />}
           </AnimatePresence>
-          {user.token === null && (
+          {user?.token === null && (
             <div className="fixed w-full h-full">
               <Modal
                 text="OPS, você não está conectado, você será redirecionado."

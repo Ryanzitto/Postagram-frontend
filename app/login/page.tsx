@@ -22,7 +22,7 @@ type FormData = z.infer<typeof registerSchema>;
 const Login = ({ func }: Props) => {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
-  const { login, saveToken } = useStore();
+  const { login, saveToken, user } = useStore();
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -61,6 +61,10 @@ const Login = ({ func }: Props) => {
         setErrorMessage(error.response.data.message);
       });
   }
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <div className="w-full h-[100%] flex shadow-2xl relative">
@@ -507,7 +511,7 @@ const Cadastro = ({ func }: Props) => {
   );
 };
 
-export default function Page() {
+export default function AuthPage() {
   const [form, setForm] = useState<string>("LOGIN");
   return (
     <main className="flex w-screen min-h-screen h-screen bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate justify-center items-center">

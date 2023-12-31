@@ -23,14 +23,10 @@ export default function RootLayout({
 
   const { user } = useStore();
 
-  useEffect(() => {
-    console.log(user);
-  }, []);
-
   return (
     <html lang="en">
       <body className={inter.className}>
-        {user.token != null && (
+        {user.token !== null && (
           <Menu menuOpened={menuOpened} setMenuOpened={setMenuOpened} />
         )}
         {children}

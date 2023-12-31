@@ -67,11 +67,11 @@ export default function CreateCommentProfile({ post }: Props) {
         `${URL}/post/comment/${post._id}`,
         {
           comment: data.comment,
-          userName: user.userName,
+          userName: user?.userName,
         },
         {
           headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
         }
       )
@@ -82,7 +82,7 @@ export default function CreateCommentProfile({ post }: Props) {
         setStatus("success");
         const timeout = setTimeout(() => {
           setShowModal(false);
-          fetchDataProfile(user.userName);
+          fetchDataProfile(user?.userName);
         }, 1200);
 
         return () => clearTimeout(timeout);
@@ -112,7 +112,7 @@ export default function CreateCommentProfile({ post }: Props) {
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
             className="rounded-full w-full h-full object-cover"
-            src={`${URL}/${user.avatar.src}`}
+            src={`${URL}/${user?.avatar.src}`}
           />
         </div>
       </div>
