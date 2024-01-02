@@ -24,7 +24,7 @@ export const useStore = create(
         userName: "Guest" + Date.now(),
         email: null,
         avatar: {
-          src: null,
+          src: "",
           _id: null,
         },
         _id: "123",

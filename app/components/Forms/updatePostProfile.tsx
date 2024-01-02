@@ -118,10 +118,7 @@ export default function UpdatePostProfile(userName: any) {
           </button>
         </div>
         <div className="w-16 h-16 rounded-full bg-zinc-800 flex ">
-          <img
-            className="rounded-full object-cover"
-            src={`${URL}/${user?.avatar.src}`}
-          />
+          <img className="rounded-full object-cover" src={user?.avatar?.src} />
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] h-fit p-4">
           <div className="flex flex-col gap-2">

@@ -224,7 +224,7 @@ const Post = ({ post, userName }: Props) => {
               <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                 <img
                   className="rounded-full w-full h-full object-cover"
-                  src={`${URL}/${dataPost.user.avatar.src}`}
+                  src={dataPost.user.avatar.src}
                 />
               </div>
             </div>
@@ -246,7 +246,7 @@ const Post = ({ post, userName }: Props) => {
             <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
               <img
                 className="rounded-md w-full h-full max-w-[580px] max-h-[600px] object-cover"
-                src={URL + "/" + dataPost.banner.src}
+                src={dataPost.banner.src}
               />
             </div>
           </div>
@@ -560,7 +560,7 @@ export default function Profile({ userNameProp }: { userNameProp: string }) {
                     >
                       <img
                         className="rounded-full w-full h-full object-cover"
-                        src={`${URL}/${userProfile?.avatar.src}`}
+                        src={userProfile?.avatar.src}
                       />
                     </motion.div>
                   </div>

@@ -89,8 +89,6 @@ const PostsList = () => {
 };
 
 export default function Home() {
-  const URL = process.env.NEXT_PUBLIC_BASEURL;
-
   const {
     user,
     data,
@@ -113,6 +111,9 @@ export default function Home() {
     setCurrentPostUpdatingId("");
   }, []);
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
   return (
     <main className="flex flex-col min-h-screen h-fit bg-white justify-start items-center relative">
       {load === true && (
@@ -139,7 +140,7 @@ export default function Home() {
                   {user !== null && (
                     <img
                       className="rounded-full w-[90%] h-[90%] object-cover"
-                      src={`${URL}/${user?.avatar?.src}`}
+                      src={user?.avatar?.src}
                     />
                   )}
                 </div>

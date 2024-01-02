@@ -195,7 +195,7 @@ export const Post = ({ _id }: PostID) => {
                     <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                       <img
                         className="rounded-full w-full h-full object-cover"
-                        src={`${URL}/${post.user.avatar.src}`}
+                        src={post.user.avatar.src}
                       />
                     </div>
                   </div>
@@ -222,7 +222,7 @@ export const Post = ({ _id }: PostID) => {
                   {post && (
                     <img
                       className="rounded-md w-full h-full max-w-[580px] max-h-[600px] object-cover"
-                      src={`${URL}/${post?.banner.src}`}
+                      src={post?.banner.src}
                     />
                   )}
                 </div>
@@ -389,7 +389,7 @@ const CreateComment = ({ post }: Props) => {
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
             className="rounded-full w-full h-full object-cover "
-            src={`${URL}/${user?.avatar.src}`}
+            src={user?.avatar.src}
           />
         </div>
       </div>

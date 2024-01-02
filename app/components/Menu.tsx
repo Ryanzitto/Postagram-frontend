@@ -73,7 +73,7 @@ export const Menu = (props: MenuProps) => {
                   <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                     <img
                       className="rounded-full w-full h-full object-cover"
-                      src={`${URL}/${user?.avatar?.src}`}
+                      src={user?.avatar?.src}
                     />
                   </div>
                 </div>
