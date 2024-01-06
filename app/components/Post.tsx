@@ -131,7 +131,7 @@ export const Post = ({ _id }: PostID) => {
       })
       .catch((error) => {
         console.log(error);
-        if (error.response.data.message === "Token has expired") {
+        if (error?.response?.data?.message === "Token has expired") {
           const timeout = setTimeout(() => {
             router.push("/login");
             logout();
@@ -369,7 +369,7 @@ const CreateComment = ({ post }: Props) => {
         setShowModal(true);
         setText("Error.");
         setStatus("error");
-        if (error.response.data.message === "Token has expired") {
+        if (error?.response?.data?.message === "Token has expired") {
           setShowModal(true);
           const timeout = setTimeout(() => {
             router.push("/login");

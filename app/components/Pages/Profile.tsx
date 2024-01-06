@@ -41,6 +41,7 @@ interface Post {
   banner: {
     src: string;
     _id: string;
+    name: string;
   };
   comments: Array<any>;
   _id: string;
@@ -68,6 +69,7 @@ interface Props {
     banner: {
       src: string;
       _id: string;
+      name: string;
     };
     comments: Array<any>;
     _id: string;
@@ -139,9 +141,14 @@ const Post = ({ post, userName }: Props) => {
       .catch((error) => {});
   };
 
-  const deletePost = (_id: string | undefined, _idPicture: string) => {
+  const deletePost = (
+    _id: string | undefined,
+    _idPicture: string,
+    pictureName: string
+  ) => {
     const data = {
       idPicture: _idPicture,
+      pictureName: pictureName,
     };
     axios
       .delete(`${URL}/post/${_id}`, {
@@ -281,7 +288,11 @@ const Post = ({ post, userName }: Props) => {
                     <div className="flex w-full justify-center items-center gap-4">
                       <button
                         onClick={() =>
-                          deletePost(dataPost._id, dataPost.banner._id)
+                          deletePost(
+                            dataPost._id,
+                            dataPost.banner._id,
+                            dataPost.banner.name
+                          )
                         }
                         className="font-bold bg-zinc-100 rounded-md px-4 py-1 text-sm hover:text-white hover:bg-green-500"
                       >

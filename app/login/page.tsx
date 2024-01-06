@@ -58,7 +58,7 @@ const Login = ({ func }: Props) => {
       .catch((error) => {
         console.log(error);
         setStatus("error");
-        setErrorMessage(error.response.data.message);
+        setErrorMessage(error?.response?.data?.message);
       });
   }
 

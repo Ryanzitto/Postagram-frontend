@@ -89,6 +89,7 @@ const PostsList = () => {
 };
 
 export default function Home() {
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
   const {
     user,
     data,
