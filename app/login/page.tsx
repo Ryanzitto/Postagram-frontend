@@ -11,7 +11,7 @@ import { loginSchema } from "../zodSchema/login";
 import { useStore } from "app/store";
 import { useEffect, useState } from "react";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface Props {
   func: (newForm: string) => void;
@@ -68,9 +68,11 @@ const Login = ({ func }: Props) => {
 
   return (
     <div className="w-full h-[100%] flex shadow-2xl relative">
-      {status === "success" && (
-        <Modal text="Logged with success" status={status} />
-      )}
+      <AnimatePresence>
+        {status === "success" && (
+          <Modal text="Logged with success" status={status} />
+        )}
+      </AnimatePresence>
       <div className="w-full lg:w-1/2 rounded-md h-full lg:rounded-r-none bg-white flex flex-col items-center justify-center">
         <div className="w-full h-28 flex flex-col justify-center items-start px-2 pl-6 sm:pl-12 lg:pl-8 pt-10 gap-2">
           <div className="flex flex-col">

@@ -148,14 +148,18 @@ export default function Home() {
               </div>
 
               <div className="flex flex-col w-[80%] justify-start items-start">
-                <div
+                <motion.div
+                  whileHover={{
+                    y: -5,
+                    scale: 1.01,
+                    transition: { duration: 0.5 },
+                  }}
+                  whileTap={{ scale: 0.9 }}
                   onClick={() => setCreateIsOpen(true)}
-                  className="cursor-pointer w-[90%] border border-slate-300 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate h-10 rounded-md flex items-center pl-4 transition-colors hover:opacity-80 shadow-md"
+                  className="cursor-pointer w-[90%] border border-slate-300 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate h-10 rounded-md flex items-center pl-4 shadow-md"
                 >
-                  <span className="font-medium text-white text-sm">
-                    Criar publicação
-                  </span>
-                </div>
+                  <span className="font-medium text-white text-sm">Create</span>
+                </motion.div>
               </div>
             </div>
             {loading === false ? (

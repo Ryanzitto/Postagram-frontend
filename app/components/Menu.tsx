@@ -11,8 +11,6 @@ interface MenuProps {
 }
 
 export const Menu = (props: MenuProps) => {
-  const URL = process.env.NEXT_PUBLIC_BASEURL;
-
   const router = useRouter();
 
   const { user, logout } = useStore();
@@ -68,7 +66,7 @@ export const Menu = (props: MenuProps) => {
       ${menuOpened ? "w-80" : "w-0"}`}
           >
             <div className="flex-1 flex items-start justify-start flex-col gap-6 p-8 bg-zinc-100 pt-28">
-              <div className="w-full h-14 flex items-center">
+              <div className="w-full h-14 flex items-center mb-10">
                 <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
                   <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
                     <img
@@ -77,17 +75,25 @@ export const Menu = (props: MenuProps) => {
                     />
                   </div>
                 </div>
-                <div className="pl-4 flex gap-4">
-                  <span
-                    onClick={handleClickLogout}
-                    className="cursor-pointer font-bold text-sm text-zinc-800/80 transition-colors hover:opacity-60"
-                  >
-                    logout
+                <div className="pl-4 flex flex-col gap-1">
+                  <span className="font-bold text-sm text-zinc-800/80 transition-colors hover:opacity-60">
+                    {user?.name}
+                  </span>
+                  <span className="font-medium text-xs text-zinc-800/80 transition-colors hover:opacity-60">
+                    @{user?.userName}
                   </span>
                 </div>
               </div>
               <MenuButton label="PROFILE" path={`/perfil/${user?.userName}`} />
               <MenuButton label="FEED" path="/" />
+            </div>
+            <div className="w-full h-full flex justify-center items-end pb-10 bg-zinc-100">
+              <span
+                onClick={handleClickLogout}
+                className="cursor-pointer font-bold text-sm text-zinc-800/80 transition-colors hover:opacity-60"
+              >
+                logout
+              </span>
             </div>
           </div>
         </>
