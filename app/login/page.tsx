@@ -496,7 +496,7 @@ const Cadastro = ({ func }: Props) => {
                   )}
                 </motion.button>
                 <div className="w-[80%] flex justify-center items-center text-xs gap-2 pt-4">
-                  <p className="font-medium">have a account? </p>
+                  <p className="font-medium">have an account? </p>
                   <a
                     onClick={changeToLogin}
                     className="underline cursor-pointer font-bold hover:opacity-80"

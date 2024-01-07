@@ -106,7 +106,7 @@ export default function CreateCommentProfile({ post }: Props) {
       <div className="absolute w-full">
         {showModal === true && <Modal text={text} status={status} />}
       </div>
-      <div className="w-[10%] max-h-[10%] flex justify-center items-center">
+      <div className="w-[20%] sm:[10%] sm:max-h-[10%] flex justify-center items-center">
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
             className="rounded-full w-full h-full object-cover"

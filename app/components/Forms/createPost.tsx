@@ -155,9 +155,6 @@ export default function CreatePost() {
             X
           </button>
         </div>
-        <div className="w-16 h-16 rounded-full bg-zinc-800 flex ">
-          <img className="rounded-full object-cover" src={user?.avatar?.src} />
-        </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-[90%] h-fit p-4 flex flex-col"
@@ -170,7 +167,7 @@ export default function CreatePost() {
               {...register("title", { required: true })}
               id="title"
               name="title"
-              placeholder="Post title here"
+              placeholder="Write the title"
               autoComplete="off"
               type="text"
               className="overflow-hidden border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
@@ -187,7 +184,7 @@ export default function CreatePost() {
               {...register("text", { required: true })}
               id="text"
               name="text"
-              placeholder="Post text here"
+              placeholder="Write the subtitle"
               autoComplete="off"
               type="text"
               className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
@@ -216,7 +213,7 @@ export default function CreatePost() {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
               {hasFile === false && (
-                <span className="text-gray-500">Escolher arquivo</span>
+                <span className="text-gray-500">Choose a file</span>
               )}
               {hasFile === true && (
                 <div className="flex flex-col gap-4 justify-center items-center">
@@ -229,7 +226,7 @@ export default function CreatePost() {
                   )}
                   <div className="flex gap-2 justify-center items-center">
                     <FileIcon />
-                    <span className="text-gray-500">{fileName}</span>
+                    <span className="text-gray-500 break-all">{fileName}</span>
                   </div>
                 </div>
               )}

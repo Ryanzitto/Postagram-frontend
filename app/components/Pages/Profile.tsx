@@ -246,8 +246,8 @@ const Post = ({ post, userName }: Props) => {
             </div>
           </div>
           <div className="w-[90%] h-fit flex flex-col p-2">
-            <h2 className="text-2xl font-black">{dataPost.title}</h2>
-            <h2 className="text-sm font-light">{dataPost.text}</h2>
+            <h2 className="text-2xl font-black break-all">{dataPost.title}</h2>
+            <h2 className="text-sm font-light break-all">{dataPost.text}</h2>
           </div>
           <div className="w-full h-fit flex justify-center items-center">
             <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
@@ -455,7 +455,7 @@ const Post = ({ post, userName }: Props) => {
                     <span className="font-bold cursor-pointer hover:opacity-80 text-sm">
                       {item.userName}:
                     </span>
-                    <p className="font-light text-xs font-medium text-zinc-800/80">
+                    <p className="font-light text-xs font-medium text-zinc-800/80 break-all">
                       {item.comment}
                     </p>
                   </div>

@@ -17,12 +17,14 @@ export const registerSchema = z
         message: "The UserName must not contain only white spaces.",
       }),
     email: z.string().email(),
-    password: z.string().min(8),
+    password: z
+      .string()
+      .min(8, { message: "This field cannot contain less than 8 characters" }),
     confirmPassword: z.string(),
     file: typeof FileList !== "undefined" ? z.instanceof(FileList) : z.string(), // Check if FileList is defined
   })
   .refine((data) => data.password == data.confirmPassword, {
-    message: "Senhas não coincidem",
+    message: "Passwords do not match",
     path: ["password"],
   });
 

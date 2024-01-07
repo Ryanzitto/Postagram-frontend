@@ -214,8 +214,8 @@ export const Post = ({ _id }: PostID) => {
                 </div>
               </div>
               <div className="w-[90%] h-fit flex flex-col p-2">
-                <h2 className="text-2xl font-black">{post.title}</h2>
-                <h2 className="text-sm font-light">{post.text}</h2>
+                <h2 className="text-2xl font-black break-all">{post.title}</h2>
+                <h2 className="text-sm font-light break-all">{post.text}</h2>
               </div>
               <div className="w-full h-fit flex justify-center items-center">
                 <div className="w-[90%] h-fit pt-2 flex justify-center items-center">
@@ -300,7 +300,7 @@ export const Post = ({ _id }: PostID) => {
                     <span className="font-bold cursor-pointer hover:opacity-80 text-sm">
                       {item.userName}:
                     </span>
-                    <p className="font-light text-xs font-medium text-zinc-800/80">
+                    <p className="font-light text-xs font-medium text-zinc-800/80 break-all">
                       {item.comment}
                     </p>
                   </div>
@@ -385,7 +385,7 @@ const CreateComment = ({ post }: Props) => {
       <div className="absolute w-full">
         {showModal === true && <Modal text={text} status={status} />}
       </div>
-      <div className="w-[10%] max-h-[10%] flex justify-center items-center">
+      <div className="w-[20%] sm:[10%] sm:max-h-[10%] flex justify-center items-center">
         <div className="rounded-full w-10 h-10 flex justify-center items-center">
           <img
             className="rounded-full w-full h-full object-cover "

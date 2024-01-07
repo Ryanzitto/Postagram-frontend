@@ -1,6 +1,4 @@
 "use client";
-
-import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { useStore } from "../store";
 import { useRouter } from "next/navigation";
@@ -36,6 +34,16 @@ export const Menu = (props: MenuProps) => {
     router.push("/login");
   };
 
+  const navigateToProfile = () => {
+    router.push(`/perfil/${user?.userName}`);
+    setMenuOpened(false);
+  };
+
+  const navigateToFeed = () => {
+    router.push("/");
+    setMenuOpened(false);
+  };
+
   return (
     <>
       {load === true && (
@@ -65,7 +73,7 @@ export const Menu = (props: MenuProps) => {
             className={`z-10 fixed top-0 right-0 bottom-0 bg-white transition-all overflow-hidden flex flex-col
       ${menuOpened ? "w-80" : "w-0"}`}
           >
-            <div className="flex-1 flex items-start justify-start flex-col gap-6 p-8 bg-zinc-100 pt-28">
+            <div className="flex-1 flex items-start justify-start flex-col gap-6 p-8 bg-zinc-100 pt-11">
               <div className="w-full h-14 flex items-center mb-10">
                 <div className="w-10 h-10 rounded-full bg-zinc-800 flex justify-center items-center">
                   <div className="rounded-full w-[95%] h-[95%] flex justify-center items-center">
@@ -84,16 +92,31 @@ export const Menu = (props: MenuProps) => {
                   </span>
                 </div>
               </div>
-              <MenuButton label="PROFILE" path={`/perfil/${user?.userName}`} />
-              <MenuButton label="FEED" path="/" />
-            </div>
-            <div className="w-full h-full flex justify-center items-end pb-10 bg-zinc-100">
-              <span
-                onClick={handleClickLogout}
-                className="cursor-pointer font-bold text-sm text-zinc-800/80 transition-colors hover:opacity-60"
-              >
-                logout
-              </span>
+              <div className="flex flex-col gap-10 items-start">
+                <MenuButton func={navigateToProfile} label="PROFILE" />
+                <MenuButton func={navigateToFeed} label="FEED" />
+                <span className="text-xl font-bold text-zinc-800 cursor-pointer hover:opacity-80 transition-colors">
+                  RANK
+                </span>
+                <span className="text-xl font-bold text-zinc-800 cursor-pointer hover:opacity-80 transition-colors">
+                  INFO
+                </span>
+                <span className="text-xl font-bold text-zinc-800 cursor-pointer hover:opacity-80 transition-colors">
+                  HALL
+                </span>
+                <div className="w-full flex items-center gap-2">
+                  <span
+                    onClick={handleClickLogout}
+                    className="text-xl font-bold text-zinc-800 cursor-pointer hover:opacity-80 transition-colors"
+                  >
+                    LOGOUT
+                  </span>
+                  <img
+                    className="w-4 h-4"
+                    src="https://cdn-icons-png.flaticon.com/128/126/126467.png"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </>
@@ -102,17 +125,17 @@ export const Menu = (props: MenuProps) => {
   );
 };
 
-const MenuButton = (props: { label: string; path: string }) => {
+const MenuButton = (props: { label: string; func: () => void }) => {
   const [load, setLoad] = useState<boolean>(false);
 
   useEffect(() => {
     setLoad(true);
   }, []);
 
-  const { label, path } = props;
+  const { label, func } = props;
   return (
-    <button className="text-2xl font-bold text-zinc-800 cursor-pointer hover:opacity-80 transition-colors">
-      {load && <Link href={path}>{label}</Link>}
+    <button className="text-xl font-bold text-zinc-800 cursor-pointer hover:opacity-80 transition-colors">
+      {load && <span onClick={func}>{label}</span>}
     </button>
   );
 };

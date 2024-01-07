@@ -117,9 +117,6 @@ export default function UpdatePostProfile(userName: any) {
             X
           </button>
         </div>
-        <div className="w-16 h-16 rounded-full bg-zinc-800 flex ">
-          <img className="rounded-full object-cover" src={user?.avatar?.src} />
-        </div>
         <form onSubmit={handleSubmit(onSubmit)} className="w-[90%] h-fit p-4">
           <div className="flex flex-col gap-2">
             <label className="font-bold text-zinc-800/60 tracking-wide">
@@ -129,7 +126,7 @@ export default function UpdatePostProfile(userName: any) {
               {...register("title", { required: true })}
               id="title"
               name="title"
-              placeholder="New title here"
+              placeholder="Write the new title"
               autoComplete="off"
               type="text"
               className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"
@@ -146,7 +143,7 @@ export default function UpdatePostProfile(userName: any) {
               {...register("text", { required: true })}
               id="text"
               name="text"
-              placeholder="New text here"
+              placeholder="Write the new subtitle"
               autoComplete="off"
               type="text"
               className="border border-transparent border-b-slate-300 focus:outline-none pl-4 text-zinc-800 font-medium"

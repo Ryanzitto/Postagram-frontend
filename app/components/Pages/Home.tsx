@@ -147,7 +147,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex flex-col w-[80%] justify-start items-start">
+              <div className="flex flex-col w-[80%] justify-center items-start">
                 <motion.div
                   whileHover={{
                     y: -5,
@@ -156,7 +156,7 @@ export default function Home() {
                   }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setCreateIsOpen(true)}
-                  className="cursor-pointer w-[90%] border border-slate-300 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate h-10 rounded-md flex items-center pl-4 shadow-md"
+                  className="cursor-pointer w-fit border border-slate-300 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate h-10 rounded-md flex items-center px-12 shadow-md"
                 >
                   <span className="font-medium text-white text-sm">Create</span>
                 </motion.div>
