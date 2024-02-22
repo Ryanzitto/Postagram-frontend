@@ -7,6 +7,28 @@
   margin: 0;
 }
 
+textarea {
+  resize: none; /* Impede o redimensionamento da textarea */
+  padding-right: 5px;
+}
+
+textarea::-webkit-scrollbar {
+  width: 6px; /* largura da barra de rolagem */
+}
+
+textarea::-webkit-scrollbar-track {
+  background: none; /* cor de fundo da track (trilha) */
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: #888; /* cor do thumb (alça) */
+  border-radius: 5px; /* borda arredondada */
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: #555; /* cor do thumb (alça) ao passar o mouse por cima */
+}
+
 .background-animate {
   background-size: 400%;
   -webkit-animation: AnimationName 5s ease infinite;

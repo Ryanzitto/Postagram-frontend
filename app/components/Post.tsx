@@ -162,9 +162,6 @@ export const Post = ({ _id }: PostID) => {
     }
   }, [post]);
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <motion.div
