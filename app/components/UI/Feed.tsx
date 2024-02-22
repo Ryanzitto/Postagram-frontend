@@ -1,7 +1,8 @@
 import axios from "axios";
 import * as Dialog from "@radix-ui/react-dialog";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState, useRef } from "react";
 import Post from "./Post";
+import Preview from "./Preview";
 
 interface User {
   name: string;
@@ -31,9 +32,7 @@ const colors = [
   "bg-red-500",
   "bg-yellow-500",
   "bg-blue-500",
-  "bg-green-500",
   "bg-purple-500",
-  "bg-lime-500",
   "bg-amber-500",
   "bg-emerald-500",
   "bg-black",
@@ -41,6 +40,12 @@ const colors = [
 
 const textColors = [
   { textColor: "text-white", bgColor: "bg-white" },
+  { textColor: "text-red-500", bgColor: "bg-red-500" },
+  { textColor: "text-yellow-500", bgColor: "bg-yellow-500" },
+  { textColor: "text-blue-500", bgColor: "bg-blue-500" },
+  { textColor: "text-purple-500", bgColor: "bg-purple-500" },
+  { textColor: "text-amber-500", bgColor: "bg-amber-500" },
+  { textColor: "text-emerald-500", bgColor: "bg-emerald-500" },
   { textColor: "text-black", bgColor: "bg-black" },
 ];
 
@@ -51,6 +56,8 @@ interface textColors {
 
 export default function Feed() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
+
+  const closeButtonModalRef = useRef<HTMLSpanElement | null>(null);
 
   const [users, setUsers] = useState<User[] | null>(null);
 
@@ -69,12 +76,16 @@ export default function Feed() {
     setContent(e?.target?.value);
   };
 
-  const handleSelectTextColor = (color: textColors) => {
-    setTextColorSelected(color);
-  };
-
-  const handleSelectBgColor = (bgColor: string) => {
-    setBgColorSelected(bgColor);
+  const fetchPosts = () => {
+    axios
+      .get(`${URL}/post/`)
+      .then((response) => {
+        console.log(response);
+        setPosts(response.data.results);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -89,15 +100,7 @@ export default function Feed() {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`${URL}/post/`)
-      .then((response) => {
-        console.log(response);
-        setPosts(response.data.results);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    fetchPosts();
   }, []);
 
   useEffect(() => {
@@ -144,9 +147,10 @@ export default function Feed() {
           </div>
           <div
             onChange={handleChangeInputContent}
-            className="w-full h-fit flex flex-col px-4 items-end"
+            className="w-full h-fit flex flex-col px-4 items-end gap-3"
           >
             <textarea
+              value={content !== null ? content : ""}
               placeholder="What are your words today?"
               className={`text-sm rounded-xl w-full pt-5 ${
                 content !== null ? "pb-5" : null
@@ -154,7 +158,7 @@ export default function Feed() {
             />
             <Dialog.Trigger>
               {content !== null && (
-                <span className="cursor-pointer text-white/50 text-xs transition-all mt-2 hover:text-white">
+                <span className="cursor-pointer text-white/50 text-xs transition-all hover:text-white outline-none">
                   See preview
                 </span>
               )}
@@ -163,68 +167,20 @@ export default function Feed() {
         </div>
         <Dialog.Portal>
           <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
-            <Dialog.Content className="p-4 relative w-[500px] min-h-fit h-[80%] bg-zinc-800 border border-zinc-600 rounded-lg">
+            <Dialog.Content className="relative w-[500px] min-h-fit h-fit bg-zinc-800 border border-zinc-600 rounded-lg">
               <Dialog.Close className="absolute right-0 top-0 bg-zinc-700/50 transition-all p-2 px-4 rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500">
-                <span>X</span>
+                <span ref={closeButtonModalRef}>X</span>
               </Dialog.Close>
-              <div className="w-full h-full flex flex-col p-6">
-                <div className="w-full h-fit flex flex-col gap-2">
-                  <span className="text-white/50 text-xs">BG Color:</span>
-                  <div className="flex gap-2">
-                    {colors.map((color) => {
-                      return (
-                        <button
-                          disabled={color === textColorSelected.bgColor}
-                          onClick={() => handleSelectBgColor(color)}
-                          className={`disabled:cursor-not-allowed cursor-pointer rounded-full w-4 h-4 ${color} ${
-                            bgColorSelected === color
-                              ? "border-2 border-white"
-                              : null
-                          }`}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="mt-2 w-full h-fit flex flex-col gap-2">
-                  <span className="text-white/50 text-xs">Text Color:</span>
-                  <div className="flex gap-2">
-                    {textColors.map((color) => {
-                      return (
-                        <button
-                          disabled={color.bgColor === bgColorSelected}
-                          onClick={() => handleSelectTextColor(color)}
-                          className={`disabled:cursor-not-allowed  cursor-pointer rounded-full w-4 h-4 ${
-                            color.bgColor
-                          } ${
-                            textColorSelected.textColor === color.textColor
-                              ? "border-2 border-white"
-                              : null
-                          }`}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="w-full h-full flex flex-col justify-between p-2 gap-4">
-                  <div
-                    className={`mt-6 rounded-md w-full min-h-[250px] flex ${bgColorSelected}`}
-                  >
-                    <textarea
-                      className={`${textColorSelected.textColor} break-words bg-transparent font-medium text-center text-xl w-full h-full outline-none resize-none p-6`}
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                    />
-                  </div>
-                  <div className="w-full h-fit">
-                    <button className="w-full p-2 bg-purple-500 rounded-md transition-all text-white hover:bg-purple-500/80">
-                      <span className="font-bold text-lg transition-all ">
-                        Create
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <Preview
+                fetchPosts={fetchPosts}
+                closeButtonModalRef={closeButtonModalRef}
+                textColorSelected={textColorSelected}
+                bgColorSelected={bgColorSelected}
+                content={content}
+                setContent={setContent}
+                setTextColorSelected={setTextColorSelected}
+                setBgColorSelected={setBgColorSelected}
+              />
             </Dialog.Content>
           </Dialog.Overlay>
         </Dialog.Portal>
