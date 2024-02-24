@@ -109,7 +109,7 @@ export default function UpdatePostProfile(userName: any) {
         className="w-[500px] h-fit bg-white rounded-md p-4 flex justify-start items-center flex-col relative"
       >
         {showModal === true && <Modal text={text} status={status} />}
-        <div className="w-full absolute h-10 flex justify-end pr-4 flex just">
+        <div className="w-full absolute h-10 flex justify-end pr-4 just">
           <button
             onClick={() => setUpdateIsOpen(false)}
             className="p-4 rounded-md  transition-colors bg-zinc-200 font-bold flex justify-center items-center text-zinc-800/50 hover:bg-red-500 hover:text-white"
@@ -161,7 +161,7 @@ export default function UpdatePostProfile(userName: any) {
               }}
               whileTap={{ scale: 0.9 }}
               type="submit"
-              className="w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate  rounded-md h-10 text-white font-bold tracking-wide tracking-wide transition-colors"
+              className="w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 background-animate  rounded-md h-10 text-white font-bold  tracking-wide transition-colors"
             >
               Save Changes
             </motion.button>

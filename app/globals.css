@@ -7,6 +7,19 @@
   margin: 0;
 }
 
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.custom-animation {
+  animation: rotate 20s linear infinite; /* 2s é a duração da animação */
+}
+
 textarea {
   resize: none; /* Impede o redimensionamento da textarea */
   padding-right: 5px;

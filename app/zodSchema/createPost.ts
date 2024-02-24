@@ -17,6 +17,7 @@ export const createPostSchema = z.object({
     }),
   bgColor: z.string(),
   textColor: z.string(),
+  textAlign: z.string(),
 });
 
 export type Post = z.infer<typeof createPostSchema>;

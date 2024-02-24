@@ -5,6 +5,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createPostSchema } from "app/zodSchema/createPost";
 import { useState } from "react";
+import { useStore } from "app/store";
+
+import {
+  AlignStartVertical,
+  AlignCenterVertical,
+  AlignEndVertical,
+} from "lucide-react";
 
 type FormData = z.infer<typeof createPostSchema>;
 
@@ -68,6 +75,10 @@ export default function Preview({
     resolver: zodResolver(createPostSchema),
   });
 
+  const { user } = useStore();
+
+  const [textAlign, setTextAlign] = useState<string>("text-left");
+
   const [subjectIsHovered, setSubjectIsHovered] = useState<boolean>(false);
 
   const handleSelectTextColor = (color: textColors) => {
@@ -78,17 +89,18 @@ export default function Preview({
     setBgColorSelected(bgColor);
   };
 
-  async function onSubmit() {
+  async function onSubmit(dataForm: FormData) {
     const data = {
-      subject: "teste",
+      subject: dataForm.subject,
       text: content,
       bgColor: bgColorSelected,
       textColor: textColorSelected.textColor,
+      textAlign: textAlign,
     };
 
     const config = {
       headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZDNlODE4MTZlNGVlNzkyNzA5OGE2ZCIsImlhdCI6MTcwODY0MTU5NCwiZXhwIjoxNzA4NzI3OTk0fQ.ViXkDms2X_cniR3Fgcn3Sf-RgXc96J9xcmLbX49jPCw`,
+        Authorization: `Bearer ${user.token}`,
       },
     };
 
@@ -114,40 +126,62 @@ export default function Preview({
 
   return (
     <div className="w-full h-full flex flex-col p-6">
-      <div className="w-full h-fit flex flex-col gap-2">
-        <span className="text-white/50 text-xs">BG Color:</span>
-        <div className="flex gap-2">
-          {colors.map((color) => {
-            return (
-              <button
-                disabled={color === textColorSelected.bgColor}
-                onClick={() => handleSelectBgColor(color)}
-                className={`disabled:cursor-not-allowed cursor-pointer rounded-full w-4 h-4 ${color} ${
-                  bgColorSelected === color ? "border-2 border-white" : null
-                }`}
-              />
-            );
-          })}
+      <div className="w-full h-fit flex">
+        <div className="w-1/2 h-fit flex flex-col gap-4">
+          <div className="w-full h-fit flex flex-col gap-2">
+            <span className="text-white/50 text-xs">BG Color:</span>
+            <div className="flex gap-2">
+              {colors.map((color) => {
+                return (
+                  <button
+                    disabled={color === textColorSelected.bgColor}
+                    onClick={() => handleSelectBgColor(color)}
+                    className={`disabled:cursor-not-allowed cursor-pointer rounded-full w-4 h-4 ${color} ${
+                      bgColorSelected === color ? "border-2 border-white" : null
+                    }`}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <div className="w-full h-fit flex flex-col gap-2">
+            <span className="text-white/50 text-xs">Text Color:</span>
+            <div className="flex gap-2">
+              {textColors.map((color) => {
+                return (
+                  <button
+                    disabled={color.bgColor === bgColorSelected}
+                    onClick={() => handleSelectTextColor(color)}
+                    className={`disabled:cursor-not-allowed  cursor-pointer rounded-full w-4 h-4 ${
+                      color.bgColor
+                    } ${
+                      textColorSelected.textColor === color.textColor
+                        ? "border-2 border-white"
+                        : null
+                    }`}
+                  />
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="mt-2 w-full h-fit flex flex-col gap-2">
-        <span className="text-white/50 text-xs">Text Color:</span>
-        <div className="flex gap-2">
-          {textColors.map((color) => {
-            return (
-              <button
-                disabled={color.bgColor === bgColorSelected}
-                onClick={() => handleSelectTextColor(color)}
-                className={`disabled:cursor-not-allowed  cursor-pointer rounded-full w-4 h-4 ${
-                  color.bgColor
-                } ${
-                  textColorSelected.textColor === color.textColor
-                    ? "border-2 border-white"
-                    : null
-                }`}
-              />
-            );
-          })}
+        <div className="w-1/2 h-full flex justify-center gap-4 pt-8">
+          <div
+            onClick={() => setTextAlign("text-left")}
+            className={`${
+              textAlign === "text-left" ? "bg-zinc-900" : " bg-zinc-700/50"
+            } w-fit h-fit p-2 rounded-md flex justify-center items-center cursor-pointer transition-all`}
+          >
+            <AlignStartVertical className="text-white/80 w-4 h-4" />
+          </div>
+          <div
+            onClick={() => setTextAlign("text-center")}
+            className={`${
+              textAlign === "text-center" ? "bg-zinc-900" : " bg-zinc-700/50"
+            } w-fit h-fit p-2 rounded-md flex justify-center items-center cursor-pointer transition-all`}
+          >
+            <AlignCenterVertical className="text-white/80 w-4 h-4" />
+          </div>
         </div>
       </div>
       <form
@@ -183,7 +217,7 @@ export default function Preview({
             {...register("text", { required: true })}
             id="text"
             name="text"
-            className={`${textColorSelected.textColor} break-words bg-transparent font-medium  text-xl w-full h-full outline-none resize-none p-6`}
+            className={`${textColorSelected.textColor} ${textAlign} break-words bg-transparent font-medium  text-xl w-full h-full outline-none resize-none p-6`}
             value={content !== null ? content : ""}
             onChange={(e) => setContent(e.target.value)}
           />
@@ -192,14 +226,22 @@ export default function Preview({
             {...register("bgColor", { required: true })}
             id="bgColor"
             name="bgColor"
-            type="bgColor "
+            type="text "
           />
           <input
             className="hidden"
             {...register("textColor", { required: true })}
-            id="subtextColorject"
+            id="textColor"
             name="textColor"
-            type="textColor "
+            type="text "
+          />
+          <input
+            className="hidden"
+            {...register("textAlign", { required: true })}
+            id="textAlign"
+            name="textAlign"
+            type="text"
+            value={textAlign}
           />
         </div>
         <div className="w-full h-fit flex flex-col gap-1">
@@ -214,6 +256,11 @@ export default function Preview({
           {errors.textColor && (
             <p className="text-red-600 text-xs pt-2">
               {errors?.textColor?.message}
+            </p>
+          )}
+          {errors.textAlign && (
+            <p className="text-red-600 text-xs pt-2">
+              {errors?.textAlign?.message}
             </p>
           )}
         </div>

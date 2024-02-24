@@ -21,7 +21,6 @@ export const registerSchema = z
       .string()
       .min(8, { message: "This field cannot contain less than 8 characters" }),
     confirmPassword: z.string(),
-    file: typeof FileList !== "undefined" ? z.instanceof(FileList) : z.string(), // Check if FileList is defined
   })
   .refine((data) => data.password == data.confirmPassword, {
     message: "Passwords do not match",

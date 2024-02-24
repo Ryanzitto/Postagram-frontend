@@ -4,6 +4,8 @@ import { ChangeEvent, useEffect, useState, useRef } from "react";
 import Post from "./Post";
 import Preview from "./Preview";
 
+import { useStore } from "app/store";
+
 interface User {
   name: string;
   userName: string;
@@ -12,13 +14,22 @@ interface User {
   _id: string;
 }
 
+interface Comment {
+  comment: string;
+  createdAt: string;
+  idComment: string;
+  userId: string;
+  userName: string;
+}
+
 interface Post {
   subject: string;
   text: string;
   bgColor: string;
   textColor: string;
   likes: [];
-  comments: [];
+  comments: Comment[];
+  createdAt: string;
   user: {
     name: string;
     userName: string;
@@ -26,6 +37,58 @@ interface Post {
   };
   _id: string;
 }
+
+const bgColorsForProfile = [
+  "bg-red-300",
+  "bg-orange-300",
+  "bg-yellow-300",
+  "bg-green-300",
+  "bg-teal-300",
+  "bg-blue-300",
+  "bg-indigo-300",
+  "bg-purple-300",
+  "bg-pink-300",
+  "bg-lime-300",
+  "bg-emerald-300",
+  "bg-red-500",
+  "bg-orange-500",
+  "bg-yellow-500",
+  "bg-green-500",
+  "bg-teal-500",
+  "bg-blue-500",
+  "bg-indigo-500",
+  "bg-purple-500",
+  "bg-pink-500",
+  "bg-lime-500",
+  "bg-emerald-500",
+  "bg-red-700",
+  "bg-orange-700",
+  "bg-yellow-700",
+  "bg-green-700",
+  "bg-teal-700",
+  "bg-blue-700",
+  "bg-indigo-700",
+  "bg-purple-700",
+  "bg-pink-700",
+  "bg-lime-700",
+  "bg-emerald-700",
+];
+
+const images = [
+  "images/cat-1.png",
+  "images/cat-2.png",
+  "images/cat-3.png",
+  "images/cat-4.png",
+  "images/cat-5.png",
+  "images/cat-6.png",
+  "images/cat-7.png",
+  "images/cat-8.png",
+  "images/cat-9.png",
+  "images/cat-10.png",
+  "images/cat-11.png",
+  "images/cat-12.png",
+  "images/cat-13.png",
+];
 
 const colors = [
   "bg-white",
@@ -57,6 +120,8 @@ interface textColors {
 export default function Feed() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
+  const { user } = useStore();
+
   const closeButtonModalRef = useRef<HTMLSpanElement | null>(null);
 
   const [users, setUsers] = useState<User[] | null>(null);
@@ -64,6 +129,8 @@ export default function Feed() {
   const [posts, setPosts] = useState<Post[] | null>(null);
 
   const [content, setContent] = useState<string | null>(null);
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [bgColorSelected, setBgColorSelected] = useState<string>("bg-white");
 
@@ -82,9 +149,11 @@ export default function Feed() {
       .then((response) => {
         console.log(response);
         setPosts(response.data.results);
+        setErrorMessage(null);
       })
       .catch((error) => {
         console.log(error);
+        setErrorMessage(error.response.data.message);
       });
   };
 
@@ -113,36 +182,87 @@ export default function Feed() {
     }
   }, [content]);
 
+  const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * bgColorsForProfile.length);
+    return bgColorsForProfile[randomIndex];
+  };
+  const getRandomAvatar = () => {
+    const randomIndex = Math.floor(Math.random() * images.length);
+    return images[randomIndex];
+  };
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  let isMouseDown = false;
+  let startXn: number;
+  let scrollLeft: number;
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (container) {
+      const handleMouseDown = (event: MouseEvent) => {
+        isMouseDown = true;
+        startXn = event.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+      };
+
+      const handleMouseMove = (event: MouseEvent) => {
+        if (!isMouseDown) return;
+        event.preventDefault();
+        const x = event.pageX - container.offsetLeft;
+        const walk = (x - startXn) * 2; // Ajuste a sensibilidade do movimento conforme necessário
+        container.scrollLeft = scrollLeft - walk;
+      };
+
+      const handleMouseUp = () => {
+        isMouseDown = false;
+      };
+
+      container.addEventListener("mousedown", handleMouseDown);
+      container.addEventListener("mousemove", handleMouseMove);
+      container.addEventListener("mouseup", handleMouseUp);
+
+      return () => {
+        container.removeEventListener("mousedown", handleMouseDown);
+        container.removeEventListener("mousemove", handleMouseMove);
+        container.removeEventListener("mouseup", handleMouseUp);
+      };
+    }
+  }, []);
+
   return (
     <Dialog.Root>
       <div className="w-[50%] h-fit flex flex-col p-4 gap-5">
-        <div className="w-full h-fit flex gap-2">
-          {users?.map((user) => {
-            return (
-              <div
-                key={user._id}
-                className="h-20 w-fit flex flex-col justify-center items-center"
-              >
-                <div className="w-20 h-20 flex flex-col justify-center items-center text-center">
-                  <div className="w-12 h-12 p-0.5 flex justify-center items-center bg-purple-500 rounded-md">
-                    <img
-                      className="w-12 rounded-md"
-                      src="https://img.wattpad.com/0145c2f3f751ec26ef0203b2f3b813886cebe603/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f4e6a494e634a6d4d4d65394135773d3d2d3832373438383335392e313565396138356134313734636231343436393538343136303132312e6a7067?s=fit&w=720&h=720"
-                    />
+        <div
+          ref={containerRef}
+          className="w-full custom overflow-hidden flex gap-2"
+        >
+          <div className="w-full flex gap-2">
+            {users?.map((user) => {
+              return (
+                <div
+                  key={user._id}
+                  className="h-20 w-fit flex flex-col justify-start items-center cursor-default"
+                >
+                  <div className="w-20 h-20 flex flex-col justify-center items-center text-center">
+                    <div
+                      className={`w-12 h-12 p-0.5 flex justify-center items-center ${getRandomColor()} rounded-md`}
+                    >
+                      <img className="w-12 h-12" src={getRandomAvatar()} />
+                    </div>
                   </div>
+                  <span className="cursor-pointer text-xs text-center text-white/50 mt-4">
+                    {user.name}
+                  </span>
                 </div>
-                <span className="text-xs text-white/50 mt-4">{user.name}</span>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-        <div className="w-full h-fit bg-zinc-700/50 rounded-xl flex p-4">
+        <div className="w-full h-fit bg-zinc-700/50 rounded-xl flex p-4 mt-4">
           <div className="w-fit h-fit flex">
-            <div className="bg-li w-12 h-12 p-0.5 flex justify-center items-center bg-zinc-800/60 rounded-md">
-              <img
-                className="w-12 rounded-md"
-                src="https://img.wattpad.com/0145c2f3f751ec26ef0203b2f3b813886cebe603/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f4e6a494e634a6d4d4d65394135773d3d2d3832373438383335392e313565396138356134313734636231343436393538343136303132312e6a7067?s=fit&w=720&h=720"
-              />
+            <div className="w-16 h-16 flex justify-center items-center bg-pink-500 rounded-md">
+              <img className="w-full h-full" src="images/cat-1.png" />
             </div>
           </div>
           <div
@@ -188,6 +308,13 @@ export default function Feed() {
           {posts?.map((post) => {
             return <Post post={post} />;
           })}
+          {errorMessage ? (
+            <div className="w-full h-60 flex justify-center items-center">
+              <p className="text-white/50 font-bold tracking-wider text-lg">
+                {errorMessage}
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
     </Dialog.Root>
