@@ -2,25 +2,10 @@
 import Aside from "../UI/Aside";
 import Feed from "../UI/Feed";
 import Header from "../UI/Header";
-import { useStore } from "app/store";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { toast } from "sonner";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function HomePage() {
-  const URL = process.env.NEXT_PUBLIC_BASEURL;
-
-  const { user } = useStore();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user.token === "") {
-      toast.error("you need to be logged to continue.");
-      router.push("/auth/signIn");
-    }
-  }, []);
-
   return (
     <main className="w-screen h-screen bg-zinc-800 flex flex-col justify-start items-start overflow-x-hidden">
       <Header />

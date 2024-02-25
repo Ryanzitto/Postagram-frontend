@@ -112,6 +112,7 @@ export default function Preview({
           closeButtonModalRef.current.click();
           toast.success("Post created!");
           setContent("");
+          setSessionPostsCreated(sessionPostsCreated + 1);
         }
         fetchPosts();
       })
@@ -134,6 +135,7 @@ export default function Preview({
               {colors.map((color) => {
                 return (
                   <button
+                    key={color}
                     disabled={color === textColorSelected.bgColor}
                     onClick={() => handleSelectBgColor(color)}
                     className={`disabled:cursor-not-allowed cursor-pointer rounded-full w-4 h-4 ${color} ${
@@ -150,6 +152,7 @@ export default function Preview({
               {textColors.map((color) => {
                 return (
                   <button
+                    key={color.textColor}
                     disabled={color.bgColor === bgColorSelected}
                     onClick={() => handleSelectTextColor(color)}
                     className={`disabled:cursor-not-allowed  cursor-pointer rounded-full w-4 h-4 ${

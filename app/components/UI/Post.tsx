@@ -16,6 +16,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createCommentSchema } from "../../zodSchema/createComment";
 import axios from "axios";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 interface Comment {
   comment: string;
   createdAt: string;
@@ -145,7 +148,7 @@ export default function Post({ post }: Props) {
   };
 
   return (
-    <div className="relative w-full h-fit bg-zinc-700/50 rounded-lg p-4 grid">
+    <div className="relative w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-lg p-4 grid">
       <div className="justify-self-end mr-4 mt-4 absolute rounded-md w-6 h-6 bg-zinc-800/80 p-1 flex justify-center items-center">
         <MoreHorizontal className="cursor-pointer text-white w-4 rotate-90 flex" />
       </div>
@@ -175,7 +178,7 @@ export default function Post({ post }: Props) {
       <div
         className={`text-xl font-bold text-white tracking-wider w-full h-fit flex mt-6`}
       >
-        <span>{post.subject}</span>
+        <span>{post.subject || <Skeleton />}</span>
       </div>
       <div
         className={`w-full h-fit flex ${post.bgColor} break-words flex p-10 rounded-lg mt-4`}

@@ -10,6 +10,8 @@ interface User {
   __v: number;
   _id: string;
   token: string;
+  followers: any[];
+  following: any[];
 }
 
 export const useStore = create(
@@ -23,6 +25,8 @@ export const useStore = create(
         __v: 0,
         _id: "",
         token: "",
+        followers: [],
+        following: [],
       },
 
       setUser: (payload: User) =>

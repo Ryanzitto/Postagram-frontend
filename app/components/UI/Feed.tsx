@@ -3,15 +3,21 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { ChangeEvent, useEffect, useState, useRef } from "react";
 import Post from "./Post";
 import Preview from "./Preview";
-
+import { useMemo } from "react";
 import { useStore } from "app/store";
+import Spinner from "./Spinner";
+import Spinner2 from "./Spinner2";
+import { useRouter } from "next/navigation";
 
 interface User {
+  avatar: string;
   name: string;
   userName: string;
   email: string;
   __v: number;
   _id: string;
+  followers: any[];
+  following: any[];
 }
 
 interface Comment {
@@ -120,6 +126,8 @@ interface textColors {
 export default function Feed() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
+  const router = useRouter();
+
   const { user } = useStore();
 
   const closeButtonModalRef = useRef<HTMLSpanElement | null>(null);
@@ -139,6 +147,28 @@ export default function Feed() {
     bgColor: "bg-black",
   });
 
+  const [nextUrl, setNextUrl] = useState<string>("");
+
+  const [shouldShowSpinner, setShouldShowSpinner] = useState<boolean>(false);
+
+  const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * bgColorsForProfile.length);
+    return bgColorsForProfile[randomIndex];
+  };
+
+  const getRandomAvatar = () => {
+    const randomIndex = Math.floor(Math.random() * images.length);
+    return images[randomIndex];
+  };
+
+  const randomColors = useMemo(() => {
+    return users?.map(() => getRandomColor()) ?? [];
+  }, [users]);
+
+  const randomAvatars = useMemo(() => {
+    return users?.map(() => getRandomAvatar()) ?? [];
+  }, [users]);
+
   const handleChangeInputContent = (e: ChangeEvent<HTMLInputElement>) => {
     setContent(e?.target?.value);
   };
@@ -149,6 +179,31 @@ export default function Feed() {
       .then((response) => {
         console.log(response);
         setPosts(response.data.results);
+        setNextUrl(response.data.nextUrl);
+        setErrorMessage(null);
+        setShouldShowSpinner(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage(error.response.data.message);
+      });
+  };
+
+  const fetchMoreData = () => {
+    if (nextUrl === null) {
+      setShouldShowSpinner(false);
+      return;
+    }
+    let newUrl = URL + nextUrl;
+    console.log(newUrl);
+    axios
+      .get(`${newUrl}`)
+      .then((response) => {
+        console.log(response);
+        if (posts) {
+          setPosts([...posts, ...response.data.results]);
+        }
+        setNextUrl(response.data.nextUrl);
         setErrorMessage(null);
       })
       .catch((error) => {
@@ -157,10 +212,19 @@ export default function Feed() {
       });
   };
 
+  const handleClickUserName = (username: string) => {
+    router.push(`/perfil/${username}`);
+  };
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  let isMouseDown = false;
+  let startXn: number;
+  let scrollLeft: number;
+
   useEffect(() => {
     axios
       .get(`${URL}/user/`)
       .then((response) => {
+        console.log(response.data);
         setUsers(response.data);
       })
       .catch((error) => {
@@ -173,28 +237,10 @@ export default function Feed() {
   }, []);
 
   useEffect(() => {
-    console.log(users);
-  }, [users]);
-
-  useEffect(() => {
     if (content === "") {
       setContent(null);
     }
   }, [content]);
-
-  const getRandomColor = () => {
-    const randomIndex = Math.floor(Math.random() * bgColorsForProfile.length);
-    return bgColorsForProfile[randomIndex];
-  };
-  const getRandomAvatar = () => {
-    const randomIndex = Math.floor(Math.random() * images.length);
-    return images[randomIndex];
-  };
-
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  let isMouseDown = false;
-  let startXn: number;
-  let scrollLeft: number;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -230,38 +276,56 @@ export default function Feed() {
     }
   }, []);
 
+  useEffect(() => {
+    console.log(posts);
+  }, [posts]);
+
   return (
     <Dialog.Root>
-      <div className="w-[50%] h-fit flex flex-col p-4 gap-5">
+      <div className="w-[50%] h-fit flex flex-col p-4 gap-5 items-center">
         <div
           ref={containerRef}
-          className="w-full custom overflow-hidden flex gap-2"
+          className="w-full custom overflow-hidden flex gap-2  rounded-xl border border-zinc-500/80 bg-zinc-700/50 py-3"
         >
-          <div className="w-full flex gap-2">
-            {users?.map((user) => {
-              return (
-                <div
-                  key={user._id}
-                  className="h-20 w-fit flex flex-col justify-start items-center cursor-default"
-                >
-                  <div className="w-20 h-20 flex flex-col justify-center items-center text-center">
-                    <div
-                      className={`w-12 h-12 p-0.5 flex justify-center items-center ${getRandomColor()} rounded-md`}
-                    >
-                      <img className="w-12 h-12" src={getRandomAvatar()} />
+          {users && (
+            <div className="w-full flex gap-2">
+              {users?.map((user, index) => {
+                return (
+                  <div
+                    key={user._id}
+                    className="h-20 w-fit flex flex-col justify-start items-center cursor-default"
+                  >
+                    <div className="w-20 h-20 flex flex-col justify-center items-center text-center">
+                      <div
+                        className={`w-12 h-12 p-0.5 flex justify-center items-center ${randomColors[index]} rounded-md`}
+                      >
+                        <img
+                          className="w-12 h-12"
+                          src={randomAvatars[index]}
+                          alt={`Avatar de ${user.name}`}
+                        />
+                      </div>
                     </div>
+                    <span
+                      onClick={() => handleClickUserName(user.name)}
+                      className="cursor-pointer text-xs text-center text-white/50 mt-2 transition-all hover:text-white/30"
+                    >
+                      {user.name}
+                    </span>
                   </div>
-                  <span className="cursor-pointer text-xs text-center text-white/50 mt-4">
-                    {user.name}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
+          {!users && (
+            <div className="w-full flex justify-center items-center">
+              <Spinner2 />
+            </div>
+          )}
         </div>
-        <div className="w-full h-fit bg-zinc-700/50 rounded-xl flex p-4 mt-4">
+        <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4 mt-4">
           <div className="w-fit h-fit flex">
-            <div className="w-16 h-16 flex justify-center items-center bg-pink-500 rounded-md">
+            <div className="w-16 h-16 grid bg-purple-500 rounded-md">
               <img className="w-full h-full" src="images/cat-1.png" />
             </div>
           </div>
@@ -271,6 +335,7 @@ export default function Feed() {
           >
             <textarea
               value={content !== null ? content : ""}
+              onChange={(e) => setContent(e.target.value)}
               placeholder="What are your words today?"
               className={`text-sm rounded-xl w-full pt-5 ${
                 content !== null ? "pb-5" : null
@@ -306,7 +371,7 @@ export default function Feed() {
         </Dialog.Portal>
         <div className="w-full h-fit flex flex-col gap-4 justify-start items-center">
           {posts?.map((post) => {
-            return <Post post={post} />;
+            return <Post key={post._id} post={post} />;
           })}
           {errorMessage ? (
             <div className="w-full h-60 flex justify-center items-center">
@@ -315,6 +380,13 @@ export default function Feed() {
               </p>
             </div>
           ) : null}
+        </div>
+        <div className="w-full flex justify-center items-center relative h-fit py-6">
+          {shouldShowSpinner && <Spinner fetchMoreData={fetchMoreData} />}
+
+          {nextUrl === null && (
+            <span className="text-white/50 text-sm"> No more posts.</span>
+          )}
         </div>
       </div>
     </Dialog.Root>
