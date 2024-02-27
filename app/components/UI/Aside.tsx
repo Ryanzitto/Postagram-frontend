@@ -3,17 +3,6 @@ import { useEffect, useState } from "react";
 import { useStore } from "app/store";
 import axios from "axios";
 
-interface User {
-  avatar: string;
-  name: string;
-  userName: string;
-  email: string;
-  __v: number;
-  _id: string;
-  followers: any[];
-  following: any[];
-}
-
 const Load = () => {
   return (
     <span className="text-white tracking-widest font-bold text-lg">...</span>
@@ -25,13 +14,7 @@ export default function Aside() {
 
   const [pageIsLoad, setPageIsLoad] = useState<boolean>(false);
 
-  useEffect(() => {
-    setPageIsLoad(true);
-  }, []);
-
   const URL = process.env.NEXT_PUBLIC_BASEURL;
-
-  const [userProfile, setUserProfile] = useState<User>();
 
   const [totalPostsUser, setTotalPostsUser] = useState<number>(0);
 
@@ -47,13 +30,19 @@ export default function Aside() {
       });
   }, []);
 
+  useEffect(() => {
+    setPageIsLoad(true);
+  }, []);
+
   return (
     <>
       <div className="w-[25%] h-full p-4">
         <div className="relative w-[90%] h-[350px] bg-zinc-700 flex flex-col border border-zinc-500/80 rounded-md ">
           <div className="absolute w-full h-full flex justify-center items-center">
             <div className="w-24 h-24 p-1 bg-zinc-700 rounded-md self-center justify-self-center mb-24">
-              <img className="rounded-md" src="/images/cat-1.png" />
+              {pageIsLoad && (
+                <img className="rounded-md" src={`/images/${user.avatar}`} />
+              )}
             </div>
           </div>
           <div className="bg-purple-500 w-full h-1/3 rounded-t-md flex">

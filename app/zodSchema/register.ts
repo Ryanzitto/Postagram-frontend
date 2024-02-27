@@ -2,6 +2,7 @@ import z from "zod";
 
 export const registerSchema = z
   .object({
+    avatar: z.string(),
     name: z
       .string()
       .min(3, { message: "This field cannot contain less than 3 characters" })

@@ -5,7 +5,7 @@ import {
   Send,
   MessageCircleOff,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -15,9 +15,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createCommentSchema } from "../../zodSchema/createComment";
 import axios from "axios";
-
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import { useRouter } from "next/navigation";
 
 interface Comment {
   comment: string;
@@ -64,6 +62,8 @@ export default function Post({ post }: Props) {
 
   const { user } = useStore();
 
+  const router = useRouter();
+
   const [shouldShowComments, setShouldShowComments] = useState<boolean>(false);
 
   const [newComments, setNewComments] = useState<newComment[]>([]);
@@ -71,6 +71,10 @@ export default function Post({ post }: Props) {
   const [userHasLiked, setUserHasLiked] = useState<boolean>(
     post.likes.some((item) => user._id === item.userId)
   );
+
+  const handleClickUserName = (username: string) => {
+    router.push(`/perfil/${username}`);
+  };
 
   const [totalLikes, setTotalLikes] = useState<number>(post.likes.length);
 
@@ -160,7 +164,12 @@ export default function Post({ post }: Props) {
           />
         </div>
         <div className="flex flex-col w-fit gap-0.5 pl-4">
-          <span className="text-white/50 text-xs">@{post.user.userName}</span>
+          <span
+            onClick={() => handleClickUserName(post.user.userName)}
+            className="text-white/50 text-xs cursor-pointer transition-all hover:text-white/30 hover:underline"
+          >
+            @{post.user.userName}
+          </span>
           <div className="flex gap-2 items-center">
             <span className="text-white text-lg font-bold">
               {post.user.name}
@@ -178,7 +187,7 @@ export default function Post({ post }: Props) {
       <div
         className={`text-xl font-bold text-white tracking-wider w-full h-fit flex mt-6`}
       >
-        <span>{post.subject || <Skeleton />}</span>
+        <span>{post.subject}</span>
       </div>
       <div
         className={`w-full h-fit flex ${post.bgColor} break-words flex p-10 rounded-lg mt-4`}
@@ -235,7 +244,10 @@ export default function Post({ post }: Props) {
             return (
               <div className="border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
                 <div className="w-fit p-1 rounded-md bg-zinc-700 flex items-center px-2 gap-2">
-                  <span className="text-white/80 font-bold text-xs">
+                  <span
+                    onClick={() => handleClickUserName(comment.userName)}
+                    className="text-white/80 font-bold text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
+                  >
                     @{comment.userName}
                   </span>
                   <div className="w-1 h-1 rounded-full bg-white" />
@@ -258,7 +270,10 @@ export default function Post({ post }: Props) {
             return (
               <div className="border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
                 <div className="w-fit p-1 rounded-md bg-zinc-700 flex items-center px-2 gap-2">
-                  <span className="text-white/80 font-bold text-xs">
+                  <span
+                    onClick={() => handleClickUserName(comment.userName)}
+                    className="text-white/80 font-bold text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
+                  >
                     @{comment.userName}
                   </span>
                   <div className="w-1 h-1 rounded-full bg-white" />

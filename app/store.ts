@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 interface User {
+  avatar: string;
   email: string;
   password: string;
   name: string;
@@ -18,6 +19,7 @@ export const useStore = create(
   persist(
     (set: any) => ({
       user: {
+        avatar: "",
         email: "",
         password: "",
         name: "",
@@ -37,6 +39,7 @@ export const useStore = create(
       logout: () =>
         set({
           user: {
+            avatar: "",
             email: "",
             password: "",
             name: "",

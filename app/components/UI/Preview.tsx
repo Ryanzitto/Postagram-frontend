@@ -112,7 +112,6 @@ export default function Preview({
           closeButtonModalRef.current.click();
           toast.success("Post created!");
           setContent("");
-          setSessionPostsCreated(sessionPostsCreated + 1);
         }
         fetchPosts();
       })

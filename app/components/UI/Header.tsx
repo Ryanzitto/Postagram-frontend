@@ -167,7 +167,12 @@ export default function Header() {
                 <div className="w-full h-fit flex items-center justify-center pt-6 gap-2">
                   <div className="w-full h-fit flex flex-col gap-1 items-center justify-center">
                     <div className="w-fit h-fit bg-white rounded-lg">
-                      <img className="w-16 h-16" src="/images/cat-1.png" />
+                      {pageIsLoad && (
+                        <img
+                          className="w-16 h-16"
+                          src={`/images/${user.avatar}`}
+                        />
+                      )}
                     </div>
                     <span className="text-white font-bold tracking-w3de text-sm pt-2">
                       {user.name}
@@ -221,7 +226,9 @@ export default function Header() {
           </AnimatePresence>
           {menuIsOpen === false && (
             <div className="w-fit px-2 p-1 fixed  h-fit flex justify-start gap-3 items-center rounded-md border border-zinc-600 bg-zinc-700/50 mr-6 mt-6">
-              <img className="w-8 h-8" src="/images/cat-1.png" />
+              {pageIsLoad && (
+                <img className="w-8 h-8" src={`/images/${user.avatar}`} />
+              )}
               {pageIsLoad ? (
                 <span className="text-white/80 text-sm font-semibold">
                   {user?.name}

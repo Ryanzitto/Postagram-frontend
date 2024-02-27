@@ -151,6 +151,8 @@ export default function Feed() {
 
   const [shouldShowSpinner, setShouldShowSpinner] = useState<boolean>(false);
 
+  const [pageIsLoad, setPageIsLoad] = useState<boolean>(false);
+
   const getRandomColor = () => {
     const randomIndex = Math.floor(Math.random() * bgColorsForProfile.length);
     return bgColorsForProfile[randomIndex];
@@ -219,6 +221,10 @@ export default function Feed() {
   let isMouseDown = false;
   let startXn: number;
   let scrollLeft: number;
+
+  useEffect(() => {
+    setPageIsLoad(true);
+  }, []);
 
   useEffect(() => {
     axios
@@ -301,7 +307,7 @@ export default function Feed() {
                       >
                         <img
                           className="w-12 h-12"
-                          src={randomAvatars[index]}
+                          src={`/images/${user.avatar}`}
                           alt={`Avatar de ${user.name}`}
                         />
                       </div>
@@ -326,7 +332,9 @@ export default function Feed() {
         <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4 mt-4">
           <div className="w-fit h-fit flex">
             <div className="w-16 h-16 grid bg-purple-500 rounded-md">
-              <img className="w-full h-full" src="images/cat-1.png" />
+              {pageIsLoad && (
+                <img className="w-full h-full" src={`/images/${user.avatar}`} />
+              )}
             </div>
           </div>
           <div

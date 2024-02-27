@@ -71,6 +71,14 @@ export default function SignUp() {
           onSubmit={handleSubmit(onSubmit)}
           className="w-[70%] h-fit pt-10 py-4 gap-6 flex flex-col"
         >
+          <input
+            {...register("avatar", { required: true })}
+            id="avatar"
+            name="avatar"
+            type="text"
+            value={"cat-1.png"}
+            className="hidden"
+          />
           <div className="flex flex-col w-full gap-1">
             <input
               onMouseEnter={() => setNameIsHovered(true)}
