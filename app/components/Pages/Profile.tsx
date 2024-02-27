@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
 import Preview from "../../components/UI/Preview";
 import { Plus, Minus } from "lucide-react";
+import { useStore } from "app/store";
+import { toast } from "sonner";
 
 interface textColors {
   textColor: string;
@@ -56,6 +58,8 @@ interface Post {
 export default function ProfilePage({ userNameProp }: Props) {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
+  const { user } = useStore();
+
   const router = useRouter();
 
   const [userProfile, setUserProfile] = useState<User>();
@@ -65,6 +69,18 @@ export default function ProfilePage({ userNameProp }: Props) {
   const [totalPostsUser, setTotalPostsUser] = useState<number>(0);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const [userHasFollowed, setUserHasFollowed] = useState<boolean>();
+
+  useEffect(() => {
+    if (userProfile) {
+      setUserHasFollowed(
+        userProfile?.followers.some(
+          (userProfile) => userProfile._id === user._id
+        )
+      );
+    }
+  }, [userProfile]);
 
   const handleClickUserName = (username: string) => {
     router.push(`/perfil/${username}`);
@@ -80,6 +96,10 @@ export default function ProfilePage({ userNameProp }: Props) {
       .catch((error) => {
         console.log(error);
       });
+  }, []);
+
+  useEffect(() => {
+    console.log(userNameProp);
   }, []);
 
   useEffect(() => {
@@ -134,6 +154,19 @@ export default function ProfilePage({ userNameProp }: Props) {
       setContent(null);
     }
   }, [content]);
+
+  const handleClickFollow = (userToFollowId: string | undefined) => {
+    axios
+      .post(`${URL}/user/follow/${userToFollowId}`, { userId: user._id })
+      .then((response) => {
+        console.log(response);
+        toast.success("User successfully followed");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.success("Something wrog ocurred");
+      });
+  };
 
   return (
     <Dialog.Root>
@@ -190,14 +223,29 @@ export default function ProfilePage({ userNameProp }: Props) {
                       Hi, Im Leon Arc and I love this App. 🛸👽
                     </span>
                   </div>
-                  <div className="flex w-full justify-center items-center gap-3 mt-6">
-                    <button className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider">
-                      FOLLOW
-                    </button>
-                    <button className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider">
-                      CHAT
-                    </button>
-                  </div>
+                  {userProfile?._id !== user._id && (
+                    <div className="flex w-full justify-center items-center gap-3 mt-6">
+                      {userHasFollowed ? (
+                        <button
+                          onClick={() => handleClickFollow(userProfile?._id)}
+                          className="bg-red-500 transition-all hover:bg-red-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider"
+                        >
+                          UNFOLLOW
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleClickFollow(userProfile?._id)}
+                          className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider"
+                        >
+                          FOLLOW
+                        </button>
+                      )}
+
+                      <button className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider">
+                        CHAT
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="w-full h-[30%] flex flex-col justify-center items-center rounded-t-lg bg-purple-500"></div>
@@ -218,6 +266,13 @@ export default function ProfilePage({ userNameProp }: Props) {
                     );
                   })}
                 </div>
+                {userProfile?.following.length === 0 && (
+                  <div className="w-full flex">
+                    <span className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline">
+                      {userProfile?.following.length}
+                    </span>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col w-full gap-2  h-fit pl-8">
                 <span className="text-white/50 text-xs">Following:</span>
@@ -233,37 +288,46 @@ export default function ProfilePage({ userNameProp }: Props) {
                     );
                   })}
                 </div>
+                {userProfile?.followers.length === 0 && (
+                  <div className="w-full flex">
+                    <span className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline">
+                      {userProfile?.followers.length}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
           <div className="w-[70%] h-full max-h-full flex justify-start items-start pt-6">
             <div className="rounded-lg w-[700px] h-fit flex flex-col items-start justify-start">
               <div className="flex flex-col w-full">
-                <div className="w-full h-fit flex">
-                  <button
-                    className={`${
-                      shouldShowCreatePost
-                        ? "bg-red-500 hover:bg-red-600"
-                        : "bg-purple-500 hover:bg-purple-600"
-                    } transition-all  px-2 rounded-md py-2 flex gap-1 justify-center items-center`}
-                    onClick={() =>
-                      sethouldShowCreatePost(!shouldShowCreatePost)
-                    }
-                  >
-                    {shouldShowCreatePost ? (
-                      <Minus className="w-5 h-5 text-white/80" />
-                    ) : (
-                      <Plus className="w-5 h-5 text-white/80" />
-                    )}
-                    <span
+                {userProfile?._id === user._id && (
+                  <div className="w-full h-fit flex">
+                    <button
                       className={`${
-                        shouldShowCreatePost ? "hidden" : "flex"
-                      } text-sm text-white/80 font-semibold tracking-wider`}
+                        shouldShowCreatePost
+                          ? "bg-red-500 hover:bg-red-600"
+                          : "bg-purple-500 hover:bg-purple-600"
+                      } transition-all  px-2 rounded-md py-2 flex gap-1 justify-center items-center`}
+                      onClick={() =>
+                        sethouldShowCreatePost(!shouldShowCreatePost)
+                      }
                     >
-                      Create
-                    </span>
-                  </button>
-                </div>
+                      {shouldShowCreatePost ? (
+                        <Minus className="w-5 h-5 text-white/80" />
+                      ) : (
+                        <Plus className="w-5 h-5 text-white/80" />
+                      )}
+                      <span
+                        className={`${
+                          shouldShowCreatePost ? "hidden" : "flex"
+                        } text-sm text-white/80 font-semibold tracking-wider`}
+                      >
+                        Create
+                      </span>
+                    </button>
+                  </div>
+                )}
                 {shouldShowCreatePost && (
                   <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4 mt-4">
                     <div className="w-fit h-fit flex">
@@ -317,8 +381,16 @@ export default function ProfilePage({ userNameProp }: Props) {
                 </Dialog.Portal>
               </div>
               <div className="flex flex-col w-full ">
-                <div className="w-full flex pl-4 pt-10">
-                  <span className="text-white/10 text-xs">Recents Posts</span>
+                <div className="w-full flex pl-4">
+                  {totalPostsUser > 0 && (
+                    <span
+                      className={`${
+                        userProfile?._id === user._id ? "pt-10" : "pt-0"
+                      } text-white/10 text-xs `}
+                    >
+                      Recents Posts
+                    </span>
+                  )}
                 </div>
                 <div className="w-full h-fit flex flex-col gap-4 justify-start items-start pt-3 py-6">
                   {posts?.map((post) => {

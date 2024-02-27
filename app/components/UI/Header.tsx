@@ -60,6 +60,7 @@ export default function Header() {
   }, []);
 
   const handleClickProfile = (username: string) => {
+    console.log(username);
     router.push(`/perfil/${username}`);
   };
 

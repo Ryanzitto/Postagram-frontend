@@ -313,7 +313,7 @@ export default function Feed() {
                       </div>
                     </div>
                     <span
-                      onClick={() => handleClickUserName(user.name)}
+                      onClick={() => handleClickUserName(user.userName)}
                       className="cursor-pointer text-xs text-center text-white/50 mt-2 transition-all hover:text-white/30"
                     >
                       {user.name}
