@@ -37,11 +37,11 @@ export default function Aside() {
   return (
     <>
       <div className="w-[25%] h-full p-4">
-        <div className="relative w-[90%] h-[350px] bg-zinc-700 flex flex-col border border-zinc-500/80 rounded-md ">
+        {/* <div className="relative w-[90%] h-[350px] bg-zinc-700 flex flex-col border border-zinc-500/80 rounded-md ">
           <div className="absolute w-full h-full flex justify-center items-center">
             <div className="w-24 h-24 p-1 bg-zinc-700 rounded-md self-center justify-self-center mb-24">
               {pageIsLoad && (
-                <img className="rounded-md" src={`/images/${user.avatar}`} />
+                <img className="rounded-md" src={`/images/${user?.avatar}`} />
               )}
             </div>
           </div>
@@ -62,7 +62,7 @@ export default function Aside() {
               <div className="w-20 pt-2 flex flex-col text-center">
                 {pageIsLoad ? (
                   <span className="text-sm text-white font-semibold">
-                    {user.followers.length}
+                    {user?.followers?.length}
                   </span>
                 ) : (
                   <Load />
@@ -74,7 +74,7 @@ export default function Aside() {
               <div className="w-20 pt-2 flex flex-col text-center">
                 {pageIsLoad ? (
                   <span className="text-sm text-white font-semibold">
-                    {user.following.length}
+                    {user?.following?.length}
                   </span>
                 ) : (
                   <Load />
@@ -87,14 +87,14 @@ export default function Aside() {
             <div className="w-full flex flex-col justify-center items-center h-fit p-1 mt-2">
               {pageIsLoad ? (
                 <span className="text-md text-white font-semibold">
-                  {user.name}
+                  {user?.name}
                 </span>
               ) : (
                 <Load />
               )}
               {pageIsLoad ? (
                 <span className="text-xs text-white/50 font-normal">
-                  @{user.userName}
+                  @{user?.userName}
                 </span>
               ) : (
                 <Load />
@@ -107,7 +107,7 @@ export default function Aside() {
               </span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

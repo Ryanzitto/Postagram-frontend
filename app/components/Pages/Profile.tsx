@@ -10,6 +10,7 @@ import Preview from "../../components/UI/Preview";
 import { Plus, Minus } from "lucide-react";
 import { useStore } from "app/store";
 import { toast } from "sonner";
+import ProfileCard from "../UI/ProfileCard";
 
 interface textColors {
   textColor: string;
@@ -58,7 +59,7 @@ interface Post {
 export default function ProfilePage({ userNameProp }: Props) {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
-  const { user } = useStore();
+  const { user, logout } = useStore();
 
   const router = useRouter();
 
@@ -70,20 +71,8 @@ export default function ProfilePage({ userNameProp }: Props) {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const [userHasFollowed, setUserHasFollowed] = useState<boolean>();
-
-  useEffect(() => {
-    if (userProfile) {
-      setUserHasFollowed(
-        userProfile?.followers.some(
-          (userProfile) => userProfile._id === user._id
-        )
-      );
-    }
-  }, [userProfile]);
-
   const handleClickUserName = (username: string) => {
-    router.push(`/perfil/${username}`);
+    router.push(`/profile/${username}`);
   };
 
   useEffect(() => {
@@ -95,11 +84,13 @@ export default function ProfilePage({ userNameProp }: Props) {
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          return;
+        }
       });
-  }, []);
-
-  useEffect(() => {
-    console.log(userNameProp);
   }, []);
 
   useEffect(() => {
@@ -155,117 +146,29 @@ export default function ProfilePage({ userNameProp }: Props) {
     }
   }, [content]);
 
-  const handleClickFollow = (userToFollowId: string | undefined) => {
-    axios
-      .post(`${URL}/user/follow/${userToFollowId}`, { userId: user._id })
-      .then((response) => {
-        console.log(response);
-        toast.success("User successfully followed");
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.success("Something wrog ocurred");
-      });
-  };
-
   return (
     <Dialog.Root>
       <main className="w-screen h-screen bg-zinc-800 flex flex-col justify-start items-start overflow-x-hidden">
         <Header />
         <div className="w-full h-[85%] flex justify-start items-start">
           <div className="w-[30%] h-full flex flex-col items-center pt-6">
-            <div className="relative min-w-[350px] min-h-[400px] flex flex-col justify-center rounded-lg bg-zinc-700/50 border border-zinc-500/80 items-center">
-              <div className="w-full flex h-full flex-col justify-start items-center absolute">
-                <div className="w-24 h-24 flex justify-center items-center rounded-lg bg-white mt-16">
-                  <img
-                    className="w-18 h-18"
-                    src={`/images/${userProfile?.avatar}`}
-                  />
-                </div>
-                <div className="w-full h-fit flex flex-col justify-center items-center">
-                  <div className="flex flex-col justify-center items-center gap-1 mt-2">
-                    <span className="text-white font-bold tracking-widest">
-                      {userProfile?.name}
-                    </span>
-                    <span className="text-white/50 text-xs ">
-                      @{userProfile?.userName}
-                    </span>
-                  </div>
-                  <div className="w-[300px] h-fit flex px-2 mt-4">
-                    <div className="flex w-1/3 flex-col gap-1 text-center">
-                      <span className="text-white text-xs font-bold">
-                        Posts
-                      </span>
-                      <span className="text-white/50 text-xs">
-                        {totalPostsUser}
-                      </span>
-                    </div>
-                    <div className="flex w-1/3 flex-col gap-1 text-center">
-                      <span className="text-white text-xs font-bold">
-                        Followers
-                      </span>
-                      <span className="text-white/50 text-xs">
-                        {userProfile?.followers.length}
-                      </span>
-                    </div>
-                    <div className="flex w-1/3 flex-col gap-1 text-center">
-                      <span className="text-white text-xs font-bold">
-                        Following
-                      </span>
-                      <span className="text-white/50 text-xs">
-                        {userProfile?.following.length}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="w-[80%] h-[1px] bg-zinc-500/30 mt-4 mb-4"></div>
-                  <div className="w-full flex flex-col justify-center items-center text-center h-fit px-2 mt-2">
-                    <span className="text-xs z-40 text-white/80 font-normal">
-                      Hi, Im Leon Arc and I love this App. 🛸👽
-                    </span>
-                  </div>
-                  {userProfile?._id !== user._id && (
-                    <div className="flex w-full justify-center items-center gap-3 mt-6">
-                      {userHasFollowed ? (
-                        <button
-                          onClick={() => handleClickFollow(userProfile?._id)}
-                          className="bg-red-500 transition-all hover:bg-red-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider"
-                        >
-                          UNFOLLOW
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleClickFollow(userProfile?._id)}
-                          className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider"
-                        >
-                          FOLLOW
-                        </button>
-                      )}
-
-                      <button className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider">
-                        CHAT
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="w-full h-[30%] flex flex-col justify-center items-center rounded-t-lg bg-purple-500"></div>
-              <div className="w-full h-[70%] flex flex-col justify-center items-center rounded-b-lg "></div>
-            </div>
+            <ProfileCard
+              userProfile={userProfile}
+              totalPostsUser={totalPostsUser}
+            />
             <div className="w-full h-fit flex flex-col gap-4 mt-4">
-              <div className="flex flex-col w-full gap-2  h-fit pl-8">
+              <div className="flex  w-full gap-2  h-fit pl-8">
                 <span className="text-white/50 text-xs">Following:</span>
-                <div className="w-full flex gap-2 flex-wrap">
-                  {userProfile?.following.map((user) => {
-                    return (
-                      <span
-                        onClick={() => handleClickUserName(user.userName)}
-                        className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
-                      >
-                        @{user.userName}
-                      </span>
-                    );
-                  })}
-                </div>
+                {userProfile?.following.map((user) => {
+                  return (
+                    <span
+                      onClick={() => handleClickUserName(user.userName)}
+                      className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
+                    >
+                      @{user.userName}
+                    </span>
+                  );
+                })}
                 {userProfile?.following.length === 0 && (
                   <div className="w-full flex">
                     <span className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline">
@@ -274,20 +177,20 @@ export default function ProfilePage({ userNameProp }: Props) {
                   </div>
                 )}
               </div>
-              <div className="flex flex-col w-full gap-2  h-fit pl-8">
-                <span className="text-white/50 text-xs">Following:</span>
-                <div className="w-full flex gap-2 flex-wrap">
-                  {userProfile?.following.map((user) => {
-                    return (
-                      <span
-                        onClick={() => handleClickUserName(user.userName)}
-                        className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
-                      >
-                        @{user.userName}
-                      </span>
-                    );
-                  })}
-                </div>
+              <div className="flex w-full gap-2  h-fit pl-8">
+                <span className="text-white/50 text-xs">followers:</span>
+
+                {userProfile?.followers.map((user) => {
+                  return (
+                    <span
+                      onClick={() => handleClickUserName(user.userName)}
+                      className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
+                    >
+                      @{user.userName}
+                    </span>
+                  );
+                })}
+
                 {userProfile?.followers.length === 0 && (
                   <div className="w-full flex">
                     <span className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline">

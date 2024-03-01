@@ -8,6 +8,7 @@ import { useStore } from "app/store";
 import Spinner from "./Spinner";
 import Spinner2 from "./Spinner2";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface User {
   avatar: string;
@@ -128,7 +129,7 @@ export default function Feed() {
 
   const router = useRouter();
 
-  const { user } = useStore();
+  const { user, logout } = useStore();
 
   const closeButtonModalRef = useRef<HTMLSpanElement | null>(null);
 
@@ -188,6 +189,12 @@ export default function Feed() {
       .catch((error) => {
         console.log(error);
         setErrorMessage(error.response.data.message);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          return;
+        }
       });
   };
 
@@ -211,12 +218,19 @@ export default function Feed() {
       .catch((error) => {
         console.log(error);
         setErrorMessage(error.response.data.message);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          return;
+        }
       });
   };
 
   const handleClickUserName = (username: string) => {
-    router.push(`/perfil/${username}`);
+    router.push(`/profile/${username}`);
   };
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   let isMouseDown = false;
   let startXn: number;
@@ -235,6 +249,15 @@ export default function Feed() {
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          if (closeButtonModalRef?.current) {
+            closeButtonModalRef.current.click();
+          }
+          return;
+        }
       });
   }, []);
 
@@ -281,10 +304,6 @@ export default function Feed() {
       };
     }
   }, []);
-
-  useEffect(() => {
-    console.log(posts);
-  }, [posts]);
 
   return (
     <Dialog.Root>

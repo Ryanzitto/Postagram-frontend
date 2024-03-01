@@ -1,28 +1,54 @@
 "use client";
 
-import {
-  Home,
-  MessageCircleMore,
-  Bell,
-  X,
-  LogOut,
-  Settings,
-  AlignJustify,
-  Search,
-} from "lucide-react";
-
+import { X, LogOut, Settings, AlignJustify, Search } from "lucide-react";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useStore } from "app/store";
 import LogoutDialog from "./AlertDialog";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { ptBR } from "date-fns/locale";
+import { formatDistanceToNow } from "date-fns";
+
+interface User {
+  avatar: string;
+  name: string;
+  userName: string;
+  email: string;
+  __v: number;
+  _id: string;
+  followers: any[];
+  following: any[];
+}
+
+interface Like {
+  create: string;
+  userId: string;
+}
+
+interface Posts {
+  subject: string;
+  text: string;
+  bgColor: string;
+  textColor: string;
+  textAlign?: string;
+  likes: Like[];
+  comments: Comment[];
+  createdAt: string;
+  user: {
+    name: string;
+    userName: string;
+    createdAt: string;
+    avatar: string;
+  };
+  _id: string;
+}
 
 export default function Header() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
-  const { user } = useStore();
+  const { user, logout } = useStore();
 
   const router = useRouter();
 
@@ -33,8 +59,18 @@ export default function Header() {
   const [menuIsOpen, setMenuIsOpen] = useState<boolean>(false);
 
   const [feedIsHovered, setFeedIsHovered] = useState<boolean>(false);
+
   const [profileIsHoovered, setProfileIsHovered] = useState<boolean>(false);
+
   const [messagesIsHovered, setMessagesIsHovered] = useState<boolean>(false);
+
+  const [contentSearch, setContentSearch] = useState<string>("");
+
+  const [posts, setPosts] = useState<Posts[]>();
+
+  const [users, setUsers] = useState<User[]>();
+
+  const [filterSelected, setFilterSelected] = useState<string>("POSTS");
 
   useEffect(() => {
     setPageIsLoad(true);
@@ -56,22 +92,220 @@ export default function Header() {
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          return;
+        }
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/post/`)
+      .then((response) => {
+        console.log(response);
+        setPosts(response.data.results);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          return;
+        }
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/user/`)
+      .then((response) => {
+        console.log(response.data);
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          return;
+        }
       });
   }, []);
 
   const handleClickProfile = (username: string) => {
     console.log(username);
-    router.push(`/perfil/${username}`);
+    router.push(`/profile/${username}`);
   };
 
   const handleClickFeed = () => {
     router.push(`/`);
   };
 
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setContentSearch(e.target.value);
+  };
+
+  const filteredPosts =
+    contentSearch !== ""
+      ? posts?.filter((post) =>
+          post.text
+            .toLocaleLowerCase()
+            .includes(contentSearch.toLocaleLowerCase())
+        )
+      : posts;
+
+  const filteredUsers =
+    contentSearch !== ""
+      ? users?.filter((users) =>
+          users.name
+            .toLocaleLowerCase()
+            .includes(contentSearch.toLocaleLowerCase())
+        )
+      : users;
+
+  const handleClickUserName = (username: string) => {
+    router.push(`/profile/${username}`);
+  };
   return (
     <>
       <header className="w-full h-[15%] flex relative">
-        <div className="w-1/3 h-full flex items-center gap-6 pl-6">
+        <div className="w-1/3 h-full flex items-center gap-6 pl-6 relative">
+          {contentSearch !== "" && (
+            <div className="absolute flex h-fit rounded-lg w-full z-40 bg-zinc-800/80 backdrop-blur-sm left-0 top-[100px] justify-center items-center p-4">
+              <div className="flex flex-col w-full gap-4 h-full justify-start items-center">
+                <div className="flex gap-2 justify-center items-center">
+                  <div
+                    onClick={() => setFilterSelected("POSTS")}
+                    className="flex flex-col gap-1 cursor-pointer"
+                  >
+                    <span className="text-white/50 font-semibold text-xs tracking-wider">
+                      POSTS
+                    </span>
+                    <div
+                      className={`h-[2px] w-full ${
+                        filterSelected === "POSTS"
+                          ? "bg-purple-500"
+                          : "bg-transparent"
+                      }`}
+                    ></div>
+                  </div>
+                  <div
+                    onClick={() => setFilterSelected("USERS")}
+                    className="flex flex-col gap-1 cursor-pointer"
+                  >
+                    <span className="text-white/50 font-semibold text-xs tracking-wider">
+                      USERS
+                    </span>
+
+                    <div
+                      className={`h-[2px] w-full ${
+                        filterSelected === "USERS"
+                          ? "bg-purple-500"
+                          : "bg-transparent"
+                      }`}
+                    ></div>
+                  </div>
+                </div>
+                <div className="flex flex-col w-full gap-4 h-full justify-start items-center">
+                  {filterSelected === "POSTS" &&
+                    filteredPosts?.map((post) => {
+                      return (
+                        <div
+                          key={post._id}
+                          className="flex flex-col gap-2 w-full bg-zinc-700 p-4 rounded-lg border border-zinc-500/80"
+                        >
+                          <div className="w-full h-fit py-2 flex items-center gap-2">
+                            <div className="w-1 h-1 rounded-full bg-white/50"></div>
+                            <span className="text-xs text-white/50">
+                              {formatDistanceToNow(post.createdAt, {
+                                locale: ptBR,
+                                addSuffix: true,
+                              })}
+                            </span>
+                          </div>
+                          <div className="flex flex-col  items-start justify-center">
+                            <span className="text-white/80 font-semibold text-sm">
+                              Author:
+                            </span>
+                            <div className="w-full flex gap-2 py-2 items-center">
+                              {post.user.avatar && (
+                                <img
+                                  className="bg-white w-8 h-8 rounded-lg"
+                                  src={`/images/${post?.user?.avatar}`}
+                                />
+                              )}
+                              <div className="flex flex-col">
+                                <span className="text-white/80 text-sm">
+                                  {post.user.name}
+                                </span>
+                                <span
+                                  onClick={() =>
+                                    handleClickUserName(post.user.userName)
+                                  }
+                                  className="text-white/50 text-xs cursor-pointer transition-all hover:text-white/30"
+                                >
+                                  @{post.user.userName}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex flex-col  items-start justify-center py-2 break-all">
+                            <span className="text-white/80 font-semibold text-sm">
+                              Content:{" "}
+                            </span>
+                            <span className="text-white/50 text-sm">
+                              {post.text}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  {filterSelected === "USERS" &&
+                    filteredUsers?.map((user) => {
+                      return (
+                        <div
+                          key={user._id}
+                          className="flex flex-col gap-2 w-full bg-zinc-700 p-4 rounded-lg border border-zinc-500/80"
+                        >
+                          <div className="flex flex-col  items-start justify-center">
+                            <span className="text-white/80 font-semibold">
+                              Name:
+                            </span>
+                            <span className="text-white/50 text-sm">
+                              {user.name}
+                            </span>
+                          </div>
+                          <div className="flex flex-col  items-start justify-center">
+                            <span className="text-white/80 font-semibold">
+                              userName:
+                            </span>
+                            <span className="text-white/50 text-sm">
+                              {user.userName}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                {filterSelected === "POSTS" && filteredPosts?.length === 0 && (
+                  <span className="text-white/30 text-sm font-semibold">
+                    No posts matching the search.
+                  </span>
+                )}
+                {filterSelected === "USERS" && filteredUsers?.length === 0 && (
+                  <span className="text-white/30 text-sm font-semibold">
+                    No users matching the search.
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
           <div className="w-8 h-8 rounded-full flex justify-center items-center bg-white">
             <div className="w-4 h-4 rounded-sm bg-zinc-800 rotate-45 custom-animation"></div>
           </div>
@@ -81,6 +315,7 @@ export default function Header() {
               className="w-[85%] outline-none pl-2 bg-transparent text-white/50"
               type="text"
               placeholder="Search"
+              onChange={handleSearchChange}
             />
           </div>
         </div>

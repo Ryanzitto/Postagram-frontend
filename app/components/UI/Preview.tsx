@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createPostSchema } from "app/zodSchema/createPost";
 import { useState } from "react";
 import { useStore } from "app/store";
-
+import { useRouter } from "next/navigation";
 import {
   AlignStartVertical,
   AlignCenterVertical,
@@ -75,7 +75,9 @@ export default function Preview({
     resolver: zodResolver(createPostSchema),
   });
 
-  const { user } = useStore();
+  const { user, logout } = useStore();
+
+  const router = useRouter();
 
   const [textAlign, setTextAlign] = useState<string>("text-left");
 
@@ -117,6 +119,15 @@ export default function Preview({
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          if (closeButtonModalRef?.current) {
+            closeButtonModalRef.current.click();
+          }
+          return;
+        }
         if (closeButtonModalRef?.current) {
           closeButtonModalRef.current.click();
           toast.error("an Error occured");

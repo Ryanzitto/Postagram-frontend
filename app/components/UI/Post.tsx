@@ -60,7 +60,7 @@ type FormData = z.infer<typeof createCommentSchema>;
 export default function Post({ post }: Props) {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
-  const { user } = useStore();
+  const { user, logout } = useStore();
 
   const router = useRouter();
 
@@ -73,7 +73,7 @@ export default function Post({ post }: Props) {
   );
 
   const handleClickUserName = (username: string) => {
-    router.push(`/perfil/${username}`);
+    router.push(`/profile/${username}`);
   };
 
   const [totalLikes, setTotalLikes] = useState<number>(post.likes.length);
@@ -190,7 +190,7 @@ export default function Post({ post }: Props) {
         <span>{post.subject}</span>
       </div>
       <div
-        className={`w-full h-fit flex ${post.bgColor} break-words flex p-10 rounded-lg mt-4`}
+        className={`w-full h-fit flex ${post.bgColor} break-all flex p-10 rounded-lg mt-4`}
       >
         <p
           className={`${post.textColor} w-full ${post.textAlign} text-2xl font-semibold tracking-wider`}
