@@ -12,7 +12,7 @@ export default function HomePage() {
       <div className="w-full h-[85%] flex justify-start items-start">
         <Aside />
         <Feed />
-        <div className="w-[25%] flex-wrap gap-2 flex h-full p-6"></div>
+        {/* <div className="hidden md:flex w-[25%] flex-wrap gap-2 h-full p-6"></div> */}
       </div>
     </main>
   );

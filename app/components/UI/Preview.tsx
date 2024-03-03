@@ -141,7 +141,7 @@ export default function Preview({
         <div className="w-1/2 h-fit flex flex-col gap-4">
           <div className="w-full h-fit flex flex-col gap-2">
             <span className="text-white/50 text-xs">BG Color:</span>
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2">
               {colors.map((color) => {
                 return (
                   <button
@@ -158,7 +158,7 @@ export default function Preview({
           </div>
           <div className="w-full h-fit flex flex-col gap-2">
             <span className="text-white/50 text-xs">Text Color:</span>
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2">
               {textColors.map((color) => {
                 return (
                   <button
@@ -199,7 +199,7 @@ export default function Preview({
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full h-full flex flex-col justify-between gap-4"
+        className="w-full h-full flex flex-col justify-between gap-0 sm:gap-4"
       >
         <div className="mt-6 w-full h-fit py-2 flex flex-col">
           <label className="text-xs text-white/50">Subject:</label>

@@ -19,6 +19,7 @@ interface User {
   _id: string;
   followers: any[];
   following: any[];
+  totalPosts: number;
 }
 
 interface Comment {
@@ -307,13 +308,13 @@ export default function Feed() {
 
   return (
     <Dialog.Root>
-      <div className="w-[50%] h-fit flex flex-col p-4 gap-5 items-center">
+      <div className="w-full md:w-[50%] h-fit flex flex-col p-4 gap-5 items-center">
         <div
           ref={containerRef}
           className="w-full custom overflow-hidden flex gap-2  rounded-xl border border-zinc-500/80 bg-zinc-700/50 py-3"
         >
           {users && (
-            <div className="w-full flex gap-2">
+            <div className="w-full flex gap-2 px-4">
               {users?.map((user, index) => {
                 return (
                   <div
@@ -348,11 +349,11 @@ export default function Feed() {
             </div>
           )}
         </div>
-        <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4 mt-4">
-          <div className="w-fit h-fit flex">
-            <div className="w-16 h-16 grid bg-purple-500 rounded-md">
+        <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4">
+          <div className="w-fit h-fit flex items-center">
+            <div className="w-16 h-16 grid rounded-xl">
               {pageIsLoad && (
-                <img className="w-full h-full" src={`/images/${user.avatar}`} />
+                <img className="w-15 h-15" src={`/images/${user.avatar}`} />
               )}
             </div>
           </div>
@@ -364,9 +365,9 @@ export default function Feed() {
               value={content !== null ? content : ""}
               onChange={(e) => setContent(e.target.value)}
               placeholder="What are your words today?"
-              className={`text-sm rounded-xl w-full pt-5 ${
+              className={`text-sm flex justify-center items-center rounded-xl w-full pb-4 md:pb-0 pt-5 ${
                 content !== null ? "pb-5" : null
-              } pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
+              } pl-4 md:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
             />
             <Dialog.Trigger>
               {content !== null && (
@@ -379,7 +380,7 @@ export default function Feed() {
         </div>
         <Dialog.Portal>
           <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
-            <Dialog.Content className="relative w-[500px] min-h-fit h-fit bg-zinc-800 border border-zinc-600 rounded-lg">
+            <Dialog.Content className="relative w-[380px] sm:w-[500px] h-[450px] sm:h-fit bg-zinc-800 border border-zinc-600 rounded-lg">
               <Dialog.Close className="absolute right-0 top-0 bg-zinc-700/50 transition-all p-2 px-4 rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500">
                 <span ref={closeButtonModalRef}>X</span>
               </Dialog.Close>

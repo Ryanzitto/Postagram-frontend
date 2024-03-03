@@ -3,111 +3,99 @@ import { useEffect, useState } from "react";
 import { useStore } from "app/store";
 import axios from "axios";
 
-const Load = () => {
-  return (
-    <span className="text-white tracking-widest font-bold text-lg">...</span>
-  );
-};
+interface User {
+  avatar: string;
+  name: string;
+  userName: string;
+  email: string;
+  __v: number;
+  _id: string;
+  followers: any[];
+  following: any[];
+  totalPosts: number;
+}
 
 export default function Aside() {
-  const { user } = useStore();
-
-  const [pageIsLoad, setPageIsLoad] = useState<boolean>(false);
-
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
-  const [totalPostsUser, setTotalPostsUser] = useState<number>(0);
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     axios
-      .get(`${URL}/post/byUserName/${user.userName}`)
+      .get(`${URL}/user/`)
       .then((response) => {
-        console.log(response);
-        setTotalPostsUser(response.data.length);
+        // Ordena os usuários com base no número de posts (do maior para o menor)
+        const sortedUsers = response.data.sort(
+          (a, b) => b.totalPosts - a.totalPosts
+        );
+        setUsers(sortedUsers);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  useEffect(() => {
-    setPageIsLoad(true);
-  }, []);
-
   return (
     <>
-      <div className="w-[25%] h-full p-4">
-        {/* <div className="relative w-[90%] h-[350px] bg-zinc-700 flex flex-col border border-zinc-500/80 rounded-md ">
-          <div className="absolute w-full h-full flex justify-center items-center">
-            <div className="w-24 h-24 p-1 bg-zinc-700 rounded-md self-center justify-self-center mb-24">
-              {pageIsLoad && (
-                <img className="rounded-md" src={`/images/${user?.avatar}`} />
-              )}
-            </div>
+      <div className="hidden md:flex w-[25%] h-full p-4">
+        <div className="bg-zinc-700/50 flex gap-0 flex-col w-full h-fit rounded-lg border border-zinc-500/80">
+          <div className="w-full h-fit py-4 pl-0 lg:pl-8 flex flex-col justify-center items-center lg:items-start  bg-purple-500 rounded-t-lg">
+            <span className="font-black text-md lg:text-lg text-white">
+              Ranking PostApp
+            </span>
+            <span className="text-xs text-white/80">
+              users who posted the most
+            </span>
           </div>
-          <div className="bg-purple-500 w-full h-1/3 rounded-t-md flex">
-            <div className="w-[90%] h-fit flex p-6">
-              <span className="text-zinc-600/80 font-bold tracking-wider">
-                POSTS: {totalPostsUser}
-              </span>
-            </div>
-            <div className="w-[10%] flex justify-end items-start pt-4 pr-4">
-              <div className="rounded-md w-6 h-6 bg-zinc-800/50 p-1 flex justify-center items-center">
-                <MoreHorizontal className="cursor-pointer text-white w-4 rotate-90 flex" />
-              </div>
-            </div>
+          <div className="w-full h-fit flex flex-col">
+            {users.map((user, index) => {
+              return (
+                <div
+                  className={`${
+                    index >= 3 ? "hidden" : "flex"
+                  } flex border-t border-zinc-500/80`}
+                >
+                  <div className="w-[70%] h-24 flex items-center pl-0 lg:pl-4">
+                    <div className="hidden lg:flex h-14 items-center">
+                      <img
+                        className="w-14 h-14 bg-white rounded-md"
+                        src={`/images/${user.avatar}`}
+                      />
+                    </div>
+
+                    <div className="flex h-24 flex-col pl-4 justify-center">
+                      <span className="text-white/80 text-xs font-semibold cursor-pointer transition-all hover:text-white/50">
+                        @{user.userName}
+                      </span>
+                      <div className="flex gap-2">
+                        <span className="text-white/50 text-xs font-semibold">
+                          Posts:
+                        </span>
+                        <span className="text-white/50 text-xs font-semibold">
+                          {user.totalPosts}
+                        </span>
+                      </div>
+                      <span
+                        className={`${index === 0 ? "bg-yellow-500" : ""} ${
+                          index === 1 ? "bg-slate-300" : ""
+                        } ${
+                          index === 2 ? "bg-orange-900" : ""
+                        } text-white text-xs font-bold w-fit px-1 rounded-sm mt-2`}
+                      >
+                        TOP {index + 1}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-[30%] h-24 flex justify-center items-center">
+                    {index === 0 && <span className="text-3xl">🥇</span>}
+                    {index === 1 && <span className="text-3xl">🥈</span>}
+                    {index === 2 && <span className="text-3xl">🥉</span>}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className="w-full h-2/3 rounded-b-md flex flex-col items-center">
-            <div className="w-full flex h-fit p-1 justify-between">
-              <div className="w-20 pt-2 flex flex-col text-center">
-                {pageIsLoad ? (
-                  <span className="text-sm text-white font-semibold">
-                    {user?.followers?.length}
-                  </span>
-                ) : (
-                  <Load />
-                )}
-                <span className="text-xs text-white/50 font-normal">
-                  Followers
-                </span>
-              </div>
-              <div className="w-20 pt-2 flex flex-col text-center">
-                {pageIsLoad ? (
-                  <span className="text-sm text-white font-semibold">
-                    {user?.following?.length}
-                  </span>
-                ) : (
-                  <Load />
-                )}
-                <span className="text-xs text-white/50 font-normal">
-                  Following
-                </span>
-              </div>
-            </div>
-            <div className="w-full flex flex-col justify-center items-center h-fit p-1 mt-2">
-              {pageIsLoad ? (
-                <span className="text-md text-white font-semibold">
-                  {user?.name}
-                </span>
-              ) : (
-                <Load />
-              )}
-              {pageIsLoad ? (
-                <span className="text-xs text-white/50 font-normal">
-                  @{user?.userName}
-                </span>
-              ) : (
-                <Load />
-              )}
-            </div>
-            <div className="w-[90%] h-[1px] bg-zinc-800/30 mt-4 mb-4"></div>
-            <div className="w-full flex flex-col justify-center items-center text-center h-fit px-6 py-6">
-              <span className="text-xs z-40 text-white/80 font-normal">
-                Hi, Im Leon Arc and I love this App. 🛸👽
-              </span>
-            </div>
-          </div>
-        </div> */}
+        </div>
       </div>
     </>
   );

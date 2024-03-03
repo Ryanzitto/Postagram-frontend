@@ -50,6 +50,7 @@ interface Props {
       name: string;
       userName: string;
       createdAt: string;
+      avatar: string;
     };
     _id: string;
   };
@@ -118,7 +119,7 @@ export default function Post({ post }: Props) {
     const newComment = {
       comment: data.comment,
       createdAt: Date.now(),
-      userName: user.name,
+      userName: user.userName,
     };
 
     setNewComments((prevState) => [...prevState, newComment]);
@@ -157,22 +158,21 @@ export default function Post({ post }: Props) {
         <MoreHorizontal className="cursor-pointer text-white w-4 rotate-90 flex" />
       </div>
       <div className="w-full flex h-fit">
-        <div className="w-12 h-12 p-0.5 flex justify-center items-center bg-zinc-800/60 rounded-md">
+        <div className="w-12 h-12 p-0.5 flex justify-center items-center bg-zinc-800/80 rounded-md">
           <img
             className="w-12 rounded-md"
-            src="https://img.wattpad.com/0145c2f3f751ec26ef0203b2f3b813886cebe603/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f4e6a494e634a6d4d4d65394135773d3d2d3832373438383335392e313565396138356134313734636231343436393538343136303132312e6a7067?s=fit&w=720&h=720"
+            src={`/images/${post.user.avatar}`}
           />
         </div>
         <div className="flex flex-col w-fit gap-0.5 pl-4">
-          <span
-            onClick={() => handleClickUserName(post.user.userName)}
-            className="text-white/50 text-xs cursor-pointer transition-all hover:text-white/30 hover:underline"
-          >
-            @{post.user.userName}
-          </span>
+          <span className="text-white text-lg font-bold">{post.user.name}</span>
+
           <div className="flex gap-2 items-center">
-            <span className="text-white text-lg font-bold">
-              {post.user.name}
+            <span
+              onClick={() => handleClickUserName(post.user.userName)}
+              className="text-white/50 text-xs cursor-pointer transition-all hover:text-white/30 hover:underline"
+            >
+              @{post.user.userName}
             </span>
             <div className="w-1 h-1 rounded-full bg-white" />
             <span className="text-white/50 text-xs">
@@ -292,7 +292,7 @@ export default function Post({ post }: Props) {
             );
           })}
 
-          {post.comments.length === 0 && (
+          {post.comments.length === 0 && newComments.length === 0 && (
             <span className="text-white/50 text-xs">
               No comments yet, how about create the first one?
             </span>
@@ -302,14 +302,11 @@ export default function Post({ post }: Props) {
       <div
         className={` ${
           shouldShowComments ? "mt-6" : "mt-0"
-        }  w-full flex h-12 justify-between `}
+        }  w-full flex h-12 justify-center sm:justify-between `}
       >
-        <div className="w-[10%] flex items-center">
-          <div className="w-12 h-12 p-0.5 flex justify-center items-center bg-zinc-800/60 rounded-md">
-            <img
-              className="w-12 rounded-md"
-              src="https://img.wattpad.com/0145c2f3f751ec26ef0203b2f3b813886cebe603/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f4e6a494e634a6d4d4d65394135773d3d2d3832373438383335392e313565396138356134313734636231343436393538343136303132312e6a7067?s=fit&w=720&h=720"
-            />
+        <div className="hidden sm:flex w-[10%] items-center">
+          <div className="w-12 h-12 p-0.5 flex justify-center items-center bg-none sm:bg-zinc-800/60 rounded-md">
+            <img className="w-12 rounded-md" src={`/images/${user.avatar}`} />
           </div>
         </div>
         <form
@@ -325,7 +322,7 @@ export default function Post({ post }: Props) {
             value={inputCommentContent}
             onChange={(e) => setInputCommentContent(e.target.value)}
             placeholder="What you think about this post?"
-            className="w-full outline-none bg-transparent text-white/50 placeholder:text-white/30 "
+            className="w-full outline-none bg-transparent text-white/50 text-sm  placeholder:text-white/30 "
           />
           <button
             type="submit"

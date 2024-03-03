@@ -38,6 +38,7 @@ interface User {
   _id: string;
   followers: any[];
   following: any[];
+  totalPosts: number;
 }
 
 interface Post {
@@ -81,6 +82,7 @@ export default function ProfilePage({ userNameProp }: Props) {
       .then((response) => {
         console.log(response);
         setUserProfile(response.data);
+        setTotalPostsUser(response.data.totalPosts);
       })
       .catch((error) => {
         console.log(error);
@@ -98,7 +100,6 @@ export default function ProfilePage({ userNameProp }: Props) {
       .get(`${URL}/post/byUserName/${userNameProp}`)
       .then((response) => {
         console.log(response);
-        setTotalPostsUser(response.data.length);
         setPosts(response.data);
         setErrorMessage(null);
       })
