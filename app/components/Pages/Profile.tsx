@@ -53,6 +53,7 @@ interface Post {
     name: string;
     userName: string;
     createdAt: string;
+    avatar: string;
   };
   _id: string;
 }

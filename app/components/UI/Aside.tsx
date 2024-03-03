@@ -26,7 +26,7 @@ export default function Aside() {
       .then((response) => {
         // Ordena os usuários com base no número de posts (do maior para o menor)
         const sortedUsers = response.data.sort(
-          (a, b) => b.totalPosts - a.totalPosts
+          (a: User, b: User) => b.totalPosts - a.totalPosts
         );
         setUsers(sortedUsers);
       })

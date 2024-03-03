@@ -2,8 +2,6 @@
 import Aside from "../UI/Aside";
 import Feed from "../UI/Feed";
 import Header from "../UI/Header";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 export default function HomePage() {
   return (
