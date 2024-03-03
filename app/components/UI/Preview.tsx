@@ -11,7 +11,11 @@ import {
   AlignStartVertical,
   AlignCenterVertical,
   AlignEndVertical,
+  Smile,
 } from "lucide-react";
+
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 
 type FormData = z.infer<typeof createPostSchema>;
 
@@ -135,6 +139,17 @@ export default function Preview({
       });
   }
 
+  const [showPickerEmoji, setShowPickerEmoji] = useState<boolean>(false);
+
+  const addEmoji = (e: any) => {
+    const sym = e.unified.split("_");
+    console.log(sym);
+    const codeArray: any[] = [];
+    sym.forEach((element: string) => codeArray.push("0x" + element));
+    let emoji = String.fromCodePoint(...codeArray);
+    setContent(content + emoji);
+  };
+
   return (
     <div className="w-full h-full flex flex-col p-6">
       <div className="w-full h-fit flex">
@@ -199,7 +214,7 @@ export default function Preview({
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full h-full flex flex-col justify-between gap-0 sm:gap-4"
+        className="w-full h-full flex flex-col justify-between gap-0"
       >
         <div className="mt-6 w-full h-fit py-2 flex flex-col">
           <label className="text-xs text-white/50">Subject:</label>
@@ -225,7 +240,7 @@ export default function Preview({
             </p>
           )}
         </div>
-        <div className={`rounded-md w-full h-fit flex ${bgColorSelected}`}>
+        <div className={`rounded-md w-full h-fit flex ${bgColorSelected} mt-4`}>
           <textarea
             {...register("text", { required: true })}
             id="text"
@@ -233,7 +248,7 @@ export default function Preview({
             className={`${textColorSelected.textColor} ${textAlign} break-words bg-transparent font-medium  text-xl w-full h-full outline-none resize-none p-6`}
             value={content !== null ? content : ""}
             onChange={(e) => setContent(e.target.value)}
-          />
+          ></textarea>
           <input
             className="hidden"
             {...register("bgColor", { required: true })}
@@ -277,7 +292,25 @@ export default function Preview({
             </p>
           )}
         </div>
-        <div className="w-full h-fit">
+        <div className="w-full h-fit flex justify-end mt-2">
+          <Smile
+            onClick={() => setShowPickerEmoji(!showPickerEmoji)}
+            className="text-white/50 text-xs cursor-pointer transition-all hover:text-white/20"
+          />
+
+          {showPickerEmoji && (
+            <div className="absolute top-0 -right-[310px]">
+              <Picker
+                previewPosition={"none"}
+                emojiSize={20}
+                emojiButtonSize={30}
+                data={data}
+                onEmojiSelect={addEmoji}
+              />
+            </div>
+          )}
+        </div>
+        <div className="w-full h-fit mt-4">
           <button
             type="submit"
             className="w-full p-2 bg-purple-500 rounded-md transition-all text-white hover:bg-purple-500/80"

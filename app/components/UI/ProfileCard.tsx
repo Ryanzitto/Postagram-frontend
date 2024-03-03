@@ -72,22 +72,25 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
   useEffect(() => {
     console.log(followers);
   }, [followers]);
+
   return (
-    <div className="relative min-w-[350px] min-h-[400px] flex flex-col justify-center rounded-lg bg-zinc-700/50 border border-zinc-500/80 items-center">
-      <div className="w-full flex h-full flex-col justify-start items-center absolute">
-        <div className="w-24 h-24 flex justify-center items-center rounded-lg bg-white mt-16">
-          <img className="w-18 h-18" src={`/images/${userProfile?.avatar}`} />
-        </div>
+    <div className="p-4 lg:p-0 h-full w-full sm:w-[80%] md:min-w-[350px] md:min-h-[400px] flex flex-col lg:justify-start justify-center items-center">
+      <div className="p-4 w-[90%] flex h-fit flex-col justify-center rounded-lg bg-zinc-700/50 border border-zinc-500/80 items-center">
+        <img
+          className="w-16 h-16 md:w-18 md:h-18 bg-white rounded-full p-2"
+          src={`/images/${userProfile?.avatar}`}
+        />
+
         <div className="w-full h-fit flex flex-col justify-center items-center">
           <div className="flex flex-col justify-center items-center gap-1 mt-2">
-            <span className="text-white font-bold tracking-widest">
+            <span className="text-white font-bold tracking-widest text-sm md:text-md">
               {userProfile?.name}
             </span>
             <span className="text-white/50 text-xs ">
               @{userProfile?.userName}
             </span>
           </div>
-          <div className="w-[300px] h-fit flex px-2 mt-4">
+          <div className="w-[250px] md:w-[300px] h-fit flex px-2 mt-4">
             <div className="flex w-1/3 flex-col gap-1 text-center">
               <span className="text-white text-xs font-bold">Posts</span>
               <span className="text-white/50 text-xs">{totalPostsUser}</span>
@@ -105,7 +108,7 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
           </div>
           <div className="w-[80%] h-[1px] bg-zinc-500/30 mt-4 mb-4"></div>
           <div className="w-full flex flex-col justify-center items-center text-center h-fit px-2 mt-2">
-            <span className="text-xs z-40 text-white/80 font-normal">
+            <span className="text-xs z-20 text-white/80 font-normal">
               Hi, Im Leon Arc and I love this App. 🛸👽
             </span>
           </div>
@@ -114,28 +117,26 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
               {userHasFollowed ? (
                 <button
                   onClick={() => handleClickUnFollow(userProfile?._id)}
-                  className="bg-red-500 transition-all hover:bg-red-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider"
+                  className="bg-red-500 transition-all hover:bg-red-600 px-2 py-1.5 text-white rounded-md text-xs md:text-sm font-semibold tracking-wider"
                 >
                   UNFOLLOW
                 </button>
               ) : (
                 <button
                   onClick={() => handleClickFollow(userProfile?._id)}
-                  className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider"
+                  className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-xs md:text-sm font-semibold tracking-wider"
                 >
                   FOLLOW
                 </button>
               )}
 
-              <button className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-sm font-semibold tracking-wider">
+              <button className="bg-purple-500 transition-all hover:bg-purple-600 px-2 py-1.5 text-white rounded-md text-xs md:text-sm font-semibold tracking-wider">
                 CHAT
               </button>
             </div>
           )}
         </div>
       </div>
-      <div className="w-full h-[30%] flex flex-col justify-center items-center rounded-t-lg bg-purple-500"></div>
-      <div className="w-full h-[70%] flex flex-col justify-center items-center rounded-b-lg "></div>
     </div>
   );
 }

@@ -149,60 +149,16 @@ export default function ProfilePage({ userNameProp }: Props) {
 
   return (
     <Dialog.Root>
-      <main className="w-screen h-screen bg-zinc-800 flex flex-col justify-start items-start overflow-x-hidden">
+      <main className="w-screen h-screen bg-zinc-800 flex flex-col justify-start items-center overflow-x-hidden">
         <Header />
-        <div className="w-full h-[85%] flex justify-start items-start">
-          <div className="w-[30%] h-full flex flex-col items-center pt-6">
+        <div className="w-full max-w-[1600px] h-[85%] flex flex-col lg:flex-row justify-start items-center">
+          <div className="w-full lg:w-[30%] h-fit md:h-full flex flex-col items-center justify-start pt-0 md:pt-6">
             <ProfileCard
               userProfile={userProfile}
               totalPostsUser={totalPostsUser}
             />
-            <div className="w-full h-fit flex flex-col gap-4 mt-4">
-              <div className="flex  w-full gap-2  h-fit pl-8">
-                <span className="text-white/50 text-xs">Following:</span>
-                {userProfile?.following.map((user) => {
-                  return (
-                    <span
-                      onClick={() => handleClickUserName(user.userName)}
-                      className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
-                    >
-                      @{user.userName}
-                    </span>
-                  );
-                })}
-                {userProfile?.following.length === 0 && (
-                  <div className="w-full flex">
-                    <span className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline">
-                      {userProfile?.following.length}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="flex w-full gap-2  h-fit pl-8">
-                <span className="text-white/50 text-xs">followers:</span>
-
-                {userProfile?.followers.map((user) => {
-                  return (
-                    <span
-                      onClick={() => handleClickUserName(user.userName)}
-                      className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
-                    >
-                      @{user.userName}
-                    </span>
-                  );
-                })}
-
-                {userProfile?.followers.length === 0 && (
-                  <div className="w-full flex">
-                    <span className="text-white/80 text-xs cursor-pointer transition-all hover:text-white/50 hover:underline">
-                      {userProfile?.followers.length}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
-          <div className="w-[70%] h-full max-h-full flex justify-start items-start pt-6">
+          <div className="w-[90%] lg:w-[70%] h-fit md:h-full max-h-full flex justify-start md:justify-center lg:justify-start items-start pt-6">
             <div className="rounded-lg w-[700px] h-fit flex flex-col items-start justify-start">
               <div className="flex flex-col w-full">
                 {userProfile?._id === user._id && (

@@ -164,7 +164,7 @@ export default function Header() {
   };
   return (
     <>
-      <header className="w-full h-[15%] flex">
+      <header className="w-full max-w-[1600px] h-[15%] flex">
         <div className="w-1/2 md:w-1/3  h-full flex items-center gap-4 md:gap-6 pl-4 md:pl-6 relative">
           {contentSearch !== "" && (
             <div className="fixed flex h-screen w-[250px] md:w-[350px] z-40 bg-zinc-700/80 backdrop-blur-md left-0 top-0 justify-center items-center p-2">

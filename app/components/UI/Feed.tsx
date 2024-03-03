@@ -381,7 +381,7 @@ export default function Feed() {
         <Dialog.Portal>
           <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
             <Dialog.Content className="relative w-[380px] sm:w-[500px] h-[450px] sm:h-fit bg-zinc-800 border border-zinc-600 rounded-lg">
-              <Dialog.Close className="absolute right-0 top-0 bg-zinc-700/50 transition-all p-2 px-4 rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500">
+              <Dialog.Close className="absolute z-60 right-0 top-0 bg-zinc-700/50 transition-all p-2 px-4 rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500">
                 <span ref={closeButtonModalRef}>X</span>
               </Dialog.Close>
               <Preview
