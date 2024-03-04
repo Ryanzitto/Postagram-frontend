@@ -153,10 +153,10 @@ export default function Post({ post }: Props) {
   };
 
   return (
-    <div className="relative w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-lg p-4 grid">
-      <div className="justify-self-end mr-4 mt-4 absolute rounded-md w-6 h-6 bg-zinc-800/80 p-1 flex justify-center items-center">
+    <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-lg p-4 grid">
+      {/* <div className="justify-self-end mr-4 mt-4 absolute rounded-md w-6 h-6 bg-zinc-800/80 p-1 flex justify-center items-center">
         <MoreHorizontal className="cursor-pointer text-white w-4 rotate-90 flex" />
-      </div>
+      </div> */}
       <div className="w-full flex h-fit">
         <div className="w-12 h-12 p-0.5 flex justify-center items-center bg-zinc-800/80 rounded-md">
           <img

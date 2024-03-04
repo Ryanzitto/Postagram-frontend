@@ -63,9 +63,13 @@ export default function SignUp() {
 
   return (
     <div className="w-screen h-screen flex justify-center items-center bg-zinc-800">
-      <div className="bg-white rounded-lg w-[500px] min-h-[90%] h-fit flex flex-col py-4 justify-center items-center">
-        <span className="text-zinc-800/60 font-bold text-lg">
-          Create an account
+      <div className="bg-white rounded-lg w-[90%] max-w-[500px] h-fit flex flex-col py-6 md:py-8 justify-center items-center">
+        <span className="text-zinc-800/60 font-bold text-md md:text-sm text-center antialiased">
+          Create an account <br />
+          on{" "}
+          <strong className="font-black tracking-wider text-purple-500">
+            POSTAPP
+          </strong>
         </span>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -90,7 +94,7 @@ export default function SignUp() {
               type="text"
               value={inputNameContent}
               onChange={(e) => setInputNameContent(e.target.value)}
-              className="text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
+              className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
             />
             <div className="w-full h-[2px] flex bg-slate-200">
               <div
@@ -116,7 +120,7 @@ export default function SignUp() {
               type="text"
               value={inputUserNameContent}
               onChange={(e) => setInputUserNameContent(e.target.value)}
-              className="text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
+              className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
             />
             <div className="w-full h-[2px] flex bg-slate-200">
               <div
@@ -144,7 +148,7 @@ export default function SignUp() {
               onChange={(e) => setInputEmailContent(e.target.value)}
               placeholder="Your email here"
               type="text"
-              className="text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
+              className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
             />
             <div className="w-full h-[2px] flex bg-slate-200">
               <div
@@ -171,7 +175,7 @@ export default function SignUp() {
                 onChange={(e) => setInputPasswordContent(e.target.value)}
                 placeholder="Your password here"
                 type={shouldShowPassword ? "text" : "password"}
-                className="text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
+                className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
               />
               {shouldShowPassword ? (
                 <Eye
@@ -213,7 +217,7 @@ export default function SignUp() {
                 onChange={(e) => setInputConfirmPasswordContent(e.target.value)}
                 placeholder="Confirm your password"
                 type={shouldShowConfirmPassword ? "text" : "password"}
-                className="text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
+                className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
               />
               {shouldShowConfirmPassword ? (
                 <Eye

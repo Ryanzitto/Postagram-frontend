@@ -108,7 +108,7 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
           </div>
           <div className="w-[80%] h-[1px] bg-zinc-500/30 mt-4 mb-4"></div>
           <div className="w-full flex flex-col justify-center items-center text-center h-fit px-2 mt-2">
-            <span className="text-xs z-20 text-white/80 font-normal">
+            <span className="text-xs text-white/80 font-normal">
               Hi, Im Leon Arc and I love this App. 🛸👽
             </span>
           </div>

@@ -143,11 +143,20 @@ export default function Preview({
 
   const addEmoji = (e: any) => {
     const sym = e.unified.split("_");
-    console.log(sym);
     const codeArray: any[] = [];
     sym.forEach((element: string) => codeArray.push("0x" + element));
     let emoji = String.fromCodePoint(...codeArray);
-    setContent(content + emoji);
+
+    // Obtém a posição do cursor
+    const textarea = document.getElementById("text") as HTMLTextAreaElement;
+    const cursorPosition = textarea.selectionStart;
+
+    // Divide o conteúdo do textarea em duas partes em torno da posição do cursor
+    const start = content?.substring(0, cursorPosition);
+    const end = content?.substring(cursorPosition);
+
+    // Atualiza o conteúdo inserindo o emoji entre as duas partes
+    setContent(start + emoji + end);
   };
 
   return (
@@ -245,8 +254,8 @@ export default function Preview({
             {...register("text", { required: true })}
             id="text"
             name="text"
-            className={`${textColorSelected.textColor} ${textAlign} break-words bg-transparent font-medium  text-xl w-full h-full outline-none resize-none p-6`}
             value={content !== null ? content : ""}
+            className={`${textColorSelected.textColor} ${textAlign} break-words bg-transparent font-medium  text-xl w-full h-full outline-none resize-none p-6`}
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
           <input
@@ -292,7 +301,7 @@ export default function Preview({
             </p>
           )}
         </div>
-        <div className="w-full h-fit flex justify-end mt-2">
+        <div className="hidden lg:flex w-full h-fit justify-end mt-2">
           <Smile
             onClick={() => setShowPickerEmoji(!showPickerEmoji)}
             className="text-white/50 text-xs cursor-pointer transition-all hover:text-white/20"

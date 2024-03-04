@@ -209,7 +209,7 @@ export default function ProfilePage({ userNameProp }: Props) {
                         placeholder="What are your words today?"
                         className={`text-sm rounded-xl w-full pt-5 ${
                           content !== null ? "pb-5" : null
-                        } pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
+                        } pl-4 sm:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
                       />
                       <Dialog.Trigger>
                         {content !== null && (

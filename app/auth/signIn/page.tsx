@@ -64,11 +64,11 @@ export default function SignUp() {
 
   return (
     <div className="w-screen h-screen flex justify-center items-center bg-zinc-800">
-      <div className="bg-white rounded-lg w-[500px] min-h-[90%] h-fit flex flex-col py-4 justify-center items-center">
-        <span className="text-zinc-800/60 font-bold text-sm">
+      <div className="bg-white rounded-lg w-[90%] sm:w-[500px] h-fit max-h-[90%] flex flex-col py-8 justify-center items-center">
+        <span className="text-zinc-800/60 font-bold text-xs sm:text-sm">
           Welcome back,
         </span>
-        <span className="text-zinc-800/60 font-bold text-sm">
+        <span className="text-zinc-800/60 font-bold text-xs sm:text-sm">
           Please login to continue to PostApp.
         </span>
         <form
@@ -87,7 +87,7 @@ export default function SignUp() {
               onChange={(e) => setInputEmailContent(e.target.value)}
               placeholder="Your email here"
               type="text"
-              className="text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
+              className="text-sm sm:text-md  mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
             />
             <div className="w-full h-[2px] flex bg-slate-200">
               <div
@@ -115,7 +115,7 @@ export default function SignUp() {
                 onChange={(e) => setInputPasswordContent(e.target.value)}
                 placeholder="Your password here"
                 type={shouldShowPassword ? "text" : "password"}
-                className="text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
+                className="text-sm sm:text-md  mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
               />
               {shouldShowPassword ? (
                 <Eye
@@ -166,7 +166,7 @@ export default function SignUp() {
               onClick={navigateToSignUp}
               className="cursor-pointer hover:underline"
             >
-              Sing Up
+              Sign Up
             </strong>
           </span>
         </div>

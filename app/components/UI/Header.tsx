@@ -8,8 +8,6 @@ import { useStore } from "app/store";
 import LogoutDialog from "./AlertDialog";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ptBR } from "date-fns/locale";
-import { formatDistanceToNow } from "date-fns";
 import CardProfile from "./CardProfile";
 
 interface User {
@@ -138,7 +136,6 @@ export default function Header() {
   }, []);
 
   const handleClickProfile = (username: string) => {
-    console.log(username);
     router.push(`/profile/${username}`);
   };
 
@@ -158,10 +155,6 @@ export default function Header() {
             .includes(contentSearch.toLocaleLowerCase())
         )
       : users;
-
-  const handleClickUserName = (username: string) => {
-    router.push(`/profile/${username}`);
-  };
   return (
     <>
       <header className="w-full max-w-[1600px] h-[15%] flex">
@@ -217,9 +210,9 @@ export default function Header() {
             <div className="w-3 h-3 md:w-4 md:h-4 rounded-sm bg-zinc-800 rotate-45 custom-animation"></div>
           </div>
           <div
-            className={`z-40 ${
-              contentSearch !== "" ? "fixed" : "flex"
-            } rounded-md flex justify-center items-center px-1 text-xs md:text-sm w-32 md:w-48 h-6 md:h-8 border border-zinc-600 ${
+            className={`${
+              contentSearch !== "" ? "z-40 fixed" : "flex"
+            } rounded-md flex justify-center items-center px-1 text-xs md:text-sm w-32 md:w-48 h-8 border border-zinc-600 ${
               contentSearch !== "" ? "bg-zinc-800" : "bg-zinc-700/50"
             }`}
           >
@@ -227,7 +220,7 @@ export default function Header() {
             <input
               className="w-[85%] outline-none pl-2 bg-transparent text-white/50 placeholder:text-white/50"
               type="text"
-              placeholder="Search"
+              placeholder="Search a user"
               value={contentSearch}
               onChange={handleSearchChange}
             />
@@ -310,7 +303,7 @@ export default function Header() {
                     duration: 0.1,
                   },
                 }}
-                className={`w-[300px] z-20 transition-all fixed h-screen bg-zinc-700/80 backdrop-blur-md border-l border-zinc-600 pt-4 flex flex-col items-center justify-start`}
+                className={`w-[300px] z-60 transition-all fixed h-screen bg-zinc-700/80 backdrop-blur-md border-l border-zinc-600 pt-4 flex flex-col items-center justify-start`}
               >
                 <div className="w-full h-fit flex justify-end pr-6">
                   <X
@@ -364,14 +357,46 @@ export default function Header() {
                 </div>
                 <div className="w-[90%] bg-zinc-600 h-[1px] mt-6"></div>
                 <div className="w-full h-fit flex flex-col items-start pl-14 justify-center pt-6 gap-6">
-                  <div className="w-fit gap-3 flex items-start cursor-pointer transition-all text-white/80 hover:text-white/50">
-                    <Settings className="w-4 h-4" />
-                    <span className="text-xs">Settings</span>
+                  <div
+                    onClick={handleClickFeed}
+                    onMouseEnter={() => setFeedIsHovered(true)}
+                    onMouseLeave={() => setFeedIsHovered(false)}
+                    className="w-fit h-fit flex flex-col justify-center items-center gap-1 cursor-pointer"
+                  >
+                    <span className="text-white/50 text-xs tracking-[3px] hover:text-white/40 transition-all">
+                      FEED
+                    </span>
+                    <div className="w-full h-[1px]">
+                      <div
+                        className={`${
+                          feedIsHovered ? "w-full" : "w-0"
+                        } h-full transition-all bg-purple-500`}
+                      ></div>
+                    </div>
+                  </div>
+                  <div
+                    onMouseEnter={() => setProfileIsHovered(true)}
+                    onMouseLeave={() => setProfileIsHovered(false)}
+                    onClick={() => handleClickProfile(user.userName)}
+                    className="w-fit h-fit flex flex-col justify-center items-center gap-1 cursor-pointer"
+                  >
+                    <span className="text-white/50 text-xs tracking-[3px] hover:text-white/40 transition-all">
+                      PROFILE
+                    </span>
+                    <div className="w-full h-[1px]">
+                      <div
+                        className={`${
+                          profileIsHoovered ? "w-full" : "w-0"
+                        } h-full transition-all bg-purple-500`}
+                      ></div>
+                    </div>
                   </div>
                   <LogoutDialog setMenuIsOpen={setMenuIsOpen}>
                     <div className="w-fit gap-3 flex items-start cursor-pointer transition-all text-white/80 hover:text-white/50">
-                      <LogOut className=" w-4 h-4" />
-                      <span className="text-xs">Logout</span>
+                      <LogOut className=" text-white/50 w-4 h-4" />
+                      <span className="text-white/50 text-xs tracking-[3px] hover:text-red-500/80 transition-all">
+                        LOGOUT
+                      </span>
                     </div>
                   </LogoutDialog>
                 </div>

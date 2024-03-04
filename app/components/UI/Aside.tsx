@@ -51,6 +51,7 @@ export default function Aside() {
             {users.map((user, index) => {
               return (
                 <div
+                  key={user._id}
                   className={`${
                     index >= 3 ? "hidden" : "flex"
                   } flex border-t border-zinc-500/80`}
