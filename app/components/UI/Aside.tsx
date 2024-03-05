@@ -47,9 +47,9 @@ export default function Aside() {
           <div
             className={`${
               shouldShowRanking ? "rounded-t-lg" : "rounded-lg"
-            } relative w-full h-fit px-4 py-4 flex flex-col justify-center items-center lg:items-start  bg-purple-500`}
+            } w-full h-fit py-1 pb-3 flex flex-col justify-center items-center bg-purple-500`}
           >
-            <div className="top-0 left-0 absolute w-full flex justify-end pt-2 pr-2">
+            <div className="w-full flex justify-end pr-2">
               {shouldShowRanking ? (
                 <Eye
                   onClick={() => setShouldShowRanking(false)}
@@ -62,11 +62,12 @@ export default function Aside() {
                 />
               )}
             </div>
+            <div></div>
             <span className="pl-0 font-black text-xs sm:text-sm sm:text-md lg:text-lg text-white text-center">
               Ranking PostApp
             </span>
             <span className="pl-0 text-xs text-white/80 text-center">
-              users who posted the most
+              Who posted the most
             </span>
           </div>
           {shouldShowRanking && (
@@ -125,9 +126,9 @@ export default function Aside() {
           <div
             className={`${
               shouldShowDaily ? "rounded-t-lg" : "rounded-lg"
-            } relative w-full  h-fit px-4 py-4 flex flex-col justify-center items-center lg:items-start  bg-purple-500`}
+            } w-full  h-fit py-1 pb-3 flex flex-col justify-center items-center  bg-purple-500`}
           >
-            <div className="top-0 left-0 absolute w-full flex justify-end gap-2 pt-2 pr-2 items-center">
+            <div className="w-full flex justify-end items-center pr-2 gap-2">
               <TooltipComponent
                 content={
                   "You can use the prize word in the content of a post to win the respective prize. The validity of a prize word is 24 hours, after this period another prize word will be selected."
