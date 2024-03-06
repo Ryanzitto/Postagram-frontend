@@ -362,20 +362,16 @@ export default function Feed() {
             onChange={handleChangeInputContent}
             className="w-full h-fit flex flex-col px-4 items-end gap-3"
           >
-            <textarea
-              value={content !== null ? content : ""}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="What are your words today?"
-              className={`text-sm flex justify-center items-center rounded-xl w-full pb-4 md:pb-0 pt-5 ${
-                content !== null ? "pb-5" : null
-              } pl-4 md:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
-            />
-            <Dialog.Trigger>
-              {content !== null && (
-                <span className="cursor-pointer text-white/50 text-xs transition-all hover:text-white outline-none">
-                  See preview
-                </span>
-              )}
+            <Dialog.Trigger className="w-full">
+              <textarea
+                onClick={() => setContent("")}
+                value={content !== null ? content : ""}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="What are your words today?"
+                className={`text-sm flex justify-center items-center rounded-xl w-full pb-4 md:pb-0 pt-5 ${
+                  content !== null ? "pb-5" : null
+                } pl-4 md:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
+              />
             </Dialog.Trigger>
           </div>
         </div>

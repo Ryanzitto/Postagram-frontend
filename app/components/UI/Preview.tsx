@@ -251,6 +251,7 @@ export default function Preview({
         </div>
         <div className={`rounded-md w-full h-fit flex ${bgColorSelected} mt-4`}>
           <textarea
+            placeholder="Write something here."
             {...register("text", { required: true })}
             id="text"
             name="text"

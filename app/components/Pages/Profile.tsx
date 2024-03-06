@@ -7,10 +7,11 @@ import Post from "../UI/Post";
 import { useRouter } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
 import Preview from "../../components/UI/Preview";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Minus, Settings2 } from "lucide-react";
 import { useStore } from "app/store";
 import { toast } from "sonner";
 import ProfileCard from "../UI/ProfileCard";
+import EditDialog from "../UI/EditProfileDialog";
 
 interface textColors {
   textColor: string;
@@ -163,7 +164,7 @@ export default function ProfilePage({ userNameProp }: Props) {
             <div className="rounded-lg w-[700px] h-fit flex flex-col items-start justify-start">
               <div className="flex flex-col w-full">
                 {userProfile?._id === user._id && (
-                  <div className="w-full h-fit flex">
+                  <div className="w-full h-fit flex gap-4">
                     <button
                       className={`${
                         shouldShowCreatePost
@@ -187,6 +188,21 @@ export default function ProfilePage({ userNameProp }: Props) {
                         Create
                       </span>
                     </button>
+                    <EditDialog>
+                      <button
+                        className={`bg-purple-500 hover:bg-purple-600 transition-all  px-2 rounded-md py-2 flex gap-2 justify-center items-center`}
+                        onClick={() => {}}
+                      >
+                        <Settings2 className="w-4 h-4 text-white/80" />
+                        <span
+                          className={`${
+                            shouldShowCreatePost ? "hidden" : "flex"
+                          } text-sm text-white/80 font-semibold tracking-wider`}
+                        >
+                          Edit Profile
+                        </span>
+                      </button>
+                    </EditDialog>
                   </div>
                 )}
                 {shouldShowCreatePost && (
