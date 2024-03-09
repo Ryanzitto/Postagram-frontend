@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import CardProfile from "./CardProfile";
 
 interface User {
+  bio: string;
   avatar: string;
   name: string;
   userName: string;

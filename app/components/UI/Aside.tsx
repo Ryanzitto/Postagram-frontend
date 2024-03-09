@@ -115,47 +115,6 @@ export default function Aside() {
             </div>
           )}
         </div>
-        {/* <div className="bg-zinc-700/50 max-w-[300px] flex gap-0 flex-col w-1/2 md:w-full h-fit rounded-lg">
-          <div
-            className={`${
-              shouldShowDaily ? "rounded-t-lg" : "rounded-lg"
-            } w-full  h-fit px-3 py-3 md:px-4 md:py-4 flex justify-between items-center  bg-purple-500`}
-          >
-            <span className="pl-0 font-black text-xs sm:text-sm sm:text-md lg:text-lg text-white text-center">
-              Prize Word
-            </span>
-            <div className="gap-2 flex items-center">
-              <TooltipComponent
-                content={
-                  "You can use the prize word in the content of a post to win the respective prize. The validity of a prize word is 24 hours, after this period another prize word will be selected."
-                }
-              >
-                <Info className="cursor-pointer text-white/50 w-4 h-4 transition-all hover:text-white/30" />
-              </TooltipComponent>
-              {shouldShowDaily ? (
-                <Eye
-                  onClick={() => setShouldShowDaily(false)}
-                  className="cursor-pointer text-white/50 w-5 h-5 transition-all hover:text-white/30"
-                />
-              ) : (
-                <EyeOff
-                  onClick={() => setShouldShowDaily(true)}
-                  className="cursor-pointer text-white/50 w-5 h-5 transition-all hover:text-white/30"
-                />
-              )}
-            </div>
-          </div>
-          {shouldShowDaily && (
-            <div className="w-full p-6 rounded-b-md border-zinc-500/80 flex justify-center items-center h-fit">
-              <span className="text-white/80 text-center text-sm">
-                the award-winning word of the day is...{" "}
-                <strong className="text-purple-500 font-black text-lg">
-                  DEV
-                </strong>
-              </span>
-            </div>
-          )}
-        </div> */}
       </div>
     </>
   );

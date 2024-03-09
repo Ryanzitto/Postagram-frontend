@@ -14,6 +14,7 @@ type FormData = z.infer<typeof loginSchema>;
 
 export default function SignUp() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const { user, setUser, setLoginRemember, loginRemember } = useStore();
 
   const router = useRouter();
@@ -74,7 +75,7 @@ export default function SignUp() {
       });
   }
 
-  const teste = (e) => {
+  const handleClickCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(e.target.checked);
   };
 
@@ -165,7 +166,10 @@ export default function SignUp() {
               </p>
             )}
           </div>
-          <div onChange={teste} className="w-full flex  gap-2 items-center">
+          <div
+            onChange={handleClickCheck}
+            className="w-full flex  gap-2 items-center"
+          >
             <input checked={isChecked} type="checkbox" />
             <span className="text-xs text-zinc-600">Remember me</span>
           </div>

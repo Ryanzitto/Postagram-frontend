@@ -168,7 +168,9 @@ export default function EditDialog({
         className="w-full justify-center items-center bg-zinc-900/50 flex flex-col rounded-md gap-4 my-4 p-6"
       >
         <div
-          onChange={(e) => setInputNameContent(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setInputNameContent(e.target.value)
+          }
           className="flex flex-col w-full gap-1"
         >
           <label className="text-white text-xs">UserName</label>
@@ -198,7 +200,9 @@ export default function EditDialog({
         </div>
         <div className="flex w-full gap-1">
           <div
-            onChange={(e) => setInputBioContent(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setInputBioContent(e.target.value)
+            }
             className="flex flex-col w-[70%] sm:w-[80%]"
           >
             <label className="text-white text-xs">Bio</label>

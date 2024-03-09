@@ -285,7 +285,7 @@ export default function Post({ post }: Props) {
 
               {newComments.map((comment) => {
                 return (
-                  <div className="break-all border border-zinc-600 my-2 break-all w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
+                  <div className="break-all border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
                     <div className="w-fit p-1 rounded-md bg-zinc-700 flex items-center px-2 gap-2">
                       <span
                         onClick={() => handleClickUserName(comment.userName)}

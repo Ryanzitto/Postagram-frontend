@@ -7,7 +7,7 @@ import { registerSchema } from "app/zodSchema/register";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { FormEvent } from "react";
 import { toast } from "sonner";
 
 type FormData = z.infer<typeof registerSchema>;
@@ -85,7 +85,9 @@ export default function SignUp() {
             className="hidden"
           />
           <div
-            onChange={(e) => setInputNameContent(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setInputNameContent(e.target.value)
+            }
             className="flex flex-col w-full gap-1"
           >
             <input
@@ -113,7 +115,9 @@ export default function SignUp() {
             )}
           </div>
           <div
-            onChange={(e) => setInputUserNameContent(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setInputUserNameContent(e.target.value)
+            }
             className="flex flex-col w-full gap-1"
           >
             <input
@@ -143,7 +147,9 @@ export default function SignUp() {
             )}
           </div>
           <div
-            onChange={(e) => setInputEmailContent(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setInputEmailContent(e.target.value)
+            }
             className="flex flex-col w-full gap-1"
           >
             <input
@@ -172,7 +178,9 @@ export default function SignUp() {
           </div>
           <div className="flex flex-col w-full gap-1">
             <div
-              onChange={(e) => setInputPasswordContent(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setInputPasswordContent(e.target.value)
+              }
               className="flex items-center gap-2 w-full pr-4"
             >
               <input
@@ -216,7 +224,9 @@ export default function SignUp() {
           </div>
           <div className="flex flex-col w-full gap-1">
             <div
-              onChange={(e) => setInputConfirmPasswordContent(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setInputConfirmPasswordContent(e.target.value)
+              }
               className="flex items-center gap-2 w-full pr-4"
             >
               <input
