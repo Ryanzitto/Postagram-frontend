@@ -108,7 +108,7 @@ export default function Header() {
       })
       .catch((error) => {
         console.log(error);
-        if (error.response.data.message === "Token has expired") {
+        if (error?.response?.data?.message === "Token has expired") {
           toast.error("Your session expired, please login to continue.");
           logout();
           router.push("/auth/signIn");
@@ -126,7 +126,7 @@ export default function Header() {
       })
       .catch((error) => {
         console.log(error);
-        if (error.response.data.message === "Token has expired") {
+        if (error?.response?.data?.message === "Token has expired") {
           toast.error("Your session expired, please login to continue.");
           logout();
           router.push("/auth/signIn");

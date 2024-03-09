@@ -47,6 +47,7 @@ export default function SignUp() {
   };
 
   async function onSubmit(data: FormData) {
+    console.log(data);
     axios
       .post(`${URL}/user/`, data)
       .then((response) => {
@@ -83,7 +84,10 @@ export default function SignUp() {
             value={"cat-1.png"}
             className="hidden"
           />
-          <div className="flex flex-col w-full gap-1">
+          <div
+            onChange={(e) => setInputNameContent(e.target.value)}
+            className="flex flex-col w-full gap-1"
+          >
             <input
               onMouseEnter={() => setNameIsHovered(true)}
               onMouseLeave={() => setNameIsHovered(false)}
@@ -93,7 +97,6 @@ export default function SignUp() {
               placeholder="Your name here"
               type="text"
               value={inputNameContent}
-              onChange={(e) => setInputNameContent(e.target.value)}
               className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
             />
             <div className="w-full h-[2px] flex bg-slate-200">
@@ -109,7 +112,10 @@ export default function SignUp() {
               </p>
             )}
           </div>
-          <div className="flex flex-col w-full gap-1">
+          <div
+            onChange={(e) => setInputUserNameContent(e.target.value)}
+            className="flex flex-col w-full gap-1"
+          >
             <input
               onMouseEnter={() => setUserNameIsHovered(true)}
               onMouseLeave={() => setUserNameIsHovered(false)}
@@ -119,7 +125,6 @@ export default function SignUp() {
               placeholder="Your username here"
               type="text"
               value={inputUserNameContent}
-              onChange={(e) => setInputUserNameContent(e.target.value)}
               className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
             />
             <div className="w-full h-[2px] flex bg-slate-200">
@@ -137,7 +142,10 @@ export default function SignUp() {
               </p>
             )}
           </div>
-          <div className="flex flex-col w-full gap-1">
+          <div
+            onChange={(e) => setInputEmailContent(e.target.value)}
+            className="flex flex-col w-full gap-1"
+          >
             <input
               onMouseEnter={() => setEmailIsHovered(true)}
               onMouseLeave={() => setEmailIsHovered(false)}
@@ -145,7 +153,6 @@ export default function SignUp() {
               id="email"
               name="email"
               value={inputEmailContent}
-              onChange={(e) => setInputEmailContent(e.target.value)}
               placeholder="Your email here"
               type="text"
               className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
@@ -164,7 +171,10 @@ export default function SignUp() {
             )}
           </div>
           <div className="flex flex-col w-full gap-1">
-            <div className="flex items-center gap-2 w-full pr-4">
+            <div
+              onChange={(e) => setInputPasswordContent(e.target.value)}
+              className="flex items-center gap-2 w-full pr-4"
+            >
               <input
                 onMouseEnter={() => setPasswordIsHovered(true)}
                 onMouseLeave={() => setPasswordIsHovered(false)}
@@ -172,7 +182,6 @@ export default function SignUp() {
                 id="password"
                 name="password"
                 value={inputPasswordContent}
-                onChange={(e) => setInputPasswordContent(e.target.value)}
                 placeholder="Your password here"
                 type={shouldShowPassword ? "text" : "password"}
                 className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"
@@ -206,7 +215,10 @@ export default function SignUp() {
             )}
           </div>
           <div className="flex flex-col w-full gap-1">
-            <div className="flex items-center gap-2 w-full pr-4">
+            <div
+              onChange={(e) => setInputConfirmPasswordContent(e.target.value)}
+              className="flex items-center gap-2 w-full pr-4"
+            >
               <input
                 onMouseEnter={() => setConfirmPasswordIsHovered(true)}
                 onMouseLeave={() => setConfirmPasswordIsHovered(false)}
@@ -214,7 +226,6 @@ export default function SignUp() {
                 id="confirmPassword"
                 name="confirmPassword"
                 value={inputConfirmPasswordContent}
-                onChange={(e) => setInputConfirmPasswordContent(e.target.value)}
                 placeholder="Confirm your password"
                 type={shouldShowConfirmPassword ? "text" : "password"}
                 className="text-sm sm:text-md mt-1 bg-transparent w-full outline-none text-zinc-600/80 font-semibold placeholder:font-normal placeholder:text-zinc-600/50"

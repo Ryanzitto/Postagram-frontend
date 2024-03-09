@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 
 interface UserProfile {
+  bio: string;
   avatar: string;
   name: string;
   userName: string;
@@ -73,6 +74,9 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
     console.log(followers);
   }, [followers]);
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
   return (
     <div className="p-4 lg:p-0 h-full w-full sm:w-[80%] md:min-w-[350px] md:min-h-[400px] flex flex-col lg:justify-start justify-center items-center">
       <div className="p-4 w-[90%] flex h-fit flex-col justify-center rounded-lg bg-zinc-700/50 border border-zinc-500/80 items-center">
@@ -109,7 +113,7 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
           <div className="w-[80%] h-[1px] bg-zinc-500/30 mt-4 mb-4"></div>
           <div className="w-full flex flex-col justify-center items-center text-center h-fit px-2 mt-2">
             <span className="text-xs text-white/80 font-normal">
-              Hi, Im Leon Arc and I love this App. 🛸👽
+              {userProfile?.bio}
             </span>
           </div>
           {userProfile?._id !== user._id && (

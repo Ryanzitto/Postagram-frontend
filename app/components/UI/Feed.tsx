@@ -131,7 +131,11 @@ export default function Feed() {
 
   const router = useRouter();
 
-  const { user, logout } = useStore();
+  const { user, logout, loginRemember } = useStore();
+
+  useEffect(() => {
+    console.log(loginRemember);
+  }, [loginRemember]);
 
   const closeButtonModalRef = useRef<HTMLSpanElement | null>(null);
 
@@ -190,8 +194,8 @@ export default function Feed() {
       })
       .catch((error) => {
         console.log(error);
-        setErrorMessage(error.response.data.message);
-        if (error.response.data.message === "Token has expired") {
+        setErrorMessage(error?.response?.data?.message);
+        if (error?.response?.data?.message === "Token has expired") {
           toast.error("Your session expired, please login to continue.");
           logout();
           router.push("/auth/signIn");
@@ -219,8 +223,8 @@ export default function Feed() {
       })
       .catch((error) => {
         console.log(error);
-        setErrorMessage(error.response.data.message);
-        if (error.response.data.message === "Token has expired") {
+        setErrorMessage(error?.response?.data?.message);
+        if (error?.response?.data?.message === "Token has expired") {
           toast.error("Your session expired, please login to continue.");
           logout();
           router.push("/auth/signIn");
@@ -251,7 +255,7 @@ export default function Feed() {
       })
       .catch((error) => {
         console.log(error);
-        if (error.response.data.message === "Token has expired") {
+        if (error?.response?.data?.message === "Token has expired") {
           toast.error("Your session expired, please login to continue.");
           logout();
           router.push("/auth/signIn");

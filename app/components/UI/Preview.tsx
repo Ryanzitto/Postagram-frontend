@@ -303,10 +303,12 @@ export default function Preview({
           )}
         </div>
         <div className="hidden lg:flex w-full h-fit justify-end mt-2">
-          <Smile
-            onClick={() => setShowPickerEmoji(!showPickerEmoji)}
-            className="text-white/50 text-xs cursor-pointer transition-all hover:text-white/20"
-          />
+          {content !== null && (
+            <Smile
+              onClick={() => setShowPickerEmoji(!showPickerEmoji)}
+              className="text-white/50 text-xs cursor-pointer transition-all hover:text-white/20"
+            />
+          )}
 
           {showPickerEmoji && (
             <div className="absolute top-0 -right-[310px]">

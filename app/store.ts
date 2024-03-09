@@ -13,12 +13,14 @@ interface User {
   token: string;
   followers: any[];
   following: any[];
+  createdAt: string;
 }
 
 export const useStore = create(
   persist(
     (set: any) => ({
       user: {
+        bio: "",
         avatar: "",
         email: "",
         password: "",
@@ -31,6 +33,29 @@ export const useStore = create(
         following: [],
       },
 
+      loginRemember: {
+        email: "",
+        password: "",
+        isChecked: false,
+      },
+
+      setLoginRemember: (payload: {
+        email: string;
+        password: string;
+        isChecked: boolean;
+      }) =>
+        set(
+          (state: {
+            loginRemember: {
+              email: string;
+              password: string;
+              isChecked: boolean;
+            };
+          }) => ({
+            loginRemember: payload,
+          })
+        ),
+
       setUser: (payload: User) =>
         set((state: { user: User }) => ({
           user: payload,
@@ -39,6 +64,7 @@ export const useStore = create(
       logout: () =>
         set({
           user: {
+            bio: "",
             avatar: "",
             email: "",
             password: "",
@@ -49,6 +75,16 @@ export const useStore = create(
             token: "",
           },
         }),
+
+      setEditedUser: (userName: string, bio: string, avatar: string) =>
+        set((state: { user: User }) => ({
+          user: {
+            ...state.user,
+            userName: userName,
+            bio: bio,
+            avatar: avatar,
+          },
+        })),
     }),
     {
       name: "app-storage",

@@ -14,18 +14,26 @@ type FormData = z.infer<typeof loginSchema>;
 
 export default function SignUp() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
-  const { user, setUser } = useStore();
+  const { user, setUser, setLoginRemember, loginRemember } = useStore();
+
   const router = useRouter();
+
+  const [isChecked, setIsChecked] = useState(loginRemember.isChecked);
 
   const [emailIsHovered, setEmailIsHovered] = useState<boolean>(false);
   const [passwordIsHovered, setPasswordIsHovered] = useState<boolean>(false);
 
-  const [inputEmailContent, setInputEmailContent] = useState<string>("");
-  const [inputPasswordContent, setInputPasswordContent] = useState<string>("");
+  const [inputEmailContent, setInputEmailContent] = useState<string>(
+    loginRemember.email
+  );
+  const [inputPasswordContent, setInputPasswordContent] = useState<string>(
+    loginRemember.password
+  );
 
   const [shouldShowPassword, setShouldShowPassword] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const {
     handleSubmit,
     register,
@@ -41,10 +49,18 @@ export default function SignUp() {
     router.push("/");
   };
 
-  async function onSubmit(data: FormData) {
+  async function onSubmit() {
+    const formatedDate = {
+      email: inputEmailContent,
+      password: inputPasswordContent,
+      isChecked: isChecked,
+    };
     axios
-      .post(`${URL}/auth/`, data)
+      .post(`${URL}/auth/`, formatedDate)
       .then((response) => {
+        if (isChecked) {
+          setLoginRemember(formatedDate);
+        }
         const loggedUser = response.data.user;
         loggedUser.token = response.data.token;
         setUser(loggedUser);
@@ -58,9 +74,13 @@ export default function SignUp() {
       });
   }
 
+  const teste = (e) => {
+    setIsChecked(e.target.checked);
+  };
+
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    console.log(loginRemember);
+  }, [loginRemember]);
 
   return (
     <div className="w-screen h-screen flex justify-center items-center bg-zinc-800">
@@ -145,14 +165,16 @@ export default function SignUp() {
               </p>
             )}
           </div>
-          <div className="flex w-full justify-center items-center">
-            <button
-              type="submit"
-              className="bg-purple-500 rounded-lg flex justify-center items-center w-full p-2 text-white font-bold hover:bg-purple-600"
-            >
-              <span>Create an account</span>
-            </button>
+          <div onChange={teste} className="w-full flex  gap-2 items-center">
+            <input checked={isChecked} type="checkbox" />
+            <span className="text-xs text-zinc-600">Remember me</span>
           </div>
+          <button
+            type="submit"
+            className="bg-purple-500 rounded-lg flex justify-center items-center w-full p-2 text-white font-bold hover:bg-purple-600"
+          >
+            Login
+          </button>
         </form>
         {errorMessage !== null && (
           <div className="w-full flex justify-center items-center pt-2">

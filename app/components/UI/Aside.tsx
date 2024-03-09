@@ -25,7 +25,6 @@ export default function Aside() {
     axios
       .get(`${URL}/user/`)
       .then((response) => {
-        // Ordena os usuários com base no número de posts (do maior para o menor)
         const sortedUsers = response.data.sort(
           (a: User, b: User) => b.totalPosts - a.totalPosts
         );

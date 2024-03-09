@@ -31,6 +31,7 @@ interface Comment {
 }
 
 interface User {
+  bio: string;
   avatar: string;
   name: string;
   userName: string;
@@ -97,6 +98,25 @@ export default function ProfilePage({ userNameProp }: Props) {
       });
   }, []);
 
+  const updateUser = () => {
+    axios
+      .get(`${URL}/user/${userNameProp}`)
+      .then((response) => {
+        console.log(response);
+        setUserProfile(response.data);
+        setTotalPostsUser(response.data.totalPosts);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          return;
+        }
+      });
+  };
+
   useEffect(() => {
     axios
       .get(`${URL}/post/byUserName/${userNameProp}`)
@@ -112,6 +132,9 @@ export default function ProfilePage({ userNameProp }: Props) {
   }, []);
 
   const [shouldShowCreatePost, sethouldShowCreatePost] =
+    useState<boolean>(false);
+
+  const [shouldShowEditProfile, setshouldShowEditProfile] =
     useState<boolean>(false);
 
   const [content, setContent] = useState<string | null>(null);
@@ -188,21 +211,26 @@ export default function ProfilePage({ userNameProp }: Props) {
                         Create
                       </span>
                     </button>
-                    <EditDialog>
-                      <button
-                        className={`bg-purple-500 hover:bg-purple-600 transition-all  px-2 rounded-md py-2 flex gap-2 justify-center items-center`}
-                        onClick={() => {}}
+
+                    <button
+                      className={` ${
+                        shouldShowEditProfile
+                          ? "bg-red-500 hover:bg-red-600"
+                          : "bg-purple-500 hover:bg-purple-600"
+                      } bg-purple-500 hover:bg-purple-600 transition-all  px-2 rounded-md py-2 flex gap-2 justify-center items-center`}
+                      onClick={() =>
+                        setshouldShowEditProfile(!shouldShowEditProfile)
+                      }
+                    >
+                      <Settings2 className="w-4 h-4 text-white/80" />
+                      <span
+                        className={`${
+                          shouldShowEditProfile ? "hidden" : "flex"
+                        } text-sm text-white/80 font-semibold tracking-wider`}
                       >
-                        <Settings2 className="w-4 h-4 text-white/80" />
-                        <span
-                          className={`${
-                            shouldShowCreatePost ? "hidden" : "flex"
-                          } text-sm text-white/80 font-semibold tracking-wider`}
-                        >
-                          Edit Profile
-                        </span>
-                      </button>
-                    </EditDialog>
+                        Edit Profile
+                      </span>
+                    </button>
                   </div>
                 )}
                 {shouldShowCreatePost && (
@@ -217,26 +245,29 @@ export default function ProfilePage({ userNameProp }: Props) {
                     </div>
                     <div
                       onChange={handleChangeInputContent}
-                      className="w-full h-fit flex flex-col px-4 items-end gap-3"
+                      className="w-full h-fit flex flex-col px-4 gap-3"
                     >
-                      <textarea
-                        value={content !== null ? content : ""}
-                        onChange={(e) => setContent(e.target.value)}
-                        placeholder="What are your words today?"
-                        className={`text-sm rounded-xl w-full pt-5 ${
-                          content !== null ? "pb-5" : null
-                        } pl-4 sm:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
-                      />
                       <Dialog.Trigger>
-                        {content !== null && (
-                          <span className="cursor-pointer text-white/50 text-xs transition-all hover:text-white outline-none">
-                            See preview
-                          </span>
-                        )}
+                        <textarea
+                          value={content !== null ? content : ""}
+                          onChange={(e) => setContent(e.target.value)}
+                          placeholder="What are your words today?"
+                          className={`text-sm rounded-xl w-full pt-5 ${
+                            content !== null ? "pb-5" : null
+                          } pl-4 sm:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
+                        />
                       </Dialog.Trigger>
                     </div>
                   </div>
                 )}
+                {shouldShowEditProfile && (
+                  <EditDialog
+                    actualUser={userProfile}
+                    updateUser={updateUser}
+                    setshouldShowEditProfile={setshouldShowEditProfile}
+                  />
+                )}
+
                 <Dialog.Portal>
                   <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
                     <Dialog.Content className="relative w-[500px] min-h-fit h-fit bg-zinc-800 border border-zinc-600 rounded-lg">

@@ -13,9 +13,12 @@ export const registerSchema = z
     userName: z
       .string()
       .min(5, { message: "This field cannot contain less than 5 characters" })
-      .max(30, { message: "This field cannot contain more than 30 characters" })
+      .max(20, { message: "This field cannot contain more than 20 characters" })
       .refine((value) => value.trim() !== "", {
         message: "The UserName must not contain only white spaces.",
+      })
+      .refine((value) => !/\s/.test(value), {
+        message: "The UserName must not contain spaces between characters.",
       }),
     email: z.string().email(),
     password: z

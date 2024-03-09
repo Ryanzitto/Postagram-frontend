@@ -92,6 +92,8 @@ export default function Post({ post }: Props) {
   const [inputCommentContent, setInputCommentContent] = useState<string>("");
 
   async function onSubmit(data: FormData) {
+    console.log(data);
+    console.log(inputCommentContent);
     axios
       .patch(
         `${URL}/post/comment/${post._id}`,
@@ -109,7 +111,7 @@ export default function Post({ post }: Props) {
         console.log(response);
         toast.success("A comment has been created.");
         setInputCommentContent("");
-        createComment(data);
+        createComment({ comment: inputCommentContent });
       })
       .catch((error) => {
         console.log(error);
@@ -257,7 +259,7 @@ export default function Post({ post }: Props) {
             >
               {post.comments.map((comment) => {
                 return (
-                  <div className="border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
+                  <div className="break-all border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
                     <div className="w-fit p-1 rounded-md bg-zinc-700 flex items-center px-2 gap-2">
                       <span
                         onClick={() => handleClickUserName(comment.userName)}
@@ -265,8 +267,8 @@ export default function Post({ post }: Props) {
                       >
                         @{comment.userName}
                       </span>
-                      <div className="w-1 h-1 rounded-full bg-white" />
-                      <span className="text-white/50 text-xs">
+                      <div className="w-1 h-1  rounded-full bg-white" />
+                      <span className="text-white/50 break-words text-xs">
                         {formatDistanceToNow(comment.createdAt, {
                           locale: ptBR,
                           addSuffix: true,
@@ -283,7 +285,7 @@ export default function Post({ post }: Props) {
 
               {newComments.map((comment) => {
                 return (
-                  <div className="border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
+                  <div className="break-all border border-zinc-600 my-2 break-all w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
                     <div className="w-fit p-1 rounded-md bg-zinc-700 flex items-center px-2 gap-2">
                       <span
                         onClick={() => handleClickUserName(comment.userName)}
@@ -300,7 +302,7 @@ export default function Post({ post }: Props) {
                       </span>
                     </div>
 
-                    <span className="text-white/50 font-semi-bold text-xs">
+                    <span className="text-white/50 w-full font-semi-bold text-xs break-words">
                       - {comment.comment}
                     </span>
                   </div>
@@ -331,23 +333,27 @@ export default function Post({ post }: Props) {
               onSubmit={handleSubmit(onSubmit)}
               className="w-[89%] h-full flex text-sm rounded-xl  bg-zinc-800/60 justify-between items-center px-4"
             >
-              <input
-                {...register("comment", { required: true })}
-                id="comment"
-                name="comment"
-                autoComplete="off"
-                type="text"
-                value={inputCommentContent}
-                onChange={(e) => setInputCommentContent(e.target.value)}
-                placeholder="What you think about this post?"
-                className="w-full outline-none bg-transparent text-white/50 text-sm  placeholder:text-white/30 "
-              />
-              <button
-                type="submit"
-                className="text-white hover:text-white/50 transition-all cursor-pointer"
+              <div
+                onChange={(e: any) => setInputCommentContent(e.target.value)}
+                className="w-full flex gap-2"
               >
-                <Send className="w-5" />
-              </button>
+                <input
+                  {...register("comment")}
+                  id="comment"
+                  name="comment"
+                  autoComplete="off"
+                  value={inputCommentContent}
+                  type="text"
+                  placeholder="What you think about this post?"
+                  className="w-full outline-none text-white/50 text-sm bg-transparent placeholder:text-white/30 "
+                />
+                <button
+                  type="submit"
+                  className="text-white hover:text-white/50 transition-all cursor-pointer"
+                >
+                  <Send className="w-5" />
+                </button>
+              </div>
             </form>
           </div>
           <div className="w-full flex justify-center items-center">

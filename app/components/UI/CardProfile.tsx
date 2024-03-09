@@ -2,6 +2,7 @@ import React from "react";
 import * as HoverCard from "@radix-ui/react-hover-card";
 
 interface User {
+  bio: string;
   avatar: string;
   name: string;
   userName: string;
@@ -51,8 +52,7 @@ export default function CardProfile({ user, handleClickProfile }: Props) {
                 </div>
               </div>
               <div className="text-xs md:text-sm text-white">
-                Components, icons, colors, and templates for building
-                high-quality, accessible UI. Free and open-source.
+                <span>{user.bio}</span>
               </div>
               <div style={{ display: "flex", gap: 15 }}>
                 <div style={{ display: "flex", gap: 5 }}>
