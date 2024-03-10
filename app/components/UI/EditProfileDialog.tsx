@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect } from "react";
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
+import { LockKeyhole } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useStore } from "app/store";
 import { useState } from "react";
@@ -61,12 +61,6 @@ export default function EditDialog({
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const [nameIsHovered, setNameIsHovered] = useState<boolean>(false);
-
-  const [inputNameContent, setInputNameContent] = useState<string>(
-    user.userName
-  );
-
   const [inputBioContent, setInputBioContent] = useState<string>(user.bio);
 
   const [selectedAvatar, setSelectedAvatar] = useState<string>(user.avatar);
@@ -82,10 +76,9 @@ export default function EditDialog({
     resolver: zodResolver(editProfileSchema),
   });
 
-  async function onSubmit(data: FormData) {
+  async function onSubmit() {
     const formatedData = {
       avatar: selectedAvatar,
-      userName: inputNameContent,
       bio: inputBioContent,
     };
 
@@ -99,17 +92,8 @@ export default function EditDialog({
         console.log(response);
         toast.success("user successfully updated");
         setshouldShowEditProfile(false);
-        setEditedUser(
-          formatedData.userName,
-          formatedData.bio,
-          formatedData.avatar
-        );
+        setEditedUser(formatedData.bio, formatedData.avatar);
         setSelectedAvatar(formatedData.avatar);
-        if (formatedData.userName !== user.userName) {
-          router.push(`/profile/${formatedData.userName}`);
-          updateUser();
-          return;
-        }
         updateUser();
       })
       .catch((error) => {
@@ -148,11 +132,8 @@ export default function EditDialog({
 
   useEffect(() => {
     setErrorMessage(null);
-  }, [inputBioContent, inputNameContent]);
+  }, [inputBioContent]);
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
   return (
     <div className="mt-10 w-full flex flex-col items-center h-fit p-6 bg-zinc-800 border border-zinc-700 rounded-lg">
       <div className="flex flex-col gap-2 w-full">
@@ -167,37 +148,6 @@ export default function EditDialog({
         onSubmit={handleSubmit(onSubmit)}
         className="w-full justify-center items-center bg-zinc-900/50 flex flex-col rounded-md gap-4 my-4 p-6"
       >
-        <div
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setInputNameContent(e.target.value)
-          }
-          className="flex flex-col w-full gap-1"
-        >
-          <label className="text-white text-xs">UserName</label>
-          <input
-            onMouseEnter={() => setNameIsHovered(true)}
-            onMouseLeave={() => setNameIsHovered(false)}
-            {...register("userName")}
-            id="userName"
-            name="userName"
-            value={inputNameContent}
-            placeholder={"Write a new userName"}
-            type="text"
-            className="text-sm sm:text-md mt-2 bg-transparent w-full outline-none text-white/80 font-semibold placeholder:font-light placeholder:text-zinc-600/50"
-          />
-          <div className="w-full h-[2px] flex bg-white/20">
-            <div
-              className={`${
-                nameIsHovered || inputNameContent !== "" ? "w-full" : "w-0"
-              } transition-all h-full bg-purple-600`}
-            ></div>
-          </div>
-          {errors?.userName && (
-            <p className="text-red-600 text-xs pt-1">
-              {errors?.userName?.message}
-            </p>
-          )}
-        </div>
         <div className="flex w-full gap-1">
           <div
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

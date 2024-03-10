@@ -76,11 +76,10 @@ export const useStore = create(
           },
         }),
 
-      setEditedUser: (userName: string, bio: string, avatar: string) =>
+      setEditedUser: (bio: string, avatar: string) =>
         set((state: { user: User }) => ({
           user: {
             ...state.user,
-            userName: userName,
             bio: bio,
             avatar: avatar,
           },
