@@ -16,6 +16,16 @@ interface User {
   totalPosts: number;
 }
 
+const Skeleton = () => {
+  return (
+    <div
+      className={`rounded-lg skeleton-loading w-full h-fit px-3 py-3 md:px-4 md:py-4 flex justify-between items-center bg-purple-500`}
+    >
+      <Eye className="cursor-pointer text-transparent w-5 h-5 transition-all hover:text-white/30" />
+    </div>
+  );
+};
+
 export default function Aside() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
@@ -37,32 +47,33 @@ export default function Aside() {
 
   const [shouldShowRanking, setShouldShowRanking] = useState<boolean>(false);
 
-  const [shouldShowDaily, setShouldShowDaily] = useState<boolean>(false);
-
   return (
     <>
-      <div className="flex flex-row md:flex-col w-full md:w-[25%] h-full p-4 gap-4">
+      <div className="flex flex-row md:flex-col w-full md:w-[25%] h-fit p-4 gap-4">
         <div className="bg-zinc-700/50 max-w-[300px] flex gap-0 flex-col w-1/2 md:w-full h-fit rounded-lg">
-          <div
-            className={`${
-              shouldShowRanking ? "rounded-t-lg" : "rounded-lg"
-            } w-full h-fit px-3 py-3 md:px-4 md:py-4 flex justify-between items-center bg-purple-500`}
-          >
-            <span className="pl-0 font-black text-xs sm:text-sm sm:text-md lg:text-lg text-white text-center">
-              Ranking PostApp
-            </span>
-            {shouldShowRanking ? (
-              <Eye
-                onClick={() => setShouldShowRanking(false)}
-                className="cursor-pointer text-white/50 w-5 h-5 transition-all hover:text-white/30"
-              />
-            ) : (
-              <EyeOff
-                onClick={() => setShouldShowRanking(true)}
-                className="cursor-pointer text-white/50 w-5 h-5 transition-all hover:text-white/30"
-              />
-            )}
-          </div>
+          {users.length > 0 && (
+            <div
+              className={`${
+                shouldShowRanking ? "rounded-t-lg" : "rounded-lg"
+              } w-full h-fit px-3 py-3 md:px-4 md:py-4 flex justify-between items-center bg-purple-500`}
+            >
+              <span className="pl-0 font-black text-xs sm:text-sm sm:text-md lg:text-lg text-white text-center">
+                Ranking PostApp
+              </span>
+              {shouldShowRanking ? (
+                <Eye
+                  onClick={() => setShouldShowRanking(false)}
+                  className="cursor-pointer text-white/50 w-5 h-5 transition-all hover:text-white/30"
+                />
+              ) : (
+                <EyeOff
+                  onClick={() => setShouldShowRanking(true)}
+                  className="cursor-pointer text-white/50 w-5 h-5 transition-all hover:text-white/30"
+                />
+              )}
+            </div>
+          )}
+          {users.length === 0 && <Skeleton />}
           {shouldShowRanking && (
             <div className="w-full  h-fit flex flex-col">
               {users.map((user, index) => {

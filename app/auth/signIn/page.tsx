@@ -84,7 +84,7 @@ export default function SignUp() {
   }, [loginRemember]);
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center bg-zinc-800">
+    <div className="background-animate w-screen h-screen flex justify-center items-center bg-gradient-to-br from-purple-400  to-purple-800">
       <div className="bg-white rounded-lg w-[90%] sm:w-[500px] h-fit max-h-[90%] flex flex-col py-8 justify-center items-center">
         <span className="text-zinc-800/60 font-bold text-xs sm:text-sm">
           Welcome back,

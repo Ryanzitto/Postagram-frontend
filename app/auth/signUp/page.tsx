@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 import { toast } from "sonner";
+import "../.././globals.css";
 
 type FormData = z.infer<typeof registerSchema>;
 
@@ -63,8 +64,8 @@ export default function SignUp() {
   }
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center bg-zinc-800">
-      <div className="bg-white rounded-lg w-[90%] max-w-[500px] h-fit flex flex-col py-6 md:py-8 justify-center items-center">
+    <div className="background-animate relative w-screen h-screen flex justify-center items-center bg-gradient-to-br from-purple-400  to-purple-800">
+      <div className="shadow-md absolute bg-white rounded-lg w-[90%] max-w-[500px] h-fit flex flex-col py-6 md:py-8 justify-center items-center">
         <span className="text-zinc-800/60 font-bold text-md md:text-sm text-center antialiased">
           Create an account <br />
           on{" "}

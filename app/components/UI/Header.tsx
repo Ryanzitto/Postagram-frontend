@@ -46,6 +46,12 @@ interface Posts {
   _id: string;
 }
 
+const Skeleton = () => {
+  return (
+    <div className="w-28 h-10 p-2 fixed flex rounded-md skeleton-loading mr-6"></div>
+  );
+};
+
 export default function Header() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
@@ -404,27 +410,22 @@ export default function Header() {
               </motion.div>
             )}
           </AnimatePresence>
-          {menuIsOpen === false && (
-            <div className="w-fit px-2 p-1 fixed  h-fit flex justify-start gap-3 items-center rounded-md border border-zinc-600 bg-zinc-700/50 mr-6">
-              {pageIsLoad && (
-                <img
-                  className="hidden md:flex w-8 h-8"
-                  src={`/images/${user.avatar}`}
-                />
+          {pageIsLoad ? (
+            <>
+              {menuIsOpen === false && (
+                <div className="w-fit p-2 fixed  h-fit flex justify-start items-center rounded-md border border-zinc-600 bg-zinc-700/50 mr-6">
+                  <span className="hidden md:flex text-white/80 text-xs font-semibold">
+                    {user?.name}
+                  </span>
+                  <AlignJustify
+                    onClick={() => setMenuIsOpen(!menuIsOpen)}
+                    className="cursor-pointer text-white w-4 ml-0 md:ml-3 transition-all hover:text-white/50"
+                  />
+                </div>
               )}
-              {pageIsLoad ? (
-                <span className="hidden md:flex text-white/80 text-sm font-semibold">
-                  {user?.name}
-                </span>
-              ) : (
-                <span className="text-white/80 text-sm font-semibold">...</span>
-              )}
-
-              <AlignJustify
-                onClick={() => setMenuIsOpen(!menuIsOpen)}
-                className="cursor-pointer text-white w-4 ml-0 md:ml-3"
-              />
-            </div>
+            </>
+          ) : (
+            <Skeleton />
           )}
         </div>
       </header>

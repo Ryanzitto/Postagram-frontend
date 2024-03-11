@@ -126,6 +126,31 @@ interface textColors {
   bgColor: string;
 }
 
+const Skeleton = () => {
+  return (
+    <div className="w-full md:w-[50%] h-fit flex flex-col p-4 gap-5 items-center">
+      <div className="w-full skeleton-loading overflow-hidden  flex gap-2  rounded-xl border border-xl  py-3">
+        <div className="w-full flex gap-2 px-4">
+          <div className="h-20 w-fit flex flex-col justify-start items-center cursor-default">
+            <div className="w-20 h-20 flex flex-col justify-center items-center text-center">
+              <div
+                className={`cursor-pointer w-12 h-12 p-0.5 flex justify-center items-center rounded-md`}
+              ></div>
+            </div>
+            <span className="skeleton-loading cursor-pointer text-xs text-center text-white/50 mt-2 transition-all hover:text-white/30"></span>
+          </div>
+        </div>
+      </div>
+      <div className="w-full h-fit skeleton-loading  rounded-xl flex p-4">
+        <div className="w-fit h-fit flex items-center">
+          <div className="w-16 h-16 grid rounded-xl"></div>
+        </div>
+        <div className="w-full h-fit flex flex-col px-4 items-end gap-3"></div>
+      </div>
+    </div>
+  );
+};
+
 export default function Feed() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
@@ -313,111 +338,116 @@ export default function Feed() {
 
   return (
     <Dialog.Root>
-      <div className="w-full md:w-[50%] h-fit flex flex-col p-4 gap-5 items-center">
-        <div
-          ref={containerRef}
-          className="w-full custom overflow-hidden flex gap-2  rounded-xl border border-zinc-500/80 bg-zinc-700/50 py-3"
-        >
-          {users && (
-            <div className="w-full flex gap-2 px-4">
-              {users?.map((user, index) => {
-                return (
-                  <div
-                    key={user._id}
-                    className="h-20 w-fit flex flex-col justify-start items-center cursor-default"
-                  >
-                    <div className="w-20 h-20 flex flex-col justify-center items-center text-center">
-                      <div
-                        className={`w-12 h-12 p-0.5 flex justify-center items-center ${randomColors[index]} rounded-md`}
-                      >
-                        <img
-                          className="w-12 h-12"
-                          src={`/images/${user.avatar}`}
-                          alt={`Avatar de ${user.name}`}
-                        />
-                      </div>
-                    </div>
-                    <span
-                      onClick={() => handleClickUserName(user.userName)}
-                      className="cursor-pointer text-xs text-center text-white/50 mt-2 transition-all hover:text-white/30"
-                    >
-                      {user.name}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-          {!users && (
-            <div className="w-full flex justify-center items-center">
-              <Spinner2 />
-            </div>
-          )}
-        </div>
-        <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4">
-          <div className="w-fit h-fit flex items-center">
-            <div className="w-16 h-16 grid rounded-xl">
-              {pageIsLoad && (
-                <img className="w-15 h-15" src={`/images/${user.avatar}`} />
-              )}
-            </div>
-          </div>
+      {users ? (
+        <div className="w-full md:w-[50%] h-fit flex flex-col p-4 gap-5 items-start">
           <div
-            onChange={handleChangeInputContent}
-            className="w-full h-fit flex flex-col px-4 items-end gap-3"
+            ref={containerRef}
+            className="w-full custom overflow-hidden flex gap-2  rounded-xl border border-zinc-500/80 bg-zinc-700/50 py-3"
           >
-            <Dialog.Trigger className="w-full">
-              <textarea
-                onClick={() => setContent("")}
-                value={content !== null ? content : ""}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="What are your words today?"
-                className={`text-sm flex justify-center items-center rounded-xl w-full pb-4 md:pb-0 pt-5 ${
-                  content !== null ? "pb-5" : null
-                } pl-4 md:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
-              />
-            </Dialog.Trigger>
+            {users && (
+              <div className="w-full flex gap-2 px-4">
+                {users?.map((user, index) => {
+                  return (
+                    <div
+                      key={user._id}
+                      className="h-20 w-fit flex flex-col justify-start items-center cursor-default"
+                    >
+                      <div className="w-20 h-20 flex flex-col justify-center items-center text-center">
+                        <div
+                          className={`cursor-pointer w-12 h-12 p-0.5 flex justify-center items-center ${randomColors[index]} rounded-md`}
+                        >
+                          <img
+                            onClick={() => handleClickUserName(user.userName)}
+                            className="w-12 h-12"
+                            src={`/images/${user.avatar}`}
+                            alt={`Avatar de ${user.name}`}
+                          />
+                        </div>
+                      </div>
+                      <span
+                        onClick={() => handleClickUserName(user.userName)}
+                        className="cursor-pointer text-xs text-center text-white/50 mt-2 transition-all hover:text-white/30"
+                      >
+                        {user.name}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {!users && (
+              <div className="w-full flex justify-center items-center">
+                <Spinner2 />
+              </div>
+            )}
+          </div>
+          <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4">
+            <div className="w-fit h-fit flex items-center">
+              <div className="w-16 h-16 grid rounded-xl">
+                {pageIsLoad && (
+                  <img className="w-15 h-15" src={`/images/${user.avatar}`} />
+                )}
+              </div>
+            </div>
+            <div
+              onChange={handleChangeInputContent}
+              className="w-full h-fit flex flex-col px-4 items-end gap-3"
+            >
+              <Dialog.Trigger className="w-full">
+                <textarea
+                  onClick={() => setContent("")}
+                  value={content !== null ? content : ""}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="What are your words today?"
+                  className={`text-sm flex justify-center items-center rounded-xl w-full pb-4 md:pb-0 pt-5 ${
+                    content !== null ? "pb-5" : null
+                  } pl-4 md:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
+                />
+              </Dialog.Trigger>
+            </div>
+          </div>
+          <Dialog.Portal>
+            <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
+              <Dialog.Content className="relative w-[380px] sm:w-[500px] h-[450px] sm:h-fit bg-zinc-800 border border-zinc-600 rounded-lg">
+                <Dialog.Close className="absolute z-60 right-0 top-0 bg-zinc-700/50 transition-all p-2 px-4 rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500">
+                  <span ref={closeButtonModalRef}>X</span>
+                </Dialog.Close>
+                <Preview
+                  fetchPosts={fetchPosts}
+                  closeButtonModalRef={closeButtonModalRef}
+                  textColorSelected={textColorSelected}
+                  bgColorSelected={bgColorSelected}
+                  content={content}
+                  setContent={setContent}
+                  setTextColorSelected={setTextColorSelected}
+                  setBgColorSelected={setBgColorSelected}
+                />
+              </Dialog.Content>
+            </Dialog.Overlay>
+          </Dialog.Portal>
+          <div className="w-full h-fit flex flex-col gap-4 justify-start items-center">
+            {posts?.map((post) => {
+              return <Post key={post._id} post={post} />;
+            })}
+            {errorMessage ? (
+              <div className="w-full h-60 flex justify-center items-center">
+                <p className="text-white/50 font-bold tracking-wider text-lg">
+                  {errorMessage}
+                </p>
+              </div>
+            ) : null}
+          </div>
+          <div className="w-full flex justify-center items-center relative h-fit py-6">
+            {shouldShowSpinner && <Spinner fetchMoreData={fetchMoreData} />}
+
+            {nextUrl === null && (
+              <span className="text-white/50 text-sm"> No more posts.</span>
+            )}
           </div>
         </div>
-        <Dialog.Portal>
-          <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
-            <Dialog.Content className="relative w-[380px] sm:w-[500px] h-[450px] sm:h-fit bg-zinc-800 border border-zinc-600 rounded-lg">
-              <Dialog.Close className="absolute z-60 right-0 top-0 bg-zinc-700/50 transition-all p-2 px-4 rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500">
-                <span ref={closeButtonModalRef}>X</span>
-              </Dialog.Close>
-              <Preview
-                fetchPosts={fetchPosts}
-                closeButtonModalRef={closeButtonModalRef}
-                textColorSelected={textColorSelected}
-                bgColorSelected={bgColorSelected}
-                content={content}
-                setContent={setContent}
-                setTextColorSelected={setTextColorSelected}
-                setBgColorSelected={setBgColorSelected}
-              />
-            </Dialog.Content>
-          </Dialog.Overlay>
-        </Dialog.Portal>
-        <div className="w-full h-fit flex flex-col gap-4 justify-start items-center">
-          {posts?.map((post) => {
-            return <Post key={post._id} post={post} />;
-          })}
-          {errorMessage ? (
-            <div className="w-full h-60 flex justify-center items-center">
-              <p className="text-white/50 font-bold tracking-wider text-lg">
-                {errorMessage}
-              </p>
-            </div>
-          ) : null}
-        </div>
-        <div className="w-full flex justify-center items-center relative h-fit py-6">
-          {shouldShowSpinner && <Spinner fetchMoreData={fetchMoreData} />}
-
-          {nextUrl === null && (
-            <span className="text-white/50 text-sm"> No more posts.</span>
-          )}
-        </div>
-      </div>
+      ) : (
+        <Skeleton />
+      )}
     </Dialog.Root>
   );
 }

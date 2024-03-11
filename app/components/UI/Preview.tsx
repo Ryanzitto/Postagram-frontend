@@ -37,13 +37,7 @@ const colors = [
 
 const textColors = [
   { textColor: "text-white", bgColor: "bg-white" },
-  { textColor: "text-red-500", bgColor: "bg-red-500" },
-  { textColor: "text-yellow-500", bgColor: "bg-yellow-500" },
-  { textColor: "text-blue-500", bgColor: "bg-blue-500" },
-  { textColor: "text-purple-500", bgColor: "bg-purple-500" },
-  { textColor: "text-amber-500", bgColor: "bg-amber-500" },
-  { textColor: "text-emerald-500", bgColor: "bg-emerald-500" },
-  { textColor: "text-black", bgColor: "bg-black" },
+  { textColor: "text-zinc-900", bgColor: "bg-black" },
 ];
 
 interface Props {

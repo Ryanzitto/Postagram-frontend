@@ -185,109 +185,123 @@ export default function ProfilePage({ userNameProp }: Props) {
           </div>
           <div className="w-[90%] lg:w-[70%] h-fit md:h-full max-h-full flex justify-start md:justify-center lg:justify-start items-start pt-6">
             <div className="rounded-lg w-[700px] h-fit flex flex-col items-start justify-start">
-              <div className="flex flex-col w-full">
-                {userProfile?._id === user._id && (
-                  <div className="w-full h-fit flex gap-4">
-                    <button
-                      className={`${
-                        shouldShowCreatePost
-                          ? "bg-red-500 hover:bg-red-600"
-                          : "bg-purple-500 hover:bg-purple-600"
-                      } transition-all  px-2 rounded-md py-2 flex gap-1 justify-center items-center`}
-                      onClick={() =>
-                        sethouldShowCreatePost(!shouldShowCreatePost)
-                      }
-                    >
-                      {shouldShowCreatePost ? (
-                        <Minus className="w-5 h-5 text-white/80" />
-                      ) : (
-                        <Plus className="w-5 h-5 text-white/80" />
-                      )}
-                      <span
+              {userProfile && (
+                <div className="flex flex-col w-full">
+                  {userProfile?._id === user._id && (
+                    <div className="w-full h-fit flex gap-4">
+                      <button
                         className={`${
-                          shouldShowCreatePost ? "hidden" : "flex"
-                        } text-sm text-white/80 font-semibold tracking-wider`}
+                          shouldShowCreatePost
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-purple-500 hover:bg-purple-600"
+                        } transition-all  px-2 rounded-md py-2 flex gap-1 justify-center items-center`}
+                        onClick={() =>
+                          sethouldShowCreatePost(!shouldShowCreatePost)
+                        }
                       >
-                        Create
-                      </span>
-                    </button>
+                        {shouldShowCreatePost ? (
+                          <Minus className="w-5 h-5 text-white/80" />
+                        ) : (
+                          <Plus className="w-5 h-5 text-white/80" />
+                        )}
+                        <span
+                          className={`${
+                            shouldShowCreatePost ? "hidden" : "flex"
+                          } text-sm text-white/80 font-semibold tracking-wider`}
+                        >
+                          Create
+                        </span>
+                      </button>
 
-                    <button
-                      className={` ${
-                        shouldShowEditProfile
-                          ? "bg-red-500 hover:bg-red-600"
-                          : "bg-purple-500 hover:bg-purple-600"
-                      } bg-purple-500 hover:bg-purple-600 transition-all  px-2 rounded-md py-2 flex gap-2 justify-center items-center`}
-                      onClick={() =>
-                        setshouldShowEditProfile(!shouldShowEditProfile)
-                      }
-                    >
-                      <Settings2 className="w-4 h-4 text-white/80" />
-                      <span
-                        className={`${
-                          shouldShowEditProfile ? "hidden" : "flex"
-                        } text-sm text-white/80 font-semibold tracking-wider`}
+                      <button
+                        className={` ${
+                          shouldShowEditProfile
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-purple-500 hover:bg-purple-600"
+                        } bg-purple-500 hover:bg-purple-600 transition-all  px-2 rounded-md py-2 flex gap-2 justify-center items-center`}
+                        onClick={() =>
+                          setshouldShowEditProfile(!shouldShowEditProfile)
+                        }
                       >
-                        Edit Profile
-                      </span>
-                    </button>
-                  </div>
-                )}
-                {shouldShowCreatePost && (
-                  <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4 mt-4">
-                    <div className="w-fit h-fit flex">
-                      <div className="w-16 h-16 grid bg-purple-500 rounded-md">
-                        <img
-                          className="w-full h-full"
-                          src={`/images/${userProfile?.avatar}`}
-                        />
+                        <Settings2 className="w-4 h-4 text-white/80" />
+                        <span
+                          className={`${
+                            shouldShowEditProfile ? "hidden" : "flex"
+                          } text-sm text-white/80 font-semibold tracking-wider`}
+                        >
+                          Edit Profile
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                  {shouldShowCreatePost && (
+                    <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4 mt-4">
+                      <div className="w-fit h-fit flex">
+                        <div className="w-16 h-16 grid bg-purple-500 rounded-md">
+                          <img
+                            className="w-full h-full"
+                            src={`/images/${userProfile?.avatar}`}
+                          />
+                        </div>
+                      </div>
+                      <div
+                        onChange={handleChangeInputContent}
+                        className="w-full h-fit flex flex-col px-4 gap-3"
+                      >
+                        <Dialog.Trigger>
+                          <textarea
+                            value={content !== null ? content : ""}
+                            onChange={(e) => setContent(e.target.value)}
+                            placeholder="What are your words today?"
+                            className={`text-sm rounded-xl w-full pt-5 ${
+                              content !== null ? "pb-5" : null
+                            } pl-4 sm:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
+                          />
+                        </Dialog.Trigger>
                       </div>
                     </div>
-                    <div
-                      onChange={handleChangeInputContent}
-                      className="w-full h-fit flex flex-col px-4 gap-3"
-                    >
-                      <Dialog.Trigger>
-                        <textarea
-                          value={content !== null ? content : ""}
-                          onChange={(e) => setContent(e.target.value)}
-                          placeholder="What are your words today?"
-                          className={`text-sm rounded-xl w-full pt-5 ${
-                            content !== null ? "pb-5" : null
-                          } pl-4 sm:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
-                        />
-                      </Dialog.Trigger>
-                    </div>
-                  </div>
-                )}
-                {shouldShowEditProfile && (
-                  <EditDialog
-                    actualUser={userProfile}
-                    updateUser={updateUser}
-                    setshouldShowEditProfile={setshouldShowEditProfile}
-                  />
-                )}
+                  )}
+                  {shouldShowEditProfile && (
+                    <EditDialog
+                      actualUser={userProfile}
+                      updateUser={updateUser}
+                      setshouldShowEditProfile={setshouldShowEditProfile}
+                    />
+                  )}
 
-                <Dialog.Portal>
-                  <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
-                    <Dialog.Content className="relative w-[500px] min-h-fit h-fit bg-zinc-800 border border-zinc-600 rounded-lg">
-                      <Dialog.Close className="absolute right-0 top-0 bg-zinc-700/50 transition-all p-2 px-4 rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500">
-                        <span ref={closeButtonModalRef}>X</span>
-                      </Dialog.Close>
-                      <Preview
-                        fetchPosts={fetchPosts}
-                        closeButtonModalRef={closeButtonModalRef}
-                        textColorSelected={textColorSelected}
-                        bgColorSelected={bgColorSelected}
-                        content={content}
-                        setContent={setContent}
-                        setTextColorSelected={setTextColorSelected}
-                        setBgColorSelected={setBgColorSelected}
-                      />
-                    </Dialog.Content>
-                  </Dialog.Overlay>
-                </Dialog.Portal>
-              </div>
+                  <Dialog.Portal>
+                    <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
+                      <Dialog.Content className="relative w-[500px] min-h-fit h-fit bg-zinc-800 border border-zinc-600 rounded-lg">
+                        <Dialog.Close className="absolute right-0 top-0 bg-zinc-700/50 transition-all p-2 px-4 rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500">
+                          <span ref={closeButtonModalRef}>X</span>
+                        </Dialog.Close>
+                        <Preview
+                          fetchPosts={fetchPosts}
+                          closeButtonModalRef={closeButtonModalRef}
+                          textColorSelected={textColorSelected}
+                          bgColorSelected={bgColorSelected}
+                          content={content}
+                          setContent={setContent}
+                          setTextColorSelected={setTextColorSelected}
+                          setBgColorSelected={setBgColorSelected}
+                        />
+                      </Dialog.Content>
+                    </Dialog.Overlay>
+                  </Dialog.Portal>
+                </div>
+              )}
+              {!userProfile && (
+                <div className="flex flex-col w-full">
+                  <div className="w-full h-fit flex gap-4">
+                    <button
+                      className={`skeleton-loading w-24 h-10 transition-all  px-2 rounded-md py-2 flex gap-1 justify-center items-center`}
+                    ></button>
+                    <button
+                      className={`skeleton-loading w-24 h-10 transition-all  px-2 rounded-md py-2 flex gap-2 justify-center items-center`}
+                    ></button>
+                  </div>
+                </div>
+              )}
               <div className="flex flex-col w-full ">
                 <div className="w-full flex pl-4">
                   {totalPostsUser > 0 && (
