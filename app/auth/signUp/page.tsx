@@ -16,6 +16,7 @@ type FormData = z.infer<typeof registerSchema>;
 export default function SignUp() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
   const router = useRouter();
+
   const [nameIsHovered, setNameIsHovered] = useState<boolean>(false);
   const [userNameIsHovered, setUserNameIsHovered] = useState<boolean>(false);
   const [emailIsHovered, setEmailIsHovered] = useState<boolean>(false);

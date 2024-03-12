@@ -1,5 +1,5 @@
-import React, { ReactNode, useEffect } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
+import React, { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "app/store";
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 export default function LogoutDialog({ children, setMenuIsOpen }: Props) {
   const router = useRouter();
 
-  const { logout, user } = useStore();
+  const { logout } = useStore();
 
   const handleClickLogout = () => {
     setMenuIsOpen(false);

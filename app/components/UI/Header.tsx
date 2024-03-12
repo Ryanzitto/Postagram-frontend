@@ -1,13 +1,13 @@
 "use client";
 
-import { X, LogOut, Settings, AlignJustify, Search } from "lucide-react";
 import axios from "axios";
+import { X, LogOut, Settings, AlignJustify, Search } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect, ChangeEvent } from "react";
 import { useStore } from "app/store";
-import LogoutDialog from "./AlertDialog";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import LogoutDialog from "./AlertDialog";
 import CardProfile from "./CardProfile";
 
 interface User {
@@ -77,6 +77,27 @@ export default function Header() {
 
   const [users, setUsers] = useState<User[]>();
 
+  const handleClickProfile = (username: string) => {
+    router.push(`/profile/${username}`);
+  };
+
+  const handleClickFeed = () => {
+    router.push(`/`);
+  };
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setContentSearch(e.target.value);
+  };
+
+  const filteredUsers =
+    contentSearch !== ""
+      ? users?.filter((users) =>
+          users.name
+            .toLocaleLowerCase()
+            .includes(contentSearch.toLocaleLowerCase())
+        )
+      : users;
+
   useEffect(() => {
     setPageIsLoad(true);
   }, []);
@@ -141,27 +162,6 @@ export default function Header() {
         }
       });
   }, []);
-
-  const handleClickProfile = (username: string) => {
-    router.push(`/profile/${username}`);
-  };
-
-  const handleClickFeed = () => {
-    router.push(`/`);
-  };
-
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setContentSearch(e.target.value);
-  };
-
-  const filteredUsers =
-    contentSearch !== ""
-      ? users?.filter((users) =>
-          users.name
-            .toLocaleLowerCase()
-            .includes(contentSearch.toLocaleLowerCase())
-        )
-      : users;
   return (
     <>
       <header className="w-full max-w-[1600px] h-[15%] flex">

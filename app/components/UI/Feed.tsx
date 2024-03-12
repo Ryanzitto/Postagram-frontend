@@ -1,14 +1,14 @@
-import axios from "axios";
 import * as Dialog from "@radix-ui/react-dialog";
+import axios from "axios";
 import { ChangeEvent, useEffect, useState, useRef } from "react";
-import Post from "./Post";
-import Preview from "./Preview";
 import { useMemo } from "react";
 import { useStore } from "app/store";
-import Spinner from "./Spinner";
-import Spinner2 from "./Spinner2";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Spinner from "./Spinner";
+import Spinner2 from "./Spinner2";
+import Post from "./Post";
+import Preview from "./Preview";
 
 interface User {
   avatar: string;
@@ -158,10 +158,6 @@ export default function Feed() {
   const router = useRouter();
 
   const { user, logout, loginRemember } = useStore();
-
-  useEffect(() => {
-    console.log(loginRemember);
-  }, [loginRemember]);
 
   const closeButtonModalRef = useRef<HTMLSpanElement | null>(null);
 

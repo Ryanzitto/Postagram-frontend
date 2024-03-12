@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 type FormData = z.infer<typeof loginSchema>;
 
-export default function SignUp() {
+export default function SignIn() {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
   const { user, setUser, setLoginRemember, loginRemember } = useStore();
@@ -22,6 +22,7 @@ export default function SignUp() {
   const [isChecked, setIsChecked] = useState(loginRemember.isChecked);
 
   const [emailIsHovered, setEmailIsHovered] = useState<boolean>(false);
+
   const [passwordIsHovered, setPasswordIsHovered] = useState<boolean>(false);
 
   const [inputEmailContent, setInputEmailContent] = useState<string>(
@@ -46,6 +47,7 @@ export default function SignUp() {
   const navigateToSignUp = () => {
     router.push("/auth/signUp");
   };
+
   const navigateHome = () => {
     router.push("/");
   };
@@ -78,10 +80,6 @@ export default function SignUp() {
   const handleClickCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(e.target.checked);
   };
-
-  useEffect(() => {
-    console.log(loginRemember);
-  }, [loginRemember]);
 
   return (
     <div className="background-animate w-screen h-screen flex justify-center items-center bg-gradient-to-br from-purple-400  to-purple-800">

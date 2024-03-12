@@ -1,8 +1,6 @@
-import { Eye, EyeOff, Info } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useStore } from "app/store";
 import axios from "axios";
-import TooltipComponent from "./ToolTip";
 
 interface User {
   avatar: string;

@@ -1,13 +1,9 @@
-import React, { ReactNode, useEffect } from "react";
-import { LockKeyhole } from "lucide-react";
-import { useRouter } from "next/navigation";
+import * as z from "zod";
+import axios from "axios";
+import React, { useEffect } from "react";
 import { useStore } from "app/store";
 import { useState } from "react";
-
-import axios from "axios";
 import { toast } from "sonner";
-
-import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { editProfileSchema } from "app/zodSchema/EditProfile";
@@ -26,6 +22,7 @@ interface User {
 }
 
 type FormData = z.infer<typeof editProfileSchema>;
+
 interface Props {
   setshouldShowEditProfile: (arg: boolean) => void;
   updateUser: () => void;
@@ -55,9 +52,7 @@ export default function EditDialog({
 }: Props) {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
-  const { logout, setEditedUser, user } = useStore();
-
-  const router = useRouter();
+  const { setEditedUser, user } = useStore();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 

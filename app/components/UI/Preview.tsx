@@ -7,12 +7,7 @@ import { createPostSchema } from "app/zodSchema/createPost";
 import { useState } from "react";
 import { useStore } from "app/store";
 import { useRouter } from "next/navigation";
-import {
-  AlignStartVertical,
-  AlignCenterVertical,
-  AlignEndVertical,
-  Smile,
-} from "lucide-react";
+import { AlignStartVertical, AlignCenterVertical, Smile } from "lucide-react";
 
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
@@ -81,13 +76,7 @@ export default function Preview({
 
   const [subjectIsHovered, setSubjectIsHovered] = useState<boolean>(false);
 
-  const handleSelectTextColor = (color: textColors) => {
-    setTextColorSelected(color);
-  };
-
-  const handleSelectBgColor = (bgColor: string) => {
-    setBgColorSelected(bgColor);
-  };
+  const [showPickerEmoji, setShowPickerEmoji] = useState<boolean>(false);
 
   async function onSubmit(dataForm: FormData) {
     const data = {
@@ -133,7 +122,13 @@ export default function Preview({
       });
   }
 
-  const [showPickerEmoji, setShowPickerEmoji] = useState<boolean>(false);
+  const handleSelectTextColor = (color: textColors) => {
+    setTextColorSelected(color);
+  };
+
+  const handleSelectBgColor = (bgColor: string) => {
+    setBgColorSelected(bgColor);
+  };
 
   const addEmoji = (e: any) => {
     const sym = e.unified.split("_");

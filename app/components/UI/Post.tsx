@@ -1,3 +1,5 @@
+import * as z from "zod";
+import axios from "axios";
 import {
   XSquare,
   Heart,
@@ -10,11 +12,9 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import { useStore } from "app/store";
-import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createCommentSchema } from "../../zodSchema/createComment";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 import DeleteDialog from "./DeletePostDialog";
@@ -63,7 +63,7 @@ type FormData = z.infer<typeof createCommentSchema>;
 export default function Post({ post }: Props) {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
 
-  const { user, logout } = useStore();
+  const { user } = useStore();
 
   const router = useRouter();
 
@@ -75,11 +75,15 @@ export default function Post({ post }: Props) {
     post.likes.some((item) => user._id === item.userId)
   );
 
+  const [totalLikes, setTotalLikes] = useState<number>(post.likes.length);
+
+  const [inputCommentContent, setInputCommentContent] = useState<string>("");
+
+  const [postDeleted, setPostDeleted] = useState<boolean>(false);
+
   const handleClickUserName = (username: string) => {
     router.push(`/profile/${username}`);
   };
-
-  const [totalLikes, setTotalLikes] = useState<number>(post.likes.length);
 
   const {
     handleSubmit,
@@ -88,8 +92,6 @@ export default function Post({ post }: Props) {
   } = useForm<FormData>({
     resolver: zodResolver(createCommentSchema),
   });
-
-  const [inputCommentContent, setInputCommentContent] = useState<string>("");
 
   async function onSubmit(data: FormData) {
     console.log(data);
@@ -155,8 +157,6 @@ export default function Post({ post }: Props) {
         console.log(error);
       });
   };
-
-  const [postDeleted, setPostDeleted] = useState<boolean>(false);
 
   return (
     <>

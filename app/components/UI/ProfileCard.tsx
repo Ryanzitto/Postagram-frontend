@@ -24,7 +24,9 @@ interface Props {
 
 export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const router = useRouter();
+
   const { user } = useStore();
 
   const [userHasFollowed, setUserHasFollowed] = useState<boolean>();
@@ -35,6 +37,8 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
     useState<boolean>(false);
   const [shouldShowFollowing, setShouldShowFollowing] =
     useState<boolean>(false);
+
+  const [isWhite, setIsWhite] = useState(true);
 
   const handleClickFollow = (userToFollowId: string | undefined) => {
     axios
@@ -81,8 +85,6 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
     }
   }, [userProfile]);
 
-  const [isWhite, setIsWhite] = useState(true);
-
   useEffect(() => {
     const interval = setInterval(() => {
       setIsWhite((prevState) => !prevState);
@@ -90,6 +92,7 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
 
     return () => clearInterval(interval);
   }, []);
+
   return (
     <div className="relative background-animate sm:rounded-md bg-gradient-to-br from-purple-400  to-purple-800 lg:bg-none p-4 lg:p-0 h-full w-full sm:w-[80%] md:min-w-[350px] md:min-h-[400px] flex flex-col lg:justify-start justify-center items-center">
       <div className="lg:hidden overflow-hidden w-full h-full absolute flex p-0 sm:p-4 gap-0 sm:gap-2 flex-col break-words text-center justify-center items-center">

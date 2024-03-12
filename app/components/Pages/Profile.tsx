@@ -1,15 +1,15 @@
 "use client";
 
-import Header from "../UI/Header";
+import * as Dialog from "@radix-ui/react-dialog";
 import axios from "axios";
 import { useEffect, useState, useRef, ChangeEvent } from "react";
-import Post from "../UI/Post";
 import { useRouter } from "next/navigation";
-import * as Dialog from "@radix-ui/react-dialog";
-import Preview from "../../components/UI/Preview";
 import { Plus, Minus, Settings2 } from "lucide-react";
 import { useStore } from "app/store";
 import { toast } from "sonner";
+import Header from "../UI/Header";
+import Post from "../UI/Post";
+import Preview from "../../components/UI/Preview";
 import ProfileCard from "../UI/ProfileCard";
 import EditDialog from "../UI/EditProfileDialog";
 
@@ -75,28 +75,22 @@ export default function ProfilePage({ userNameProp }: Props) {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleClickUserName = (username: string) => {
-    router.push(`/profile/${username}`);
-  };
+  const [content, setContent] = useState<string | null>(null);
 
-  useEffect(() => {
-    axios
-      .get(`${URL}/user/${userNameProp}`)
-      .then((response) => {
-        console.log(response);
-        setUserProfile(response.data);
-        setTotalPostsUser(response.data.totalPosts);
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response.data.message === "Token has expired") {
-          toast.error("Your session expired, please login to continue.");
-          logout();
-          router.push("/auth/signIn");
-          return;
-        }
-      });
-  }, []);
+  const [shouldShowCreatePost, sethouldShowCreatePost] =
+    useState<boolean>(false);
+
+  const [shouldShowEditProfile, setshouldShowEditProfile] =
+    useState<boolean>(false);
+
+  const [bgColorSelected, setBgColorSelected] = useState<string>("bg-white");
+
+  const [textColorSelected, setTextColorSelected] = useState<textColors>({
+    textColor: "text-black",
+    bgColor: "bg-black",
+  });
+
+  const closeButtonModalRef = useRef<HTMLSpanElement | null>(null);
 
   const updateUser = () => {
     axios
@@ -117,40 +111,9 @@ export default function ProfilePage({ userNameProp }: Props) {
       });
   };
 
-  useEffect(() => {
-    axios
-      .get(`${URL}/post/byUserName/${userNameProp}`)
-      .then((response) => {
-        console.log(response);
-        setPosts(response.data);
-        setErrorMessage(null);
-      })
-      .catch((error) => {
-        console.log(error);
-        setErrorMessage(error.response.data.message);
-      });
-  }, []);
-
-  const [shouldShowCreatePost, sethouldShowCreatePost] =
-    useState<boolean>(false);
-
-  const [shouldShowEditProfile, setshouldShowEditProfile] =
-    useState<boolean>(false);
-
-  const [content, setContent] = useState<string | null>(null);
-
   const handleChangeInputContent = (e: ChangeEvent<HTMLInputElement>) => {
     setContent(e?.target?.value);
   };
-
-  const [bgColorSelected, setBgColorSelected] = useState<string>("bg-white");
-
-  const [textColorSelected, setTextColorSelected] = useState<textColors>({
-    textColor: "text-black",
-    bgColor: "bg-black",
-  });
-
-  const closeButtonModalRef = useRef<HTMLSpanElement | null>(null);
 
   const fetchPosts = () => {
     axios
@@ -165,6 +128,39 @@ export default function ProfilePage({ userNameProp }: Props) {
         setErrorMessage(error.response.data.message);
       });
   };
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/user/${userNameProp}`)
+      .then((response) => {
+        console.log(response);
+        setUserProfile(response.data);
+        setTotalPostsUser(response.data.totalPosts);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.message === "Token has expired") {
+          toast.error("Your session expired, please login to continue.");
+          logout();
+          router.push("/auth/signIn");
+          return;
+        }
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/post/byUserName/${userNameProp}`)
+      .then((response) => {
+        console.log(response);
+        setPosts(response.data);
+        setErrorMessage(null);
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage(error.response.data.message);
+      });
+  }, []);
 
   useEffect(() => {
     if (content === "") {

@@ -1,9 +1,9 @@
-import React, { ReactNode, useEffect } from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import { useRouter } from "next/navigation";
-import { useStore } from "app/store";
 import axios from "axios";
+import React, { ReactNode } from "react";
+import { useStore } from "app/store";
 import { toast } from "sonner";
+
 interface Props {
   children: ReactNode;
   postID: string;
@@ -16,9 +16,8 @@ export default function DeleteDialog({
   setPostDeleted,
 }: Props) {
   const URL = process.env.NEXT_PUBLIC_BASEURL;
-  const router = useRouter();
 
-  const { logout, user } = useStore();
+  const { user } = useStore();
 
   const handleClickDelete = () => {
     axios
