@@ -291,15 +291,19 @@ export default function ProfilePage({ userNameProp }: Props) {
                 </div>
               )}
               {!userProfile && (
-                <div className="flex flex-col w-full">
-                  <div className="w-full h-fit flex gap-4">
-                    <button
-                      className={`skeleton-loading w-24 h-10 transition-all  px-2 rounded-md py-2 flex gap-1 justify-center items-center`}
-                    ></button>
-                    <button
-                      className={`skeleton-loading w-24 h-10 transition-all  px-2 rounded-md py-2 flex gap-2 justify-center items-center`}
-                    ></button>
+                <div className="flex flex-col w-full h-fit">
+                  <div className="flex flex-col w-full">
+                    <div className="w-full h-fit flex gap-4">
+                      <button
+                        className={`skeleton-loading w-24 h-10 transition-all  px-2 rounded-md py-2 flex gap-1 justify-center items-center`}
+                      ></button>
+                      <button
+                        className={`skeleton-loading w-24 h-10 transition-all  px-2 rounded-md py-2 flex gap-2 justify-center items-center`}
+                      ></button>
+                    </div>
                   </div>
+                  <div className="w-20 h-6 skeleton-loading  rounded-md mt-8"></div>
+                  <div className="mt-4 w-full h-[480px] skeleton-loading  rounded-xl"></div>
                 </div>
               )}
               <div className="flex flex-col w-full ">

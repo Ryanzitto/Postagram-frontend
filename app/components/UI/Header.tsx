@@ -48,7 +48,7 @@ interface Posts {
 
 const Skeleton = () => {
   return (
-    <div className="w-28 h-10 p-2 fixed flex rounded-md skeleton-loading mr-6"></div>
+    <div className="w-10 h-10 md:w-28 md:h-10 p-2 fixed flex rounded-md skeleton-loading mr-6"></div>
   );
 };
 

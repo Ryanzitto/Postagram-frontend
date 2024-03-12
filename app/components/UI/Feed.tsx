@@ -147,6 +147,7 @@ const Skeleton = () => {
         </div>
         <div className="w-full h-fit flex flex-col px-4 items-end gap-3"></div>
       </div>
+      <div className="w-full h-[480px] skeleton-loading  rounded-xl"></div>
     </div>
   );
 };
