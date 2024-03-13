@@ -1,6 +1,7 @@
 "use client";
 import * as z from "zod";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "app/zodSchema/login";
@@ -81,6 +82,12 @@ export default function SignIn() {
     setIsChecked(e.target.checked);
   };
 
+  useEffect(() => {
+    if (inputEmailContent !== "" || inputPasswordContent !== "") {
+      setErrorMessage("");
+    }
+  }, [inputEmailContent, inputPasswordContent]);
+
   return (
     <div className="background-animate w-screen h-screen flex justify-center items-center bg-gradient-to-br from-purple-400  to-purple-800">
       <div className="bg-white rounded-lg w-[90%] sm:w-[500px] h-fit max-h-[90%] flex flex-col py-8 justify-center items-center">
@@ -115,11 +122,22 @@ export default function SignIn() {
                 }  transition-all h-full bg-zinc-600`}
               ></div>
             </div>
-            {errors?.email && (
-              <p className="text-red-600 text-xs pt-1">
-                {errors?.email?.message}
-              </p>
-            )}
+            <AnimatePresence>
+              {errors?.email && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    delay: 0,
+                    duration: 1,
+                  }}
+                  className="text-red-600 text-xs pt-1"
+                >
+                  {errors?.email?.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
           <div className="flex flex-col w-full gap-1">
             <label className="text-zinc-600 text-sm">Password:</label>
@@ -158,11 +176,22 @@ export default function SignIn() {
                 } transition-all h-full bg-zinc-600`}
               ></div>
             </div>
-            {errors?.password && (
-              <p className="text-red-600 text-xs pt-1">
-                {errors?.password?.message}
-              </p>
-            )}
+            <AnimatePresence>
+              {errors?.password && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    delay: 0,
+                    duration: 1,
+                  }}
+                  className="text-red-600 text-xs pt-1"
+                >
+                  {errors?.password?.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
           <div
             onChange={handleClickCheck}
@@ -178,11 +207,22 @@ export default function SignIn() {
             Login
           </button>
         </form>
-        {errorMessage !== null && (
-          <div className="w-full flex justify-center items-center pt-2">
-            <span className="text-red-500 text-xs">{errorMessage}</span>
-          </div>
-        )}
+        <AnimatePresence>
+          {errorMessage !== null && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{
+                delay: 0,
+                duration: 1,
+              }}
+              className="w-full flex justify-center items-center pt-2"
+            >
+              <span className="text-red-500 text-xs">{errorMessage}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div className="w-full flex justify-center items-center pt-6">
           <span className="text-zinc-600/80 text-sm">
             Dont have an account?{" "}

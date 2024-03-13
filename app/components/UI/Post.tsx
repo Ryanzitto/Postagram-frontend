@@ -1,5 +1,6 @@
 import * as z from "zod";
 import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   XSquare,
   Heart,
@@ -161,7 +162,16 @@ export default function Post({ post }: Props) {
   return (
     <>
       {postDeleted === false && (
-        <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-lg p-4 grid">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            delay: 0,
+            duration: 1,
+          }}
+          className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-lg p-4 grid"
+        >
           <div className="w-full flex h-fit">
             <div className="w-[90%] flex">
               <div className="w-12 h-12 p-0.5 flex justify-center items-center bg-zinc-800/80 rounded-md">
@@ -363,7 +373,7 @@ export default function Post({ post }: Props) {
               </p>
             )}
           </div>
-        </div>
+        </motion.div>
       )}
     </>
   );

@@ -413,7 +413,16 @@ export default function Header() {
           {pageIsLoad ? (
             <>
               {menuIsOpen === false && (
-                <div className="w-fit p-2 fixed  h-fit flex justify-start items-center rounded-md border border-zinc-600 bg-zinc-700/50 mr-6">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    delay: 0,
+                    duration: 1,
+                  }}
+                  className="w-fit p-2 fixed  h-fit flex justify-start items-center rounded-md border border-zinc-600 bg-zinc-700/50 mr-6"
+                >
                   <span className="hidden md:flex text-white/80 text-xs font-semibold">
                     {user?.name}
                   </span>
@@ -421,7 +430,7 @@ export default function Header() {
                     onClick={() => setMenuIsOpen(!menuIsOpen)}
                     className="cursor-pointer text-white w-4 ml-0 md:ml-3 transition-all hover:text-white/50"
                   />
-                </div>
+                </motion.div>
               )}
             </>
           ) : (

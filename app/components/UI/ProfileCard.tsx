@@ -1,4 +1,5 @@
 import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
 import { useStore } from "app/store";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
@@ -126,7 +127,16 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
         </span>
       </div>
       {userProfile && (
-        <div className="z-20 p-4 w-[90%]  max-w-[350px] flex h-fit flex-col justify-center rounded-lg bg-zinc-700 border border-zinc-500/80 items-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            delay: 0,
+            duration: 1,
+          }}
+          className="z-20 p-4 w-[90%]  max-w-[350px] flex h-fit flex-col justify-center rounded-lg bg-zinc-700 border border-zinc-500/80 items-center"
+        >
           <div className="flex w-full px-4 gap-6 items-start">
             <img
               className="w-16 h-16 md:w-18 md:h-18 bg-zinc-800/50 rounded-lg p-1"
@@ -189,7 +199,7 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       )}
       {userProfile === undefined && (
         <div className="skeleton-loading p-4 w-[90%] flex h-[200px] flex-col justify-center rounded-lg  items-center"></div>
@@ -207,23 +217,42 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
               <ChevronRight className="w-4 " />
             )}
           </div>
-          {shouldShowFollowers && (
-            <div className="flex w-full h-fit rounded-md p-2 bg-zinc-700/50 border border-zinc-500/60 flex-wrap">
-              {userProfile?.followers.map((follower) => {
-                return (
-                  <span
-                    onClick={() => handleClickUserName(follower.userName)}
-                    className="text-white/30 text-xs transition-all cursor-pointer hover:text-white/80"
-                  >
-                    @{follower.userName}
-                  </span>
-                );
-              })}
-              {userProfile?.followers.length === 0 && (
-                <span className="text-white/50 text-sm">No Followers</span>
-              )}
-            </div>
-          )}
+          <AnimatePresence>
+            {shouldShowFollowers && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: {
+                    delay: 0,
+                    duration: 1,
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: {
+                    delay: 0,
+                    duration: 0.1,
+                  },
+                }}
+                className="flex w-full h-fit rounded-md p-2 bg-zinc-700/50 border border-zinc-500/60 flex-wrap"
+              >
+                {userProfile?.followers.map((follower) => {
+                  return (
+                    <span
+                      onClick={() => handleClickUserName(follower.userName)}
+                      className="text-white/30 text-xs transition-all cursor-pointer hover:text-white/80"
+                    >
+                      @{follower.userName}
+                    </span>
+                  );
+                })}
+                {userProfile?.followers.length === 0 && (
+                  <span className="text-white/50 text-sm">No Followers</span>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <div className="flex flex-col w-full h-fit">
           <div
@@ -238,25 +267,44 @@ export default function ProfileCard({ userProfile, totalPostsUser }: Props) {
               <ChevronRight className="w-4 " />
             )}
           </div>
-          {shouldShowFollowing && (
-            <div className="flex w-full h-fit rounded-md p-2 bg-zinc-700/50 border border-zinc-500/60 flex-wrap">
-              {userProfile?.following.map((following) => {
-                return (
-                  <span
-                    onClick={() => handleClickUserName(following.userName)}
-                    className="text-white/30 text-xs transition-all cursor-pointer hover:text-white/80"
-                  >
-                    @{following.userName}
+          <AnimatePresence>
+            {shouldShowFollowing && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: {
+                    delay: 0,
+                    duration: 1,
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: {
+                    delay: 0,
+                    duration: 0.1,
+                  },
+                }}
+                className="flex w-full h-fit rounded-md p-2 bg-zinc-700/50 border border-zinc-500/60 flex-wrap"
+              >
+                {userProfile?.following.map((following) => {
+                  return (
+                    <span
+                      onClick={() => handleClickUserName(following.userName)}
+                      className="text-white/30 text-xs transition-all cursor-pointer hover:text-white/80"
+                    >
+                      @{following.userName}
+                    </span>
+                  );
+                })}
+                {userProfile?.following.length === 0 && (
+                  <span className="text-white/50 text-sm">
+                    Following 0 users.
                   </span>
-                );
-              })}
-              {userProfile?.following.length === 0 && (
-                <span className="text-white/50 text-sm">
-                  Following 0 users.
-                </span>
-              )}
-            </div>
-          )}
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Minus, Settings2 } from "lucide-react";
@@ -185,7 +186,14 @@ export default function ProfilePage({ userNameProp }: Props) {
                 <div className="flex flex-col w-full">
                   {userProfile?._id === user._id && (
                     <div className="w-full h-fit flex gap-4">
-                      <button
+                      <motion.button
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{
+                          delay: 0,
+                          duration: 1,
+                        }}
                         className={`${
                           shouldShowCreatePost
                             ? "bg-red-500 hover:bg-red-600"
@@ -207,9 +215,16 @@ export default function ProfilePage({ userNameProp }: Props) {
                         >
                           Create
                         </span>
-                      </button>
+                      </motion.button>
 
-                      <button
+                      <motion.button
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{
+                          delay: 0,
+                          duration: 1,
+                        }}
                         className={` ${
                           shouldShowEditProfile
                             ? "bg-red-500 hover:bg-red-600"
@@ -227,7 +242,7 @@ export default function ProfilePage({ userNameProp }: Props) {
                         >
                           Edit Profile
                         </span>
-                      </button>
+                      </motion.button>
                     </div>
                   )}
                   {shouldShowCreatePost && (

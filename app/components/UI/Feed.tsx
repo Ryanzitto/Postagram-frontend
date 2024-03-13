@@ -1,5 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChangeEvent, useEffect, useState, useRef } from "react";
 import { useMemo } from "react";
 import { useStore } from "app/store";
@@ -342,10 +343,26 @@ export default function Feed() {
             className="w-full custom overflow-hidden flex gap-2  rounded-xl border border-zinc-500/80 bg-zinc-700/50 py-3"
           >
             {users && (
-              <div className="w-full flex gap-2 px-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  delay: 0,
+                  duration: 1,
+                }}
+                className="w-full flex gap-2 px-4"
+              >
                 {users?.map((user, index) => {
                   return (
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        delay: 0.1 * index,
+                        duration: 1,
+                      }}
                       key={user._id}
                       className="h-20 w-fit flex flex-col justify-start items-center cursor-default"
                     >
@@ -367,18 +384,22 @@ export default function Feed() {
                       >
                         {user.name}
                       </span>
-                    </div>
+                    </motion.div>
                   );
                 })}
-              </div>
-            )}
-            {!users && (
-              <div className="w-full flex justify-center items-center">
-                <Spinner2 />
-              </div>
+              </motion.div>
             )}
           </div>
-          <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              delay: 0,
+              duration: 1,
+            }}
+            className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4"
+          >
             <div className="w-fit h-fit flex items-center">
               <div className="w-16 h-16 grid rounded-xl">
                 {pageIsLoad && (
@@ -402,23 +423,33 @@ export default function Feed() {
                 />
               </Dialog.Trigger>
             </div>
-          </div>
+          </motion.div>
           <Dialog.Portal>
             <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
               <Dialog.Content className="relative w-[380px] sm:w-[500px] h-[450px] sm:h-fit bg-zinc-800 border border-zinc-600 rounded-lg">
                 <Dialog.Close className="absolute z-60 right-0 top-0 bg-zinc-700/50 transition-all p-2 px-4 rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500">
                   <span ref={closeButtonModalRef}>X</span>
                 </Dialog.Close>
-                <Preview
-                  fetchPosts={fetchPosts}
-                  closeButtonModalRef={closeButtonModalRef}
-                  textColorSelected={textColorSelected}
-                  bgColorSelected={bgColorSelected}
-                  content={content}
-                  setContent={setContent}
-                  setTextColorSelected={setTextColorSelected}
-                  setBgColorSelected={setBgColorSelected}
-                />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    delay: 0,
+                    duration: 1,
+                  }}
+                >
+                  <Preview
+                    fetchPosts={fetchPosts}
+                    closeButtonModalRef={closeButtonModalRef}
+                    textColorSelected={textColorSelected}
+                    bgColorSelected={bgColorSelected}
+                    content={content}
+                    setContent={setContent}
+                    setTextColorSelected={setTextColorSelected}
+                    setBgColorSelected={setBgColorSelected}
+                  />
+                </motion.div>
               </Dialog.Content>
             </Dialog.Overlay>
           </Dialog.Portal>

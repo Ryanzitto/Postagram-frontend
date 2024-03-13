@@ -1,13 +1,13 @@
 "use client";
 import * as z from "zod";
 import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "app/zodSchema/register";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FormEvent } from "react";
 import { toast } from "sonner";
 import "../.././globals.css";
 
@@ -65,8 +65,8 @@ export default function SignUp() {
   }
 
   return (
-    <div className="background-animate relative w-screen h-screen flex justify-center items-center bg-gradient-to-br from-purple-400  to-purple-800">
-      <div className="shadow-md absolute bg-white rounded-lg w-[90%] max-w-[500px] h-fit flex flex-col py-6 md:py-8 justify-center items-center">
+    <div className="overflow-y-hidden background-animate relative w-screen h-screen flex justify-center items-center bg-gradient-to-br from-purple-400  to-purple-800">
+      <div className="shadow-md absolute bg-white rounded-lg w-[90%] max-w-[500px] h-fit max-h-[95%] flex flex-col py-6 md:py-8 justify-center items-center">
         <span className="text-zinc-800/60 font-bold text-md md:text-sm text-center antialiased">
           Create an account <br />
           on{" "}
@@ -110,11 +110,22 @@ export default function SignUp() {
                 } transition-all h-full bg-zinc-600`}
               ></div>
             </div>
-            {errors?.name && (
-              <p className="text-red-600 text-xs pt-1">
-                {errors?.name?.message}
-              </p>
-            )}
+            <AnimatePresence>
+              {errors?.name && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    delay: 0,
+                    duration: 1,
+                  }}
+                  className="text-red-600 text-xs pt-1"
+                >
+                  {errors?.name?.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
           <div
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -142,11 +153,22 @@ export default function SignUp() {
                 }  transition-all h-full bg-zinc-600`}
               ></div>
             </div>
-            {errors?.userName && (
-              <p className="text-red-600 text-xs pt-1">
-                {errors?.userName?.message}
-              </p>
-            )}
+            <AnimatePresence>
+              {errors?.userName && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    delay: 0,
+                    duration: 1,
+                  }}
+                  className="text-red-600 text-xs pt-1"
+                >
+                  {errors?.userName?.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
           <div
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -172,11 +194,22 @@ export default function SignUp() {
                 }  transition-all h-full bg-zinc-600`}
               ></div>
             </div>
-            {errors?.email && (
-              <p className="text-red-600 text-xs pt-1">
-                {errors?.email?.message}
-              </p>
-            )}
+            <AnimatePresence>
+              {errors?.email && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    delay: 0,
+                    duration: 1,
+                  }}
+                  className="text-red-600 text-xs pt-1"
+                >
+                  {errors?.email?.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
           <div className="flex flex-col w-full gap-1">
             <div
@@ -218,11 +251,22 @@ export default function SignUp() {
                 } transition-all h-full bg-zinc-600`}
               ></div>
             </div>
-            {errors?.password && (
-              <p className="text-red-600 text-xs pt-1">
-                {errors?.password?.message}
-              </p>
-            )}
+            <AnimatePresence>
+              {errors?.password && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    delay: 0,
+                    duration: 1,
+                  }}
+                  className="text-red-600 text-xs pt-1"
+                >
+                  {errors?.password?.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
           <div className="flex flex-col w-full gap-1">
             <div
@@ -264,11 +308,22 @@ export default function SignUp() {
                 }  transition-all h-full bg-zinc-600`}
               ></div>
             </div>
-            {errors?.confirmPassword && (
-              <p className="text-red-600 text-xs pt-1">
-                {errors?.confirmPassword?.message}
-              </p>
-            )}
+            <AnimatePresence>
+              {errors?.confirmPassword && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    delay: 0,
+                    duration: 1,
+                  }}
+                  className="text-red-600 text-xs pt-1"
+                >
+                  {errors?.confirmPassword?.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
           <div className="flex w-full justify-center items-center">
             <button
