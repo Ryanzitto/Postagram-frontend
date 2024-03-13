@@ -286,9 +286,7 @@ export default function Header() {
           </div> */}
         </div>
         <div
-          className={`w-1/2 md:w-1/3 h-full flex justify-end ${
-            menuIsOpen ? "items-start" : "items-center"
-          } gap-6`}
+          className={`w-1/2 md:w-1/3 h-full flex justify-end items-center gap-6`}
         >
           <AnimatePresence>
             {menuIsOpen && (
@@ -310,7 +308,7 @@ export default function Header() {
                     duration: 0.1,
                   },
                 }}
-                className={`w-[300px] z-60 transition-all fixed h-screen bg-zinc-700/80 backdrop-blur-md border-l border-zinc-600 pt-4 flex flex-col items-center justify-start`}
+                className={`w-[300px] bottom-0 z-60 transition-all fixed h-screen bg-zinc-700/80 backdrop-blur-md border-l border-zinc-600 pt-4 flex flex-col items-center justify-start`}
               >
                 <div className="w-full h-fit flex justify-end pr-6">
                   <X
@@ -320,7 +318,7 @@ export default function Header() {
                 </div>
                 <div className="w-full h-fit flex items-center justify-center pt-6 gap-2">
                   <div className="w-full h-fit flex flex-col gap-1 items-center justify-center">
-                    <div className="w-fit h-fit bg-white rounded-lg">
+                    <div className="w-fit h-fit bg-zinc-800/60 rounded-lg p-1">
                       {pageIsLoad && (
                         <img
                           className="w-16 h-16"

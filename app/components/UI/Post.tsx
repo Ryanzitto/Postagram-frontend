@@ -147,7 +147,7 @@ export default function Post({ post }: Props) {
       .then((response) => {
         console.log(response);
         toast.success(`${response.data.message}`);
-        if (response.data.message === "like successfull aplied") {
+        if (response.data.message === "like successfully aplied") {
           setTotalLikes((total) => total + 1);
         }
         if (response.data.message === "like removed") {
@@ -233,7 +233,7 @@ export default function Post({ post }: Props) {
                   <span
                     className={`${
                       userHasLiked ? "text-pink-600" : "text-white"
-                    } text-lg font-semibold`}
+                    } text-md font-semibold`}
                   >
                     {totalLikes}
                   </span>
@@ -257,75 +257,94 @@ export default function Post({ post }: Props) {
                 />
               )}
 
-              <Send className="text-white w-5 cursor-pointer" />
+              {/* <Send className="text-white w-5 cursor-pointer" /> */}
             </div>
           </div>
           <div className="w-full h-[1px] bg-zinc-500/20 mt-6 mb-6 justify-self-center"></div>
-          {shouldShowComments && (
-            <div
-              className={`w-full flex flex-col items-center justify-center px-6 ${
-                post.comments.length > 0 ? "bg-zinc-700/50 " : "bg-transparent"
-              }rounded-md py-2`}
-            >
-              {post.comments.map((comment) => {
-                return (
-                  <div className="break-all border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
-                    <div className="w-fit p-1 rounded-md bg-zinc-700 flex items-center px-2 gap-2">
-                      <span
-                        onClick={() => handleClickUserName(comment.userName)}
-                        className="text-white/80 font-bold text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
-                      >
-                        @{comment.userName}
-                      </span>
-                      <div className="w-1 h-1  rounded-full bg-white" />
-                      <span className="text-white/50 break-words text-xs">
-                        {formatDistanceToNow(comment.createdAt, {
-                          locale: ptBR,
-                          addSuffix: true,
-                        })}
-                      </span>
-                    </div>
+          <AnimatePresence>
+            {shouldShowComments && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: {
+                    delay: 0,
+                    duration: 1,
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: {
+                    delay: 0,
+                    duration: 0.1,
+                  },
+                }}
+                className={`w-full flex flex-col items-center justify-center px-6 ${
+                  post.comments.length > 0
+                    ? "bg-zinc-700/50 "
+                    : "bg-transparent"
+                }rounded-md py-2`}
+              >
+                {post.comments.map((comment) => {
+                  return (
+                    <div className="break-all border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
+                      <div className="w-fit p-1 rounded-md bg-zinc-700 flex items-center px-2 gap-2">
+                        <span
+                          onClick={() => handleClickUserName(comment.userName)}
+                          className="text-white/80 font-bold text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
+                        >
+                          @{comment.userName}
+                        </span>
+                        <div className="w-1 h-1  rounded-full bg-white" />
+                        <span className="text-white/50 break-words text-xs">
+                          {formatDistanceToNow(comment.createdAt, {
+                            locale: ptBR,
+                            addSuffix: true,
+                          })}
+                        </span>
+                      </div>
 
-                    <span className="text-white/50 font-semi-bold text-xs">
-                      - {comment.comment}
-                    </span>
-                  </div>
-                );
-              })}
-
-              {newComments.map((comment) => {
-                return (
-                  <div className="break-all border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
-                    <div className="w-fit p-1 rounded-md bg-zinc-700 flex items-center px-2 gap-2">
-                      <span
-                        onClick={() => handleClickUserName(comment.userName)}
-                        className="text-white/80 font-bold text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
-                      >
-                        @{comment.userName}
-                      </span>
-                      <div className="w-1 h-1 rounded-full bg-white" />
-                      <span className="text-white/50 text-xs">
-                        {formatDistanceToNow(comment.createdAt, {
-                          locale: ptBR,
-                          addSuffix: true,
-                        })}
+                      <span className="text-white/50 font-semi-bold text-xs">
+                        - {comment.comment}
                       </span>
                     </div>
+                  );
+                })}
 
-                    <span className="text-white/50 w-full font-semi-bold text-xs break-words">
-                      - {comment.comment}
-                    </span>
-                  </div>
-                );
-              })}
+                {newComments.map((comment) => {
+                  return (
+                    <div className="break-all border border-zinc-600 my-2 w-full rounded-md flex flex-col justify-start py-2 px-4 gap-2 ">
+                      <div className="w-fit p-1 rounded-md bg-zinc-700 flex items-center px-2 gap-2">
+                        <span
+                          onClick={() => handleClickUserName(comment.userName)}
+                          className="text-white/80 font-bold text-xs cursor-pointer transition-all hover:text-white/50 hover:underline"
+                        >
+                          @{comment.userName}
+                        </span>
+                        <div className="w-1 h-1 rounded-full bg-white" />
+                        <span className="text-white/50 text-xs">
+                          {formatDistanceToNow(comment.createdAt, {
+                            locale: ptBR,
+                            addSuffix: true,
+                          })}
+                        </span>
+                      </div>
 
-              {post.comments.length === 0 && newComments.length === 0 && (
-                <span className="text-white/50 text-xs">
-                  No comments yet, how about create the first one?
-                </span>
-              )}
-            </div>
-          )}
+                      <span className="text-white/50 w-full font-semi-bold text-xs break-words">
+                        - {comment.comment}
+                      </span>
+                    </div>
+                  );
+                })}
+
+                {post.comments.length === 0 && newComments.length === 0 && (
+                  <span className="text-white/50 text-xs">
+                    No comments yet, how about create the first one?
+                  </span>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div
             className={` ${
               shouldShowComments ? "mt-6" : "mt-0"

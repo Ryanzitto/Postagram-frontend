@@ -245,40 +245,79 @@ export default function ProfilePage({ userNameProp }: Props) {
                       </motion.button>
                     </div>
                   )}
-                  {shouldShowCreatePost && (
-                    <div className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4 mt-4">
-                      <div className="w-fit h-fit flex">
-                        <div className="w-16 h-16 grid bg-purple-500 rounded-md">
-                          <img
-                            className="w-full h-full"
-                            src={`/images/${userProfile?.avatar}`}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        onChange={handleChangeInputContent}
-                        className="w-full h-fit flex flex-col px-4 gap-3"
+                  <AnimatePresence>
+                    {shouldShowCreatePost && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{
+                          opacity: 1,
+                          transition: {
+                            delay: 0,
+                            duration: 1,
+                          },
+                        }}
+                        exit={{
+                          opacity: 0,
+                          transition: {
+                            delay: 0,
+                            duration: 0.1,
+                          },
+                        }}
+                        className="w-full h-fit bg-zinc-700/50 border border-zinc-500/80 rounded-xl flex p-4 mt-4"
                       >
-                        <Dialog.Trigger>
-                          <textarea
-                            value={content !== null ? content : ""}
-                            onChange={(e) => setContent(e.target.value)}
-                            placeholder="What are your words today?"
-                            className={`text-sm rounded-xl w-full pt-5 ${
-                              content !== null ? "pb-5" : null
-                            } pl-4 sm:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
-                          />
-                        </Dialog.Trigger>
-                      </div>
-                    </div>
-                  )}
-                  {shouldShowEditProfile && (
-                    <EditDialog
-                      actualUser={userProfile}
-                      updateUser={updateUser}
-                      setshouldShowEditProfile={setshouldShowEditProfile}
-                    />
-                  )}
+                        <div className="w-fit h-fit flex">
+                          <div className="w-16 h-16 grid bg-purple-500 rounded-md">
+                            <img
+                              className="w-full h-full"
+                              src={`/images/${userProfile?.avatar}`}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          onChange={handleChangeInputContent}
+                          className="w-full h-fit flex flex-col px-4 gap-3"
+                        >
+                          <Dialog.Trigger>
+                            <textarea
+                              value={content !== null ? content : ""}
+                              onChange={(e) => setContent(e.target.value)}
+                              placeholder="What are your words today?"
+                              className={`text-sm rounded-xl w-full pt-5 ${
+                                content !== null ? "pb-5" : null
+                              } pl-4 sm:pl-10  h-fit bg-zinc-800/60 outline-none text-white/50 placeholder:text-white/30 `}
+                            />
+                          </Dialog.Trigger>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <AnimatePresence>
+                    {shouldShowEditProfile && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{
+                          opacity: 1,
+                          transition: {
+                            delay: 0,
+                            duration: 1,
+                          },
+                        }}
+                        exit={{
+                          opacity: 0,
+                          transition: {
+                            delay: 0,
+                            duration: 0.1,
+                          },
+                        }}
+                      >
+                        <EditDialog
+                          actualUser={userProfile}
+                          updateUser={updateUser}
+                          setshouldShowEditProfile={setshouldShowEditProfile}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   <Dialog.Portal>
                     <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
