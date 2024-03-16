@@ -3,6 +3,7 @@ import { io, Socket } from "socket.io-client";
 import { useState, useEffect } from "react";
 import { useStore } from "./store";
 import { Eye, EyeOff, Send } from "lucide-react";
+
 interface ServerToClientEvents {
   message: (data: { text: string; username: string }) => void; // Evento para receber mensagens do servidor
 }
@@ -12,9 +13,10 @@ interface ClientToServerEvents {
 }
 
 export default function ChatComponent() {
-  const URL = process.env.NEXT_PUBLIC_SOCKETURL;
+  const URL = process.env.NEXT_PUBLIC_BASEURL;
+
   const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-    `http://localhost:3002`
+    `${URL}`
   );
 
   const { user, chatMessages, addChatMessage } = useStore();
