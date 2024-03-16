@@ -16,6 +16,11 @@ interface User {
   createdAt: string;
 }
 
+interface ChatMessage {
+  text: string;
+  username: string;
+}
+
 export const useStore = create(
   persist(
     (set: any) => ({
@@ -38,6 +43,13 @@ export const useStore = create(
         password: "",
         isChecked: false,
       },
+
+      chatMessages: [],
+
+      addChatMessage: (newMessage: ChatMessage) =>
+        set((state: any) => ({
+          chatMessages: [...state.chatMessages, newMessage],
+        })),
 
       setLoginRemember: (payload: {
         email: string;

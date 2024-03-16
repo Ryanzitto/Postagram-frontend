@@ -78,6 +78,22 @@ textarea::-webkit-scrollbar-thumb {
 textarea::-webkit-scrollbar-thumb:hover {
   background: #555; /* cor do thumb (alça) ao passar o mouse por cima */
 }
+div::-webkit-scrollbar {
+  width: 6px; /* largura da barra de rolagem */
+}
+
+div::-webkit-scrollbar-track {
+  background: none; /* cor de fundo da track (trilha) */
+}
+
+div::-webkit-scrollbar-thumb {
+  background: #888; /* cor do thumb (alça) */
+  border-radius: 5px; /* borda arredondada */
+}
+
+div::-webkit-scrollbar-thumb:hover {
+  background: #555; /* cor do thumb (alça) ao passar o mouse por cima */
+}
 
 .background-animate {
   background-size: 400%;

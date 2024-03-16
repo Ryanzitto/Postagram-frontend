@@ -1,3 +1,4 @@
+import ChatComponent from "app/ChatComponent";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
@@ -151,6 +152,7 @@ export default function Aside() {
             )}
           </AnimatePresence>
         </div>
+        <ChatComponent />
       </div>
     </>
   );
