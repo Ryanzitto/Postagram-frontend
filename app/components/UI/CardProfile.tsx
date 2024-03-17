@@ -25,7 +25,7 @@ export default function CardProfile({ user, handleClickProfile }: Props) {
       <HoverCard.Trigger asChild>
         <img
           onClick={() => handleClickProfile(user.userName)}
-          className="md:w-16 md:h-16 w-10 h-10 rounded-full bg-white p-1 cursor-pointer"
+          className="md:w-16 md:h-16 w-10 h-10 rounded-lg bg-zinc-800/90 backdrop-blur-md p-1 cursor-pointer transition-all hover:bg-purple-500"
           src={`/images/${user.avatar}`}
           alt="Radix UI"
         />
@@ -37,9 +37,9 @@ export default function CardProfile({ user, handleClickProfile }: Props) {
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
             <img
-              className="w-8 h-8 md:w-10 md:h-10 p-1 bg-white rounded-full"
+              className="w-8 h-8 md:w-10 md:h-10  bg-zinc-700 rounded-lg"
               src={`/images/${user.avatar}`}
-              alt="Radix UI"
+              alt="user avatar"
             />
             <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
               <div>

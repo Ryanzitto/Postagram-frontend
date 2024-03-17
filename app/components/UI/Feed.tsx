@@ -158,7 +158,7 @@ export default function Feed() {
 
   const router = useRouter();
 
-  const { user, logout, loginRemember } = useStore();
+  const { user, logout, loginRemember, connectedUsers } = useStore();
 
   const closeButtonModalRef = useRef<HTMLSpanElement | null>(null);
 
@@ -209,7 +209,7 @@ export default function Feed() {
     axios
       .get(`${URL}/post/`)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         setPosts(response.data.results);
         setNextUrl(response.data.nextUrl);
         setErrorMessage(null);
@@ -368,7 +368,7 @@ export default function Feed() {
                     >
                       <div className="w-20 h-20 flex flex-col justify-center items-center text-center">
                         <div
-                          className={`cursor-pointer w-12 h-12 p-0.5 flex justify-center items-center ${randomColors[index]} rounded-md`}
+                          className={`cursor-pointer w-12 h-12 p-0.5 flex justify-center items-center ${randomColors[index]} rounded-md relative`}
                         >
                           <img
                             onClick={() => handleClickUserName(user.userName)}
@@ -376,6 +376,11 @@ export default function Feed() {
                             src={`/images/${user.avatar}`}
                             alt={`Avatar de ${user.name}`}
                           />
+                          {connectedUsers.some(
+                            (username) => username === user.userName
+                          ) ? (
+                            <div className="border-2 border-zinc-800 absolute w-4 h-4 rounded-full bg-green-500 right-0 bottom-0 -mr-2 -mb-2"></div>
+                          ) : null}
                         </div>
                       </div>
                       <span

@@ -113,12 +113,12 @@ export default function Header() {
     axios
       .get(`${URL}/post/byUserName/${user.userName}`)
       .then((response) => {
-        console.log(response);
-        setTotalPostsUser(response.data.length);
+        // console.log(response);
+        setTotalPostsUser(response?.data?.length);
       })
       .catch((error) => {
         console.log(error);
-        if (error.response.data.message === "Token has expired") {
+        if (error?.response?.data?.message === "Token has expired") {
           toast.error("Your session expired, please login to continue.");
           logout();
           router.push("/auth/signIn");
@@ -131,8 +131,8 @@ export default function Header() {
     axios
       .get(`${URL}/post/`)
       .then((response) => {
-        console.log(response);
-        setPosts(response.data.results);
+        // console.log(response);
+        setPosts(response?.data?.results);
       })
       .catch((error) => {
         console.log(error);
@@ -149,8 +149,8 @@ export default function Header() {
     axios
       .get(`${URL}/user/`)
       .then((response) => {
-        console.log(response.data);
-        setUsers(response.data);
+        // console.log(response?.data);
+        setUsers(response?.data);
       })
       .catch((error) => {
         console.log(error);
@@ -162,6 +162,7 @@ export default function Header() {
         }
       });
   }, []);
+
   return (
     <>
       <header className="w-full max-w-[1600px] h-[15%] flex">
@@ -177,9 +178,8 @@ export default function Header() {
                     <X className="text-white w-3 h-3 md:w-5 md:h-5" />
                   </div>
                 </div>
-                <div className="w-[80%] h-[1px] bg-zinc-500/40 mt-16 mb-8"></div>
                 <div
-                  className={`w-full h-fit gap-4 flex flex-wrap justify-center items-start`}
+                  className={`w-full h-fit mt-16 gap-4 flex flex-wrap justify-center items-start overflow-auto`}
                 >
                   {filteredUsers?.map((user) => {
                     return (

@@ -194,7 +194,7 @@ export default function Post({ post }: Props) {
                   </span>
                   <div className="w-1 h-1 rounded-full bg-white" />
                   <span className="text-white/50 text-xs">
-                    {formatDistanceToNow(post.createdAt, {
+                    {formatDistanceToNow(post?.createdAt, {
                       locale: ptBR,
                       addSuffix: true,
                     })}

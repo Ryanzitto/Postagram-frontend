@@ -64,7 +64,7 @@ export default function Aside() {
                 shouldShowRanking ? "rounded-t-lg" : "rounded-lg"
               } w-full h-fit px-3 py-3 md:px-4 md:py-4 flex justify-between items-center bg-purple-500`}
             >
-              <span className="pl-0 font-black text-xs sm:text-sm sm:text-md lg:text-lg text-white text-center">
+              <span className="pl-0 font-black text-xs sm:text-md  text-white text-center">
                 Ranking PostApp
               </span>
               {shouldShowRanking ? (

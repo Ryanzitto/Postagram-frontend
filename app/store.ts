@@ -19,6 +19,7 @@ interface User {
 interface ChatMessage {
   text: string;
   username: string;
+  createdAt: string;
 }
 
 export const useStore = create(
@@ -38,6 +39,13 @@ export const useStore = create(
         following: [],
       },
 
+      connectedUsers: [],
+
+      setConnectedUsers: (payload: String[]) =>
+        set(() => ({
+          connectedUsers: payload,
+        })),
+
       loginRemember: {
         email: "",
         password: "",
@@ -49,6 +57,11 @@ export const useStore = create(
       addChatMessage: (newMessage: ChatMessage) =>
         set((state: any) => ({
           chatMessages: [...state.chatMessages, newMessage],
+        })),
+
+      clearChat: () =>
+        set((state: any) => ({
+          chatMessages: [],
         })),
 
       setLoginRemember: (payload: {
