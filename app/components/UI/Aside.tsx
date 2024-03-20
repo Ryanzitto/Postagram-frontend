@@ -49,7 +49,7 @@ export default function Aside() {
 
   return (
     <>
-      <div className="flex flex-row md:flex-col w-full md:w-[25%] h-fit p-4 gap-4">
+      <div className="flex flex-col w-full md:w-[40%] lg:w-[30%] xl:w-[25%] h-fit p-4 gap-4">
         <div className="bg-zinc-700/50 max-w-[300px] flex gap-0 flex-col w-1/2 md:w-full h-fit rounded-lg">
           {users.length > 0 && (
             <motion.div
