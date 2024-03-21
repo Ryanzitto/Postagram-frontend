@@ -22,6 +22,14 @@ interface ChatMessage {
   createdAt: string;
 }
 
+interface Notification {
+  text: string;
+  username: string;
+  createdAt: string;
+  type: string;
+  id: string;
+}
+
 export const useStore = create(
   persist(
     (set: any) => ({
@@ -54,9 +62,27 @@ export const useStore = create(
 
       chatMessages: [],
 
+      notifications: [
+        { text: "", username: "pedro", createdAt: "dd", type: "", id: "" },
+      ],
+
       addChatMessage: (newMessage: ChatMessage) =>
         set((state: any) => ({
           chatMessages: [...state.chatMessages, newMessage],
+        })),
+
+      addNotification: (newNotification: Notification) =>
+        set((state: any) => ({
+          notifications: [...state.notifications, newNotification],
+        })),
+
+      setNotification: (payload: Notification[]) =>
+        set((state: any) => ({
+          notifications: payload,
+        })),
+      clearNotification: () =>
+        set((state: any) => ({
+          notifications: [],
         })),
 
       clearChat: () =>

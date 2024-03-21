@@ -11,6 +11,7 @@ interface ServerToClientEvents {
     username: string;
     createdAt: string;
     type: string;
+    id: string;
   }) => void;
   userConnected: (data: string) => void;
   userDisconnected: (data: string) => void;
@@ -23,6 +24,7 @@ interface ClientToServerEvents {
     username: string;
     createdAt: string;
     type: string;
+    id: string;
   }) => void;
   userConnected: (data: string) => void;
   userDisconnected: (data: string) => void;
@@ -44,8 +46,10 @@ export default function ChatComponent() {
   const {
     user,
     chatMessages,
+    notifications,
     connectedUsers,
     addChatMessage,
+    addNotification,
     setConnectedUsers,
   } = useStore();
 
@@ -66,7 +70,10 @@ export default function ChatComponent() {
 
   const [username, setUsername] = useState<string>(user.userName);
 
+  const [chatIsOpen, setChatIsOpen] = useState<boolean>(false);
+
   const [shouldShowAlert, setShouldShowAlert] = useState<boolean>(false);
+
   const handleMessageSend = (e: any) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
@@ -78,6 +85,7 @@ export default function ChatComponent() {
       username: username,
       createdAt: createdAt,
       type: "userMessage",
+      id: crypto.randomUUID(),
     });
     setInputValue("");
   };
@@ -92,10 +100,7 @@ export default function ChatComponent() {
     socket.on("message", (data) => {
       setMessages((prevMessages) => [...prevMessages, data]);
       addChatMessage(data);
-      if (shouldShowChat === true) {
-        return;
-      }
-      setShouldShowAlert(true);
+      addNotification(data);
     });
 
     return () => {
@@ -129,13 +134,29 @@ export default function ChatComponent() {
         socket.off("updateUsers");
       };
     }
-  }, [user.userName]); // Executar o useEffect sempre que o nome de usuário mudar
+  }, [user.userName]);
+
+  const handleClickOpenChat = () => {
+    setShouldShowChat(true);
+    setChatIsOpen(true);
+  };
+  const handleClickCloseChat = () => {
+    setShouldShowChat(false);
+    setChatIsOpen(false);
+  };
 
   useEffect(() => {
-    if (shouldShowChat) {
+    if (chatIsOpen === true) {
       setShouldShowAlert(false);
     }
-  }, [shouldShowChat]);
+  }, [chatIsOpen]);
+
+  useEffect(() => {
+    if (!chatIsOpen) {
+      setShouldShowAlert(true);
+    }
+    console.log(messages);
+  }, [messages]);
   return (
     <div className="w-fit h-fit flex flex-col justify-center items-center bg-zinc-800">
       {pageIsLoad ? (
@@ -147,12 +168,12 @@ export default function ChatComponent() {
           {shouldShowChat ? (
             <EyeOff
               className="w-5 cursor-pointer text-white/50 transition-all hover:text-white/30"
-              onClick={() => setShouldShowChat(false)}
+              onClick={handleClickCloseChat}
             />
           ) : (
             <Eye
               className="w-5 cursor-pointer text-white/50 transition-all hover:text-white/30"
-              onClick={() => setShouldShowChat(true)}
+              onClick={handleClickOpenChat}
             />
           )}
         </div>
