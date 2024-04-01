@@ -12,7 +12,7 @@ export default function HomePage() {
       <div className="w-full max-w-[1600px] h-[85%] flex flex-col md:flex-row justify-start items-start">
         <Aside />
         <Feed />
-        <div className="w-[25%] flex-wrap gap-2 h-full p-6">
+        <div className="w-[25%] flex-wrap gap-2 h-full">
           <NotificationBar />
         </div>
       </div>

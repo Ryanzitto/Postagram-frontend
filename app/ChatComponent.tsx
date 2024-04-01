@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { useStore } from "./store";
-import { Eye, EyeOff, Send } from "lucide-react";
+import { Eraser, Send, X } from "lucide-react";
 import { format } from "date-fns";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import * as Dialog from "@radix-ui/react-dialog";
+
+interface User {
+  username: string;
+  name: string;
+  avatar: string;
+}
 
 interface ServerToClientEvents {
   message: (data: {
@@ -13,9 +20,11 @@ interface ServerToClientEvents {
     type: string;
     id: string;
   }) => void;
-  userConnected: (data: string) => void;
+
+  userConnected: (data: User) => void;
   userDisconnected: (data: string) => void;
-  updateUsers: (users: string[]) => void;
+
+  updateUsers: (users: User[]) => void;
 }
 
 interface ClientToServerEvents {
@@ -26,7 +35,7 @@ interface ClientToServerEvents {
     type: string;
     id: string;
   }) => void;
-  userConnected: (data: string) => void;
+  userConnected: (data: User) => void;
   userDisconnected: (data: string) => void;
 }
 
@@ -72,8 +81,6 @@ export default function ChatComponent() {
 
   const [chatIsOpen, setChatIsOpen] = useState<boolean>(false);
 
-  const [shouldShowAlert, setShouldShowAlert] = useState<boolean>(false);
-
   const handleMessageSend = (e: any) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
@@ -113,15 +120,17 @@ export default function ChatComponent() {
   }, []);
 
   useEffect(() => {
-    if (shouldShowChat) {
-      scrollToBottom();
-    }
-  }, [messages, shouldShowChat]);
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     if (user.userName !== "") {
       // Enviar o nome de usuário para o backend quando o componente for montado
-      socket.emit("userConnected", user.userName);
+      socket.emit("userConnected", {
+        username: user.userName,
+        avatar: user.avatar,
+        name: user.name,
+      });
 
       // Atualizar a lista de usuários conectados quando receber uma atualização do servidor
       socket.on("updateUsers", (users) => {
@@ -140,91 +149,114 @@ export default function ChatComponent() {
     setShouldShowChat(true);
     setChatIsOpen(true);
   };
+
   const handleClickCloseChat = () => {
     setShouldShowChat(false);
     setChatIsOpen(false);
   };
 
   useEffect(() => {
-    if (chatIsOpen === true) {
-      setShouldShowAlert(false);
+    if (shouldShowChat) {
+      const time = setTimeout(() => {
+        scrollToBottom();
+      }, 1000);
+      return () => clearTimeout(time);
     }
-  }, [chatIsOpen]);
+  }, [shouldShowChat]);
 
-  useEffect(() => {
-    if (!chatIsOpen) {
-      setShouldShowAlert(true);
-    }
-    console.log(messages);
-  }, [messages]);
   return (
-    <div className="w-fit h-fit flex flex-col justify-center items-center bg-zinc-800">
-      {pageIsLoad ? (
-        <div className="relative w-full  px-3 py-3 md:px-4 md:py-4 flex gap-2 justify-between items-center rounded-lg bg-purple-500">
-          {shouldShowAlert && (
-            <div className="absolute w-4 h-4 rounded-full bg-red-500 top-0 right-0 -mt-1 -mr-1" />
-          )}
-          <span className="text-xs text-white/80 font-bold">Global Chat</span>
-          {shouldShowChat ? (
-            <EyeOff
-              className="w-5 cursor-pointer text-white/50 transition-all hover:text-white/30"
-              onClick={handleClickCloseChat}
-            />
-          ) : (
-            <Eye
-              className="w-5 cursor-pointer text-white/50 transition-all hover:text-white/30"
+    <Dialog.Root>
+      <div className="w-fit h-fit flex flex-col justify-center items-center bg-zinc-800">
+        {pageIsLoad ? (
+          <Dialog.Trigger>
+            <div
               onClick={handleClickOpenChat}
-            />
-          )}
-        </div>
-      ) : (
-        <Skeleton />
-      )}
-      <AnimatePresence>
-        {shouldShowChat && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: 1,
-                transition: {
-                  delay: 0,
-                  duration: 1,
-                },
-              }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  delay: 0,
-                  duration: 0.2,
-                },
-              }}
-              className="w-full flex gap-2 pl-2 mt-2"
+              className="relative w-full  px-3 py-3 md:px-4 md:py-4 flex gap-2 justify-between items-center rounded-md bg-purple-500"
             >
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-              <span className="text-xs text-white/80">
-                {connectedUsers.length} Online user(s).
+              <span className="text-xs text-white/80 font-bold">
+                Global Chat
               </span>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: 1,
-                transition: {
-                  delay: 0,
-                  duration: 1,
-                },
-              }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  delay: 0,
-                  duration: 0.2,
-                },
-              }}
-              className="mt-2 w-[300px] h-[400px] flex flex-col gap-1 py-2 border border-zinc-500/80 justify-between items-center rounded-md"
-            >
-              {pageIsLoad && (
+            </div>
+          </Dialog.Trigger>
+        ) : (
+          <Skeleton />
+        )}
+        <Dialog.Portal>
+          <Dialog.Overlay className="inset-0 fixed bg-black/50 flex justify-center items-center">
+            <Dialog.Content className="relative w-[380px] sm:w-[800px] h-[500px] sm:h-fit flex bg-zinc-800  rounded-lg">
+              <Dialog.Close
+                onClick={handleClickCloseChat}
+                className="absolute z-60 right-0 top-0 bg-zinc-700/50 transition-all p-2  rounded-tr-lg text-white/50 hover:text-white/80 hover:bg-purple-500"
+              >
+                <X className="w-4 h-4" />
+              </Dialog.Close>
+              {/* <div className="w-full">
+                <span className="text-white/80 font-bold text-lg tracking-wider">
+                  Global chat
+                </span>
+              </div> */}
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: {
+                    delay: 0,
+                    duration: 1,
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: {
+                    delay: 0,
+                    duration: 0.2,
+                  },
+                }}
+                className="w-[40%] h-[400px] flex flex-col p-4 rounded-md overflow-y-auto"
+              >
+                <span className="mb-4 text-white/30 text-xs">
+                  Online users: {connectedUsers.length}
+                </span>
+                {connectedUsers.map((user: User) => {
+                  return (
+                    <div className="cursor-pointerw-full flex transition-all hover:bg-zinc-600/50 p-2 rounded-md">
+                      <div className="w-10 h-10 relative  bg-purple-500 rounded-md">
+                        <img
+                          className="w-10 h-10"
+                          src={`/images/${user.avatar}`}
+                        />
+                        <div className="absolute bottom-0 right-0 -mb-1 -mr-1 w-3 h-3 rounded-full bg-green-500" />
+                      </div>
+                      <div className="pl-4 flex flex-col gap-1">
+                        <span className="text-sm text-white/80 font-bold tracking-widest">
+                          {user.name}
+                        </span>
+                        <span className="text-xs text-white/50">
+                          @{user.username}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  transition: {
+                    delay: 0,
+                    duration: 1,
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: {
+                    delay: 0,
+                    duration: 0.2,
+                  },
+                }}
+                className="w-[60%] h-[500px] flex flex-col gap-1 py-2 border bg-white justify-between items-center rounded-r-md"
+              >
                 <div
                   ref={chatRef}
                   className="p-1 w-full h-[90%] gap-1 flex flex-col overflow-y-auto"
@@ -244,9 +276,9 @@ export default function ChatComponent() {
                             msg.username === user.userName
                               ? "bg-zinc-700"
                               : "bg-zinc-600"
-                          } w-fit max-w-[90%] break-all flex flex-col rounded-md `}
+                          } w-fit max-w-[90%] break-all flex flex-col rounded-md justify-center`}
                         >
-                          <div className="flex px-2 py-1 gap-2 justify-start items-center">
+                          <div className="flex px-3 py-2 gap-2 justify-start items-center">
                             <span
                               className={`${
                                 msg.username === user.userName
@@ -259,9 +291,7 @@ export default function ChatComponent() {
                                 : "@" + msg.username}
                             </span>
                             <span className="text-[10px] text-white/50">
-                              <span className="text-[10px] text-white/50">
-                                {format(msg.createdAt, "HH:mm, dd/MM/yyyy")}
-                              </span>
+                              {format(msg.createdAt, "HH:mm, dd/MM/yyyy")}
                             </span>
                           </div>
                           <div className="w-full h-[1px] bg-zinc-500"></div>
@@ -274,7 +304,7 @@ export default function ChatComponent() {
                         <div
                           className={`w-full items-center break-all flex flex-col `}
                         >
-                          <span className="text-xs text-white/50 p-2">
+                          <span className="text-xs text-zinc-500 p-2">
                             {msg.text}
                           </span>
                         </div>
@@ -282,31 +312,32 @@ export default function ChatComponent() {
                     </div>
                   ))}
                 </div>
-              )}
 
-              <form
-                onSubmit={handleMessageSend}
-                className="w-[95%] bg-zinc-700 h-fit rounded-md flex items-center justify-between p-2"
-              >
-                <input
-                  placeholder="Message..."
-                  className="rounded-sm pl-4 bg-transparent text-white/80 text-xs outline-none w-[90%]"
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                />
-                <div className="w-[10%] flex justify-center items-center">
-                  <Send
-                    onClick={handleMessageSend}
-                    type="submit"
-                    className="w-5 cursor-pointer text-white/80 transition-all hover:text-white/50"
+                <form
+                  onSubmit={handleMessageSend}
+                  className="w-[95%] bg-zinc-700 h-fit rounded-md flex items-center justify-between p-2"
+                >
+                  <input
+                    placeholder="Message..."
+                    className="rounded-sm pl-4 bg-transparent text-white/80 text-xs outline-none w-[80%]"
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
                   />
-                </div>
-              </form>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </div>
+                  <div className="gap-2 flex justify-center items-center">
+                    {/* <Eraser className="w-5 cursor-pointer text-white/80 transition-all hover:text-white/50" /> */}
+                    <Send
+                      onClick={handleMessageSend}
+                      type="submit"
+                      className="w-5 cursor-pointer text-white/80 transition-all hover:text-white/50"
+                    />
+                  </div>
+                </form>
+              </motion.div>
+            </Dialog.Content>
+          </Dialog.Overlay>
+        </Dialog.Portal>
+      </div>
+    </Dialog.Root>
   );
 }

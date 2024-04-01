@@ -16,6 +16,12 @@ interface User {
   createdAt: string;
 }
 
+interface UserInfoSocket {
+  username: string;
+  name: string;
+  avatar: string;
+}
+
 interface ChatMessage {
   text: string;
   username: string;
@@ -49,7 +55,7 @@ export const useStore = create(
 
       connectedUsers: [],
 
-      setConnectedUsers: (payload: String[]) =>
+      setConnectedUsers: (payload: UserInfoSocket[]) =>
         set(() => ({
           connectedUsers: payload,
         })),

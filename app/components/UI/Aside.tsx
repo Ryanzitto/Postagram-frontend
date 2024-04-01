@@ -112,7 +112,7 @@ export default function Aside() {
                       <div className="w-[70%] h-24 flex items-center pl-4">
                         <div className="max-[500px]:hidden min-[501px]:flex md:hidden lg:flex h-14 items-center">
                           <img
-                            className="w-14 h-14 bg-white rounded-md"
+                            className="w-14 h-14 bg-purple-500 rounded-md"
                             src={`/images/${user.avatar}`}
                           />
                         </div>
