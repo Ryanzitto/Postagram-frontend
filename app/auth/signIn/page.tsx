@@ -36,6 +36,7 @@ export default function SignIn() {
   const [shouldShowPassword, setShouldShowPassword] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [buttonValue, setButtonValue] = useState<string>("Login");
 
   const {
     handleSubmit,
@@ -54,6 +55,7 @@ export default function SignIn() {
   };
 
   async function onSubmit() {
+    setButtonValue("Sending...");
     const formatedDate = {
       email: inputEmailContent,
       password: inputPasswordContent,
@@ -62,6 +64,7 @@ export default function SignIn() {
     axios
       .post(`${URL}/auth/`, formatedDate)
       .then((response) => {
+        setButtonValue("Login");
         if (isChecked) {
           setLoginRemember(formatedDate);
         }
@@ -73,6 +76,7 @@ export default function SignIn() {
         navigateHome();
       })
       .catch((error) => {
+        setButtonValue("Login");
         console.log(error);
         setErrorMessage(error.response.data.message);
       });
@@ -202,9 +206,10 @@ export default function SignIn() {
           </div>
           <button
             type="submit"
-            className="bg-purple-500 rounded-lg flex justify-center items-center w-full p-2 text-white font-bold hover:bg-purple-600"
+            disabled={buttonValue === "Sending..."}
+            className="bg-purple-500 disabled:bg-gray-500 rounded-lg flex justify-center items-center w-full p-2 text-white font-bold hover:bg-purple-600"
           >
-            Login
+            {buttonValue}
           </button>
         </form>
         <AnimatePresence>
