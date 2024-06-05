@@ -78,7 +78,10 @@ export default function Preview({
 
   const [showPickerEmoji, setShowPickerEmoji] = useState<boolean>(false);
 
+  const [buttonValue, setButtonValue] = useState<string>("Create");
+
   async function onSubmit(dataForm: FormData) {
+    setButtonValue("Sending...");
     const data = {
       subject: dataForm.subject,
       text: content,
@@ -96,6 +99,7 @@ export default function Preview({
     axios
       .post(`${URL}/post/`, data, config)
       .then((response) => {
+        setButtonValue("Create");
         console.log(response);
         if (closeButtonModalRef?.current) {
           closeButtonModalRef.current.click();
@@ -105,6 +109,7 @@ export default function Preview({
         fetchPosts();
       })
       .catch((error) => {
+        setButtonValue("Create");
         console.log(error);
         if (error.response.data.message === "Token has expired") {
           toast.error("Your session expired, please login to continue.");
@@ -314,9 +319,12 @@ export default function Preview({
         <div className="w-full h-fit mt-4">
           <button
             type="submit"
-            className="w-full p-2 bg-purple-500 rounded-md transition-all text-white hover:bg-purple-500/80"
+            disabled={buttonValue === "Sending..."}
+            className="w-full p-2 bg-purple-500 disabled:bg-gray-500 rounded-md transition-all text-white hover:bg-purple-500/80"
           >
-            <span className="font-bold text-lg transition-all ">Create</span>
+            <span className="font-bold text-lg transition-all ">
+              {buttonValue}
+            </span>
           </button>
         </div>
       </form>

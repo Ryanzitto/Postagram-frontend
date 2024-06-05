@@ -71,6 +71,8 @@ export default function Header() {
 
   const [messagesIsHovered, setMessagesIsHovered] = useState<boolean>(false);
 
+  const [logoutIsHovered, setLogoutIsHovered] = useState<boolean>(false);
+
   const [contentSearch, setContentSearch] = useState<string>("");
 
   const [posts, setPosts] = useState<Posts[]>();
@@ -220,14 +222,25 @@ export default function Header() {
               ></div>
             </div>
           </div>
-        </div>
-        <LogoutDialog setMenuIsOpen={setMenuIsOpen}>
-          <div>
-            <span className="cursor-pointer absolute right-0 text-white/50 text-[10px] mr-12 tracking-[3px]  hover:text-red-500 transition-all">
-              LOGOUT
-            </span>
+          <div
+            onMouseEnter={() => setLogoutIsHovered(true)}
+            onMouseLeave={() => setLogoutIsHovered(false)}
+            className="w-fit h-fit flex flex-col justify-center items-center gap-1 cursor-pointer"
+          >
+            <LogoutDialog setMenuIsOpen={setMenuIsOpen}>
+              <span className="text-white/50 text-[10px]  tracking-[3px] hover:text-red-500 transition-all">
+                LOGOUT
+              </span>
+            </LogoutDialog>
+            <div className="w-full h-[1px]">
+              <div
+                className={`${
+                  logoutIsHovered ? "w-full" : "w-0"
+                } h-full transition-all bg-red-500`}
+              ></div>
+            </div>
           </div>
-        </LogoutDialog>
+        </div>
       </header>
     </>
   );

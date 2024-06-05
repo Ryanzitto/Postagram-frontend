@@ -36,6 +36,9 @@ export default function SignUp() {
     useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const [buttonValue, setButtonValue] = useState<string>("Create an account");
+
   const {
     handleSubmit,
     register,
@@ -49,16 +52,19 @@ export default function SignUp() {
   };
 
   async function onSubmit(data: FormData) {
+    setButtonValue("Sending...");
     console.log(data);
     axios
       .post(`${URL}/user/`, data)
       .then((response) => {
+        setButtonValue("Create an account");
         console.log(response);
         toast.success("An account has created.");
         setErrorMessage(null);
         navigateToSignIn();
       })
       .catch((error) => {
+        setButtonValue("Create an account");
         console.log(error);
         setErrorMessage(error.response.data.message);
       });
@@ -328,9 +334,10 @@ export default function SignUp() {
           <div className="flex w-full justify-center items-center">
             <button
               type="submit"
-              className="bg-purple-500 rounded-lg flex justify-center items-center w-full p-2 text-white font-bold hover:bg-purple-600"
+              disabled={buttonValue === "Sending..."}
+              className="bg-purple-500 disabled:bg-gray-500 rounded-lg flex justify-center items-center w-full p-2 text-white font-bold hover:bg-purple-600"
             >
-              <span>Create an account</span>
+              <span>{buttonValue}</span>
             </button>
           </div>
         </form>
